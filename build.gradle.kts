@@ -1,10 +1,11 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
     java
     id("org.jetbrains.kotlin.jvm") version "2.3.10"
-    id("org.jetbrains.kotlin.plugin.power-assert") version "2.3.10"
+    kotlin("plugin.power-assert") version "2.3.10"
     id("org.springframework.boot") version "4.0.3"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.spring") version "2.3.10"
@@ -34,15 +35,30 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.kotest:kotest-assertions-core-jvm:6.1.0")
+    testImplementation(kotlin("test-junit5"))
     implementation(kotlin("stdlib"))
 }
 
 powerAssert {
-    functions = listOf("io.kotest.matchers.shouldBe")
+    functions = listOf(
+        "kotlin.assert",
+        "kotlin.test.assertEquals",
+        "kotlin.test.assertNotNull",
+        "kotlin.test.assertTrue",
+        "kotlin.test.assertContentEquals",
+        "io.kotest.matchers.shouldBe",
+    )
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    testLogging {
+        events("failed")
+        exceptionFormat = TestExceptionFormat.FULL
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+    }
 }
 
 tasks.named<JavaCompile>("compileTestJava") {
