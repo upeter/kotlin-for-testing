@@ -1,0 +1,87 @@
+package com.conference.website.api;
+
+import com.conference.website.api.dto.CreateRatingRequest;
+import com.conference.website.api.dto.CreateTalkRequest;
+import com.conference.website.api.dto.ScheduleSlotRequest;
+import com.conference.website.api.dto.TalkResponse;
+import com.conference.website.api.dto.ViewCountResponse;
+import com.conference.website.domain.TalkLevel;
+import com.conference.website.service.TalkService;
+import com.conference.website.service.ViewTrackingService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import org.jspecify.annotations.Nullable;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@Validated
+@RestController
+@RequestMapping("/api/talks")
+public class TalkController {
+
+    private final TalkService talkService;
+    private final ViewTrackingService viewTrackingService;
+
+    public TalkController(TalkService talkService, ViewTrackingService viewTrackingService) {
+        this.talkService = talkService;
+        this.viewTrackingService = viewTrackingService;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public TalkResponse createTalk(@Valid @RequestBody CreateTalkRequest request) {
+        return ConferenceApiMapper.toTalkResponse(talkService.createTalk(request));
+    }
+
+    @GetMapping
+    public List<TalkResponse> listTalks(@RequestParam(required = false) @Nullable TalkLevel level,
+                                        @RequestParam(required = false) @Nullable String tag) {
+        return talkService.listTalks(level, tag).stream()
+                .map(ConferenceApiMapper::toTalkResponse)
+                .toList();
+    }
+
+    @GetMapping("/{talkId}")
+    public TalkResponse getTalk(@PathVariable Long talkId) {
+        return ConferenceApiMapper.toTalkResponse(talkService.getTalk(talkId));
+    }
+
+    @PostMapping("/{talkId}/ratings")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TalkResponse addRating(@PathVariable Long talkId, @Valid @RequestBody CreateRatingRequest request) {
+        return ConferenceApiMapper.toTalkResponse(talkService.addRating(talkId, request));
+    }
+
+    @PutMapping("/{talkId}/schedule")
+    public TalkResponse assignSchedule(@PathVariable Long talkId, @Valid @RequestBody ScheduleSlotRequest request) {
+        return ConferenceApiMapper.toTalkResponse(talkService.assignSchedule(talkId, request));
+    }
+
+    @PostMapping("/{talkId}/views")
+    public ViewCountResponse recordView(@PathVariable Long talkId) {
+        return new ViewCountResponse(talkId, viewTrackingService.recordView(talkId));
+    }
+
+    @PostMapping("/{talkId}/views/simulate")
+    public ViewCountResponse simulateViews(@PathVariable Long talkId,
+                                           @RequestParam(defaultValue = "250") @Min(1) @Max(50_000) int events) {
+        return new ViewCountResponse(talkId, viewTrackingService.simulateConcurrentViews(talkId, events));
+    }
+
+    @GetMapping("/{talkId}/views")
+    public ViewCountResponse getViews(@PathVariable Long talkId) {
+        return new ViewCountResponse(talkId, viewTrackingService.getCurrentViews(talkId));
+    }
+}
