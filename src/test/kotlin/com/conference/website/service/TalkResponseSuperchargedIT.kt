@@ -6,7 +6,7 @@ import com.conference.website.api.dto.CreateSpeakerRequest
 import com.conference.website.api.dto.CreateTagRequest
 import com.conference.website.api.dto.CreateTalkRequest
 import com.conference.website.api.dto.ScheduleSlotRequest
-import com.conference.website.api.dto.TalkResponse
+import com.conference.website.api.dto.TalkDto
 import com.conference.website.domain.TalkLevel
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
@@ -104,7 +104,7 @@ class TalkResponseSuperchargedIT @Autowired constructor(
         )
     }
 
-    private fun normalize(response: TalkResponse): NormalizedTalkResponse =
+    private fun normalize(response: TalkDto): NormalizedTalkResponse =
         NormalizedTalkResponse(
             id = response.id(),
             title = response.title(),

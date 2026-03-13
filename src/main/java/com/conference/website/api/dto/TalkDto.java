@@ -5,18 +5,18 @@ import com.conference.website.domain.TalkLevel;
 import java.time.Instant;
 import java.util.List;
 
-public record TalkResponse(
+public record TalkDto(
         Long id,
         String title,
         String abstractText,
         TalkLevel level,
         Integer durationMinutes,
         Instant createdAt,
-        SpeakerResponse primarySpeaker,
-        List<SpeakerResponse> coSpeakers,
-        List<TagResponse> tags,
-        List<RatingResponse> ratings,
-        ScheduleSlotResponse scheduleSlot,
+        SpeakerDto primarySpeaker,
+        List<SpeakerDto> coSpeakers,
+        List<TagDto> tags,
+        List<RatingDto> ratings,
+        ScheduleSlotDto scheduleSlot,
         Double averageRating,
         Long totalRatings
 ) {

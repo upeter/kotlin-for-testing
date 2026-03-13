@@ -1,7 +1,7 @@
 package com.conference.website.api;
 
 import com.conference.website.api.dto.CreateTagRequest;
-import com.conference.website.api.dto.TagResponse;
+import com.conference.website.api.dto.TagDto;
 import com.conference.website.service.TagService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,12 +26,12 @@ public class TagController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TagResponse createTag(@Valid @RequestBody CreateTagRequest request) {
+    public TagDto createTag(@Valid @RequestBody CreateTagRequest request) {
         return ConferenceApiMapper.toTagResponse(tagService.createTag(request));
     }
 
     @GetMapping
-    public List<TagResponse> listTags() {
+    public List<TagDto> listTags() {
         return tagService.getAllTags().stream()
                 .map(ConferenceApiMapper::toTagResponse)
                 .toList();

@@ -2,7 +2,7 @@ package com.conference.website.api.dto;
 
 import java.time.Instant;
 
-public record RatingResponse(
+public record RatingDto(
         Long id,
         String reviewerName,
         Integer score,

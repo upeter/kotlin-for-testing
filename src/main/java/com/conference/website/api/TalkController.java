@@ -3,7 +3,7 @@ package com.conference.website.api;
 import com.conference.website.api.dto.CreateRatingRequest;
 import com.conference.website.api.dto.CreateTalkRequest;
 import com.conference.website.api.dto.ScheduleSlotRequest;
-import com.conference.website.api.dto.TalkResponse;
+import com.conference.website.api.dto.TalkDto;
 import com.conference.website.api.dto.ViewCountResponse;
 import com.conference.website.domain.TalkLevel;
 import com.conference.website.service.TalkService;
@@ -41,31 +41,31 @@ public class TalkController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TalkResponse createTalk(@Valid @RequestBody CreateTalkRequest request) {
+    public TalkDto createTalk(@Valid @RequestBody CreateTalkRequest request) {
         return ConferenceApiMapper.toTalkResponse(talkService.createTalk(request));
     }
 
     @GetMapping
-    public List<TalkResponse> listTalks(@RequestParam(required = false) @Nullable TalkLevel level,
-                                        @RequestParam(required = false) @Nullable String tag) {
+    public List<TalkDto> listTalks(@RequestParam(required = false) @Nullable TalkLevel level,
+                                   @RequestParam(required = false) @Nullable String tag) {
         return talkService.listTalks(level, tag).stream()
                 .map(ConferenceApiMapper::toTalkResponse)
                 .toList();
     }
 
     @GetMapping("/{talkId}")
-    public TalkResponse getTalk(@PathVariable Long talkId) {
+    public TalkDto getTalk(@PathVariable Long talkId) {
         return ConferenceApiMapper.toTalkResponse(talkService.getTalk(talkId));
     }
 
     @PostMapping("/{talkId}/ratings")
     @ResponseStatus(HttpStatus.CREATED)
-    public TalkResponse addRating(@PathVariable Long talkId, @Valid @RequestBody CreateRatingRequest request) {
+    public TalkDto addRating(@PathVariable Long talkId, @Valid @RequestBody CreateRatingRequest request) {
         return ConferenceApiMapper.toTalkResponse(talkService.addRating(talkId, request));
     }
 
     @PutMapping("/{talkId}/schedule")
-    public TalkResponse assignSchedule(@PathVariable Long talkId, @Valid @RequestBody ScheduleSlotRequest request) {
+    public TalkDto assignSchedule(@PathVariable Long talkId, @Valid @RequestBody ScheduleSlotRequest request) {
         return ConferenceApiMapper.toTalkResponse(talkService.assignSchedule(talkId, request));
     }
 

@@ -6,7 +6,7 @@ import com.conference.website.api.dto.CreateSpeakerRequest;
 import com.conference.website.api.dto.CreateTagRequest;
 import com.conference.website.api.dto.CreateTalkRequest;
 import com.conference.website.api.dto.ScheduleSlotRequest;
-import com.conference.website.api.dto.TalkResponse;
+import com.conference.website.api.dto.TalkDto;
 import com.conference.website.domain.Speaker;
 import com.conference.website.domain.Tag;
 import com.conference.website.domain.Talk;
@@ -74,7 +74,7 @@ class TalkResponseMappingIT {
         talkService.addRating(createdTalk.getId(), new CreateRatingRequest("Sam", 3, "Solid but could use more demos"));
 
         Talk reloadedTalk = talkService.getTalk(createdTalk.getId());
-        TalkResponse response = ConferenceApiMapper.toTalkResponse(reloadedTalk);
+        TalkDto response = ConferenceApiMapper.toTalkResponse(reloadedTalk);
 
         assertThat(response.id()).isEqualTo(createdTalk.getId());
         assertThat(response.title()).isEqualTo("Modern JVM testing");

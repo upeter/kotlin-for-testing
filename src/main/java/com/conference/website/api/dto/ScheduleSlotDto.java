@@ -2,7 +2,7 @@ package com.conference.website.api.dto;
 
 import java.time.LocalDateTime;
 
-public record ScheduleSlotResponse(
+public record ScheduleSlotDto(
         Long id,
         String roomName,
         LocalDateTime startTime,
