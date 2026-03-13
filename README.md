@@ -15,6 +15,12 @@ Java-first Spring Boot conference website domain used for a talk about Kotlin fo
 ./gradlew bootRun
 ```
 
+or with Maven:
+
+```bash
+./mvnw spring-boot:run
+```
+
 ## Initial API surface
 
 - `POST /api/speakers`
