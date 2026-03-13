@@ -1,8 +1,6 @@
 package com.conference.website.service;
 
-import com.conference.website.api.dto.CreateRatingRequest;
-import com.conference.website.api.dto.CreateTalkRequest;
-import com.conference.website.api.dto.ScheduleSlotRequest;
+import com.conference.website.api.dto.*;
 import com.conference.website.domain.Rating;
 import com.conference.website.domain.ScheduleSlot;
 import com.conference.website.domain.Speaker;
@@ -12,6 +10,7 @@ import com.conference.website.domain.TalkLevel;
 import com.conference.website.repository.SpeakerRepository;
 import com.conference.website.repository.TagRepository;
 import com.conference.website.repository.TalkRepository;
+import jakarta.validation.constraints.NotNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +34,7 @@ public class TalkService {
     }
 
     @Transactional
-    public Talk createTalk(CreateTalkRequest request) {
+    public TalkDto createTalk(CreateTalkRequest request) {
         Speaker primarySpeaker = speakerRepository.findById(request.primarySpeakerId())
                 .orElseThrow(() -> new NotFoundException("Primary speaker not found: " + request.primarySpeakerId()));
 
@@ -43,8 +42,8 @@ public class TalkService {
         Set<Tag> tags = resolveTags(request.tagIds());
 
         Talk talk = new Talk(
-                request.title(),
                 request.abstractText(),
+                request.title(),
                 request.level(),
                 request.durationMinutes(),
                 primarySpeaker
@@ -54,47 +53,47 @@ public class TalkService {
         talk.setTags(tags);
         talk.setScheduleSlot(toScheduleSlot(request.scheduleSlot()));
 
-        return talkRepository.save(talk);
+        return DtoConversions.toDto(talkRepository.save(talk));
     }
 
     @Transactional(readOnly = true)
-    public List<Talk> listTalks(@Nullable TalkLevel level, @Nullable String tag) {
+    public List<TalkDto> listTalks(@Nullable TalkLevel level, @Nullable String tag) {
         if (level != null) {
-            return talkRepository.findByLevel(level);
+            return talkRepository.findByLevel(level).stream().map(DtoConversions::toDto).toList();
         }
         if (tag != null && !tag.isBlank()) {
-            return talkRepository.findByTagsNameIgnoreCase(tag);
+            return talkRepository.findByTagsNameIgnoreCase(tag).stream().map(DtoConversions::toDto).toList();
         }
-        return talkRepository.findAllByOrderByCreatedAtDesc();
+        return talkRepository.findAllByOrderByCreatedAtDesc().stream().map(DtoConversions::toDto).toList();
     }
 
     @Transactional(readOnly = true)
-    public Talk getTalk(Long talkId) {
-        return talkRepository.findDetailedById(talkId)
+    public TalkDto getTalk(Long talkId) {
+        return talkRepository.findDetailedById(talkId).map(DtoConversions::toDto)
                 .orElseThrow(() -> new NotFoundException("Talk not found: " + talkId));
     }
 
     @Transactional
-    public Talk addRating(Long talkId, CreateRatingRequest request) {
+    public TalkDto addRating(Long talkId, CreateRatingRequest request) {
         Talk talk = talkRepository.findDetailedById(talkId)
                 .orElseThrow(() -> new NotFoundException("Talk not found: " + talkId));
 
         Rating rating = new Rating(request.reviewerName(), request.score(), request.comment());
         talk.addRating(rating);
-        return talkRepository.save(talk);
+        return DtoConversions.toDto(talkRepository.save(talk));
     }
 
     @Transactional
-    public Talk assignSchedule(Long talkId, ScheduleSlotRequest request) {
+    public TalkDto assignSchedule(Long talkId, ScheduleSlotRequest request) {
         Talk talk = talkRepository.findDetailedById(talkId)
                 .orElseThrow(() -> new NotFoundException("Talk not found: " + talkId));
 
         talk.setScheduleSlot(toScheduleSlot(request));
-        return talkRepository.save(talk);
+        return DtoConversions.toDto(talkRepository.save(talk));
     }
 
-    private Set<Speaker> resolveCoSpeakers(List<Long> coSpeakerIds, Long primarySpeakerId) {
-        if (coSpeakerIds == null || coSpeakerIds.isEmpty()) {
+    private Set<Speaker> resolveCoSpeakers(List<Long> coSpeakerIds, @NotNull Long primarySpeakerId) {
+        if (coSpeakerIds.isEmpty()) {
             return new LinkedHashSet<>();
         }
 

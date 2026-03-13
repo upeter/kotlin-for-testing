@@ -1,10 +1,6 @@
 package com.conference.website.api;
 
-import com.conference.website.api.dto.CreateRatingRequest;
-import com.conference.website.api.dto.CreateTalkRequest;
-import com.conference.website.api.dto.ScheduleSlotRequest;
-import com.conference.website.api.dto.TalkDto;
-import com.conference.website.api.dto.ViewCountResponse;
+import com.conference.website.api.dto.*;
 import com.conference.website.domain.TalkLevel;
 import com.conference.website.service.TalkService;
 import com.conference.website.service.ViewTrackingService;
@@ -42,31 +38,29 @@ public class TalkController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TalkDto createTalk(@Valid @RequestBody CreateTalkRequest request) {
-        return ConferenceApiMapper.toTalkResponse(talkService.createTalk(request));
+        return talkService.createTalk(request);
     }
 
     @GetMapping
     public List<TalkDto> listTalks(@RequestParam(required = false) @Nullable TalkLevel level,
                                    @RequestParam(required = false) @Nullable String tag) {
-        return talkService.listTalks(level, tag).stream()
-                .map(ConferenceApiMapper::toTalkResponse)
-                .toList();
+        return talkService.listTalks(level, tag);
     }
 
     @GetMapping("/{talkId}")
     public TalkDto getTalk(@PathVariable Long talkId) {
-        return ConferenceApiMapper.toTalkResponse(talkService.getTalk(talkId));
+        return talkService.getTalk(talkId);
     }
 
     @PostMapping("/{talkId}/ratings")
     @ResponseStatus(HttpStatus.CREATED)
     public TalkDto addRating(@PathVariable Long talkId, @Valid @RequestBody CreateRatingRequest request) {
-        return ConferenceApiMapper.toTalkResponse(talkService.addRating(talkId, request));
+        return talkService.addRating(talkId, request);
     }
 
     @PutMapping("/{talkId}/schedule")
     public TalkDto assignSchedule(@PathVariable Long talkId, @Valid @RequestBody ScheduleSlotRequest request) {
-        return ConferenceApiMapper.toTalkResponse(talkService.assignSchedule(talkId, request));
+        return talkService.assignSchedule(talkId, request);
     }
 
     @PostMapping("/{talkId}/views")

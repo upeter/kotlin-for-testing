@@ -1,12 +1,15 @@
 package com.conference.website.service;
 
 import com.conference.website.api.dto.CreateSpeakerRequest;
+import com.conference.website.api.dto.DtoConversions;
+import com.conference.website.api.dto.SpeakerDto;
 import com.conference.website.domain.Speaker;
 import com.conference.website.repository.SpeakerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SpeakerService {
@@ -18,7 +21,7 @@ public class SpeakerService {
     }
 
     @Transactional
-    public Speaker createSpeaker(CreateSpeakerRequest request) {
+    public SpeakerDto createSpeaker(CreateSpeakerRequest request) {
         speakerRepository.findByEmailIgnoreCase(request.email())
                 .ifPresent(existing -> {
                     throw new BadRequestException("Speaker email already exists: " + request.email());
@@ -30,11 +33,17 @@ public class SpeakerService {
                 request.company(),
                 request.bio()
         );
-        return speakerRepository.save(speaker);
+        var saved =  speakerRepository.save(speaker);
+        return DtoConversions.toDto(saved);
     }
 
     @Transactional(readOnly = true)
-    public List<Speaker> getAllSpeakers() {
-        return speakerRepository.findAll();
+    public List<SpeakerDto> getAllSpeakers() {
+        return speakerRepository.findAll().stream().map(DtoConversions::toDto).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<SpeakerDto> getSpeakerById(Long id) {
+        return speakerRepository.findById(id).map(DtoConversions::toDto);
     }
 }

@@ -6,7 +6,7 @@ public record RatingDto(
         Long id,
         String reviewerName,
         Integer score,
-        String comment,
-        Instant createdAt
+        String comment
+//        Instant createdAt
 ) {
 }

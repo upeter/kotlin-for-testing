@@ -1,6 +1,7 @@
 package com.conference.website.api;
 
 import com.conference.website.api.dto.CreateSpeakerRequest;
+import com.conference.website.api.dto.DtoConversions;
 import com.conference.website.api.dto.SpeakerDto;
 import com.conference.website.service.SpeakerService;
 import jakarta.validation.Valid;
@@ -27,13 +28,11 @@ public class SpeakerController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SpeakerDto createSpeaker(@Valid @RequestBody CreateSpeakerRequest request) {
-        return ConferenceApiMapper.toSpeakerResponse(speakerService.createSpeaker(request));
+        return speakerService.createSpeaker(request);
     }
 
     @GetMapping
     public List<SpeakerDto> listSpeakers() {
-        return speakerService.getAllSpeakers().stream()
-                .map(ConferenceApiMapper::toSpeakerResponse)
-                .toList();
+        return speakerService.getAllSpeakers();
     }
 }

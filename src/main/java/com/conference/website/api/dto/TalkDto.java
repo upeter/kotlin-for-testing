@@ -11,7 +11,7 @@ public record TalkDto(
         String abstractText,
         TalkLevel level,
         Integer durationMinutes,
-        Instant createdAt,
+//        Instant createdAt,
         SpeakerDto primarySpeaker,
         List<SpeakerDto> coSpeakers,
         List<TagDto> tags,

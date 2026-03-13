@@ -1,11 +1,14 @@
 package com.conference.website.api.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 
 public record ScheduleSlotDto(
-        Long id,
-        String roomName,
-        LocalDateTime startTime,
-        LocalDateTime endTime
+         Long id,
+         @NotBlank String roomName,
+         @NotNull LocalDateTime startTime,
+         @NotNull LocalDateTime endTime
 ) {
 }

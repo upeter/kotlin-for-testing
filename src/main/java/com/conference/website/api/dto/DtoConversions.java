@@ -1,36 +1,28 @@
-package com.conference.website.api;
+package com.conference.website.api.dto;
 
-import com.conference.website.api.dto.RatingDto;
-import com.conference.website.api.dto.ScheduleSlotDto;
-import com.conference.website.api.dto.SpeakerDto;
-import com.conference.website.api.dto.TagDto;
-import com.conference.website.api.dto.TalkDto;
-import com.conference.website.domain.Rating;
-import com.conference.website.domain.ScheduleSlot;
-import com.conference.website.domain.Speaker;
-import com.conference.website.domain.Tag;
-import com.conference.website.domain.Talk;
+import com.conference.website.domain.*;
+import jakarta.validation.constraints.NotNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.List;
 
-public final class ConferenceApiMapper {
+public final class DtoConversions {
 
-    private ConferenceApiMapper() {
+    private DtoConversions() {
     }
 
-    public static SpeakerDto toSpeakerResponse(Speaker speaker) {
+    public static SpeakerDto toDto(@NotNull Speaker speaker) {
         return new SpeakerDto(
                 speaker.getId(),
                 speaker.getName(),
                 speaker.getEmail(),
                 speaker.getCompany(),
                 speaker.getBio()
-        );
+                );
     }
 
-    public static TagDto toTagResponse(Tag tag) {
+    public static TagDto toDto(Tag tag) {
         return new TagDto(tag.getId(), tag.getName());
     }
 
@@ -47,10 +39,10 @@ public final class ConferenceApiMapper {
         );
     }
 
-    public static TalkDto toTalkResponse(Talk talk) {
+    public static TalkDto toDto(Talk talk) {
         List<RatingDto> ratingDto = talk.getRatings().stream()
                 .sorted(Comparator.comparing(Rating::getCreatedAt).reversed())
-                .map(ConferenceApiMapper::toRatingResponse)
+                .map(DtoConversions::toDto)
                 .toList();
 
         double averageRating = talk.getRatings().stream()
@@ -64,10 +56,10 @@ public final class ConferenceApiMapper {
                 talk.getAbstractText(),
                 talk.getLevel(),
                 talk.getDurationMinutes(),
-                talk.getCreatedAt(),
-                toSpeakerResponse(talk.getPrimarySpeaker()),
-                talk.getCoSpeakers().stream().map(ConferenceApiMapper::toSpeakerResponse).toList(),
-                talk.getTags().stream().map(ConferenceApiMapper::toTagResponse).toList(),
+//                talk.getCreatedAt(),
+                toDto(talk.getPrimarySpeaker()),
+                talk.getCoSpeakers().stream().map(DtoConversions::toDto).toList(),
+                talk.getTags().stream().map(DtoConversions::toDto).toList(),
                 ratingDto,
                 toScheduleSlotResponse(talk.getScheduleSlot()),
                 averageRating,
@@ -75,13 +67,14 @@ public final class ConferenceApiMapper {
         );
     }
 
-    private static RatingDto toRatingResponse(Rating rating) {
+    private static RatingDto toDto(Rating rating) {
         return new RatingDto(
                 rating.getId(),
                 rating.getReviewerName(),
                 rating.getScore(),
-                rating.getComment(),
-                rating.getCreatedAt()
+                rating.getComment()
+                //rating.getCreatedAt()
         );
     }
+
 }

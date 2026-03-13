@@ -1,6 +1,7 @@
 package com.conference.website.api;
 
 import com.conference.website.api.dto.CreateTagRequest;
+import com.conference.website.api.dto.DtoConversions;
 import com.conference.website.api.dto.TagDto;
 import com.conference.website.service.TagService;
 import jakarta.validation.Valid;
@@ -27,13 +28,13 @@ public class TagController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TagDto createTag(@Valid @RequestBody CreateTagRequest request) {
-        return ConferenceApiMapper.toTagResponse(tagService.createTag(request));
+        return DtoConversions.toDto(tagService.createTag(request));
     }
 
     @GetMapping
     public List<TagDto> listTags() {
         return tagService.getAllTags().stream()
-                .map(ConferenceApiMapper::toTagResponse)
+                .map(DtoConversions::toDto)
                 .toList();
     }
 }
