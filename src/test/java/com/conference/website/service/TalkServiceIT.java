@@ -30,7 +30,7 @@ class TalkServiceIT {
 
 
     @Test
-    void shouldMapTalkToNestedResponseWithDerivedFields() {
+    void shouldCreateTalkAndSpeakerCorrectly() {
         var createSpeakerRequest = new CreateSpeakerRequest(
                 "Ada Lovelace",
                 "ada@example.com",

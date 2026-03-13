@@ -19,7 +19,7 @@ class TalkServiceSuperchargedIT @Autowired constructor(
 ) {
 
     @Test
-    fun `abc`() {
+    fun `should create speaker and talk`() {
         val createSpeakerRequest = CreateSpeakerRequest(
             "Ada Lovelace",
             "ada@example.com",
@@ -35,8 +35,8 @@ class TalkServiceSuperchargedIT @Autowired constructor(
             TalkLevel.ADVANCED,
             60,
             savedSpeakerDto.id,
-            mutableListOf<Long?>(),
-            mutableListOf<Long?>(),
+            mutableListOf<Long>(),
+            mutableListOf<Long>(),
             ScheduleSlotRequest(
                 "Room B",
                 LocalDateTime.of(2026, 4, 8, 14, 0),
