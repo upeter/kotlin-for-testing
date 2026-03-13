@@ -1,7 +1,12 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 plugins {
     java
-    id("org.springframework.boot") version "4.0.0"
+    id("org.jetbrains.kotlin.jvm") version "2.3.10"
+    id("org.springframework.boot") version "4.0.3"
     id("io.spring.dependency-management") version "1.1.7"
+    kotlin("plugin.spring") version "2.3.10"
 }
 
 group = "com.conference"
@@ -27,8 +32,20 @@ dependencies {
     runtimeOnly("com.h2database:h2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:5.9.1")
+    implementation(kotlin("stdlib"))
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.named<JavaCompile>("compileTestJava") {
+    options.release = 25
+}
+
+tasks.withType<KotlinJvmCompile> {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_25)
+    }
 }
