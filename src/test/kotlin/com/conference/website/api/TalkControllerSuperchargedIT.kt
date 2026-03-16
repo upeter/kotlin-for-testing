@@ -9,53 +9,42 @@ import com.conference.website.data.createTalkRequest
 import com.conference.website.dto.TalkDto
 import com.conference.website.service.TalkService
 import com.conference.website.service.ViewTrackingService
-import org.assertj.core.api.Assertions.assertThat
+import com.conference.website.utils.jsonContent
+import com.conference.website.utils.objectMapper
+import com.ninjasquad.springmockk.MockkBean
+import io.kotest.matchers.equality.shouldBeEqualUsingFields
+import io.mockk.every
 import org.junit.jupiter.api.Test
-import org.mockito.BDDMockito.given
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.context.annotation.Import
-import org.springframework.http.MediaType
-import org.springframework.test.context.bean.override.mockito.MockitoBean
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import tools.jackson.databind.ObjectMapper
+import com.conference.website.utils.readBody
+import com.conference.website.utils.toJson
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.MockMvc
 
 @WebMvcTest(TalkController::class)
 @Import(ApiExceptionHandler::class)
-class TalkControllerSuperchargedIT {
-
+class TalkControllerSuperchargedIT(
     @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
-    @MockitoBean
-    lateinit var talkService: TalkService
-
-    @MockitoBean
-    lateinit var viewTrackingService: ViewTrackingService
+    val mockMvc: MockMvc,
+    @MockkBean
+    val talkService: TalkService,
+) {
 
     @Test
-    fun shouldCreateTalkComparingDtos() {
+    fun `POST should create talk`() {
         val primarySpeaker = createSpeakerDto(id = 1L, company = "Tst AG")
         val coSpeaker = createSpeakerDto(id = 2L, name = "Joe ", email = "joe@example.com", company = "Tst AG")
-        val talkRequest = createTalkRequest(
-            primarySpeaker = primarySpeaker,
-            coSpeakers = listOf(coSpeaker),
-            tags = listOf(createTagDto(id = 1L, name = "java"))
+        val talkRequest = createTalkRequest(primarySpeaker = primarySpeaker, coSpeakers = listOf(coSpeaker))
+        val createdTalk = createTalkDto(
+            request = talkRequest, scheduleSlot = createScheduleSlotDto()
         )
 
-        val createdTalk = createTalkDto(request = talkRequest,
-            ratings = listOf(createRatingDto(id = 1L, reviewerName = "Test Reviewer", score = 5, comment = "Excellent talk")),
-            scheduleSlot = createScheduleSlotDto(),
-            averageRating = 5.0,
-            totalRatings = 1L
-        )
-
-        given(talkService.createTalk(talkRequest)).willReturn(createdTalk)
+        every { talkService.createTalk(talkRequest) } returns createdTalk
 
         val responseBody = mockMvc.perform(
             post("/api/talks")
@@ -68,6 +57,36 @@ class TalkControllerSuperchargedIT {
             .contentAsString
 
         val actualTalk = objectMapper.readValue(responseBody, TalkDto::class.java)
-        assertThat(actualTalk).usingRecursiveComparison().isEqualTo(createdTalk)
+        //excluion with
+        actualTalk shouldBeEqualUsingFields {
+            //excludedProperties = setOf(TalkDto::primarySpeaker.name, TalkDto::coSpeakers.name, TalkDto::tags.name)
+            createdTalk
+        }
+        //assertThat(actualTalk).usingRecursiveComparison().isEqualTo(createdTalk)
+    }
+
+    @Test
+    fun `POST should create talk with DSL`() {
+        val primarySpeaker = createSpeakerDto(id = 1L, company = "Tst AG")
+        val coSpeaker = createSpeakerDto(id = 2L, name = "Joe ", email = "joe@example.com", company = "Tst AG")
+        val talkRequest = createTalkRequest(primarySpeaker = primarySpeaker, coSpeakers = listOf(coSpeaker))
+        val createdTalk = createTalkDto(
+            request = talkRequest, scheduleSlot = createScheduleSlotDto()
+        )
+
+        every { talkService.createTalk(talkRequest) } returns createdTalk
+
+        val actualTalk = mockMvc.perform(
+            post("/api/talks")
+                .jsonContent(talkRequest)
+        ).andExpect(status().isCreated)
+            .readBody<TalkDto>()
+
+        //excluion with
+        actualTalk shouldBeEqualUsingFields {
+            //excludedProperties = setOf(TalkDto::primarySpeaker.name, TalkDto::coSpeakers.name, TalkDto::tags.name)
+            createdTalk
+        }
+        //assertThat(actualTalk).usingRecursiveComparison().isEqualTo(createdTalk)
     }
 }

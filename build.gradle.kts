@@ -29,6 +29,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("tools.jackson.module:jackson-module-kotlin:3.0.4")
     compileOnly("org.jspecify:jspecify:1.0.0")
 
     runtimeOnly("com.h2database:h2")
@@ -37,6 +38,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("io.kotest:kotest-assertions-core-jvm:6.1.0")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("com.ninja-squad:springmockk:5.0.1")
     testImplementation(kotlin("test-junit5"))
     implementation(kotlin("stdlib"))
 }
