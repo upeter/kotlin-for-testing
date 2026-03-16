@@ -46,7 +46,7 @@ class TalkServiceIT {
                 "Practical patterns to reduce noisy test code",
                 TalkLevel.ADVANCED,
                 60,
-                savedSpeakerDto.id(),
+                savedSpeakerDto.email(),
                 List.of(),
                 List.of(),
                 new ScheduleSlotRequest(

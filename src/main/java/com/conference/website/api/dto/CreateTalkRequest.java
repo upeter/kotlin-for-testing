@@ -13,9 +13,9 @@ public record CreateTalkRequest(
         @NotBlank String abstractText,
         @NotNull TalkLevel level,
         @NotNull @Min(5) Integer durationMinutes,
-        @NotNull Long primarySpeakerId,
-        List<Long> coSpeakerIds,
-        List<Long> tagIds,
+        @Valid SpeakerDto primarySpeaker,
+        List<@Valid SpeakerDto> coSpeakers,
+        List<@Valid TagDto> tags,
         @Valid ScheduleSlotRequest scheduleSlot
 ) {
 }

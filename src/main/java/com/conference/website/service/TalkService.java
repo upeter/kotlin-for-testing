@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @Service
@@ -35,11 +36,11 @@ public class TalkService {
 
     @Transactional
     public TalkDto createTalk(CreateTalkRequest request) {
-        Speaker primarySpeaker = speakerRepository.findById(request.primarySpeakerId())
-                .orElseThrow(() -> new NotFoundException("Primary speaker not found: " + request.primarySpeakerId()));
+        Speaker primarySpeaker = speakerRepository.findById(request.primarySpeaker().id())
+                .orElseThrow(() -> new NotFoundException("Primary speaker not found: " + request.primarySpeaker()));
 
-        Set<Speaker> coSpeakers = resolveCoSpeakers(request.coSpeakerIds(), request.primarySpeakerId());
-        Set<Tag> tags = resolveTags(request.tagIds());
+        Set<Speaker> coSpeakers = resolveCoSpeakers(request.coSpeakers(), request.primarySpeaker());
+        Set<Tag> tags = resolveTags(request.tags());
 
         Talk talk = new Talk(
                 request.abstractText(),
@@ -97,34 +98,46 @@ public class TalkService {
         return DtoConversions.toDto(talkRepository.save(talk));
     }
 
-    private Set<Speaker> resolveCoSpeakers(List<Long> coSpeakerIds, @NotNull Long primarySpeakerId) {
-        if (coSpeakerIds.isEmpty()) {
+
+    private Set<Speaker> resolveCoSpeakers(List<SpeakerDto> coSpeakerDtos, @NotNull SpeakerDto primarySpeakerDto) {
+        if (coSpeakerDtos == null || coSpeakerDtos.isEmpty()) {
             return new LinkedHashSet<>();
         }
+        var primarySpeaker = speakerRepository.findById(primarySpeakerDto.id()).orElseThrow(() -> new NotFoundException("Primary speaker not found: " + primarySpeakerDto.id()));
 
-        List<Long> requestedIds = new ArrayList<>(new LinkedHashSet<>(coSpeakerIds));
-        if (requestedIds.contains(primarySpeakerId)) {
+        List<Speaker> coSpeakers = speakerRepository.findAllById(coSpeakerDtos.stream().map(SpeakerDto::id).toList());
+        if (coSpeakers.size() != coSpeakerDtos.size()) {
+            throw new BadRequestException("One or more co-speaker emails are invalid");
+        }
+        if (coSpeakers.stream().map(Speaker::getId).toList().contains(primarySpeaker.getId())) {
             throw new BadRequestException("Primary speaker cannot also be a co-speaker");
         }
 
-        List<Speaker> speakers = speakerRepository.findAllById(requestedIds);
-        if (speakers.size() != requestedIds.size()) {
-            throw new BadRequestException("One or more co-speaker ids are invalid");
-        }
-        return new LinkedHashSet<>(speakers);
+        return new LinkedHashSet<>(coSpeakers);
     }
 
-    private Set<Tag> resolveTags(List<Long> tagIds) {
-        if (tagIds == null || tagIds.isEmpty()) {
+    private Set<Tag> resolveTags(List<TagDto> tagNames) {
+        if (tagNames == null || tagNames.isEmpty()) {
             return new LinkedHashSet<>();
         }
 
-        List<Long> requestedIds = new ArrayList<>(new LinkedHashSet<>(tagIds));
-        List<Tag> tags = tagRepository.findAllById(requestedIds);
-        if (tags.size() != requestedIds.size()) {
-            throw new BadRequestException("One or more tag ids are invalid");
+        List<Tag> tags = tagRepository.findAllById(tagNames.stream().map(TagDto::id).toList());
+        if (tagNames.size() != tags.size()) {
+            throw new BadRequestException("One or more tag names are invalid");
         }
         return new LinkedHashSet<>(tags);
+    }
+
+    private List<String> normalizeValues(List<String> values, String fieldName) {
+        List<String> normalized = values.stream().map(TalkService::normalizeValue).toList();
+        if (normalized.stream().anyMatch(String::isBlank)) {
+            throw new BadRequestException("One or more " + fieldName + " are blank");
+        }
+        return new ArrayList<>(new LinkedHashSet<>(normalized));
+    }
+
+    private static String normalizeValue(String value) {
+        return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
     }
 
     private @Nullable ScheduleSlot toScheduleSlot(@Nullable ScheduleSlotRequest request) {

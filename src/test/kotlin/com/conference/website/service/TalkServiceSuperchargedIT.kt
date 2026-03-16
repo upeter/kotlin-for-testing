@@ -34,9 +34,9 @@ class TalkServiceSuperchargedIT @Autowired constructor(
             "Practical patterns to reduce noisy test code",
             TalkLevel.ADVANCED,
             60,
-            savedSpeakerDto.id,
-            mutableListOf<Long>(),
-            mutableListOf<Long>(),
+            savedSpeakerDto.email,
+            mutableListOf<String>(),
+            mutableListOf<String>(),
             ScheduleSlotRequest(
                 "Room B",
                 LocalDateTime.of(2026, 4, 8, 14, 0),
