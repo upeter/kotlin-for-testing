@@ -21,6 +21,14 @@ public class CreateTalkRequestBuilder {
         return new CreateTalkRequestBuilder();
     }
 
+    public CreateTalkRequestBuilder() {
+        // Default values already set in field declarations
+    }
+
+    public static CreateTalkRequestBuilder from(CreateTalkRequest request) {
+        return new CreateTalkRequestBuilder(request);
+    }
+
     public CreateTalkRequestBuilder withTitle(String title) {
         this.title = title;
         return this;
@@ -54,6 +62,16 @@ public class CreateTalkRequestBuilder {
     public CreateTalkRequestBuilder withTags(List<TagDto> tags) {
         this.tags = tags;
         return this;
+    }
+
+    public CreateTalkRequestBuilder(CreateTalkRequest request) {
+        this.title = request.title();
+        this.abstractText = request.abstractText();
+        this.level = request.level();
+        this.durationMinutes = request.durationMinutes();
+        this.primarySpeaker = request.primarySpeaker();
+        this.coSpeakers = request.coSpeakers();
+        this.tags = request.tags();
     }
 
     public CreateTalkRequest build() {

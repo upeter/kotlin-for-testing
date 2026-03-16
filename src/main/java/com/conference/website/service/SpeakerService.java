@@ -37,6 +37,8 @@ public class SpeakerService {
         return DtoConversions.toDto(saved);
     }
 
+
+
     @Transactional(readOnly = true)
     public List<SpeakerDto> getAllSpeakers() {
         return speakerRepository.findAll().stream().map(DtoConversions::toDto).toList();
@@ -45,5 +47,22 @@ public class SpeakerService {
     @Transactional(readOnly = true)
     public Optional<SpeakerDto> getSpeakerById(Long id) {
         return speakerRepository.findById(id).map(DtoConversions::toDto);
+    }
+
+    @Transactional
+    public SpeakerDto createSpeaker(kom.conference.website.dto.CreateSpeakerRequest request) {
+        speakerRepository.findByEmailIgnoreCase(request.email())
+                .ifPresent(existing -> {
+                    throw new BadRequestException("Speaker email already exists: " + request.email());
+                });
+
+        Speaker speaker = new Speaker(
+                request.name(),
+                request.email(),
+                request.company(),
+                request.bio()
+        );
+        var saved =  speakerRepository.save(speaker);
+        return DtoConversions.toDto(saved);
     }
 }
