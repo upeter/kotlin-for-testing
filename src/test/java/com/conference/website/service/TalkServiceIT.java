@@ -14,6 +14,7 @@ import java.util.List;
 import static com.conference.website.api.dto.DtoConversions.toDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -60,7 +61,12 @@ class TalkServiceIT {
 
         var expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id(), TestDtoConversions.toDto(savedSpeakerDto.id(), createSpeakerRequest), TestDtoConversions.toDto(savedTalkDto.scheduleSlot().id(), createTalkRequest.scheduleSlot()), createTalkRequest);//talkService.getTalk(assertThat(savedTalkDto).isNotNull().actual().id());
 
+        var talks = talkService.listTalks();
+        assertEquals(2, talks.size());
+
+
         assertEquals(savedTalkDto, expectedTalkDto);
+
 
 
 

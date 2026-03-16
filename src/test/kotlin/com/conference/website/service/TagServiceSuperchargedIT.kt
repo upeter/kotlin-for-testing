@@ -13,8 +13,8 @@ import kotlin.test.assertTrue
 
 @SpringBootTest
 @Transactional
-class TagServiceSuperchargedIT(
-    @Autowired private val tagService: TagService,
+class TagServiceSuperchargedIT @Autowired constructor(
+     private val tagService: TagService,
 ) {
 
     @Test

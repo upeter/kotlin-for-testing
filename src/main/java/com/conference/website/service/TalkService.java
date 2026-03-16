@@ -68,6 +68,11 @@ public class TalkService {
     }
 
     @Transactional(readOnly = true)
+    public List<TalkDto> listTalks() {
+        return talkRepository.findAllByOrderByCreatedAtDesc().stream().map(DtoConversions::toDto).toList();
+    }
+
+    @Transactional(readOnly = true)
     public TalkDto getTalk(Long talkId) {
         return talkRepository.findDetailedById(talkId).map(DtoConversions::toDto)
                 .orElseThrow(() -> new NotFoundException("Talk not found: " + talkId));

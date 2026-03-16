@@ -54,8 +54,13 @@ class TalkServiceSuperchargedIT @Autowired constructor(
             createTalkRequest
         ) //talkService.getTalk(assertThat(savedTalkDto).isNotNull().actual().id());
 
-        assert(savedTalkDto == expectedTalkDto)
+        val talks = talkService.listTalks()
+        assert(savedTalkDto == expectedTalkDto &&
+                talks.size == 2
+        )
     }
 
 
 }
+
+//https://youtrack.jetbrains.com/projects/KTIJ/issues/KTIJ-32562/Power-assert-compiler-plugin-cant-be-used-by-JPS-if-imported-from-a-maven-based-project
