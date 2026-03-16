@@ -34,7 +34,9 @@ dependencies {
     runtimeOnly("com.h2database:h2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("io.kotest:kotest-assertions-core-jvm:6.1.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation(kotlin("test-junit5"))
     implementation(kotlin("stdlib"))
 }

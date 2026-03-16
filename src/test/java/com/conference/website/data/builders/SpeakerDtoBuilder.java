@@ -39,6 +39,16 @@ public class SpeakerDtoBuilder {
         return this;
     }
 
+    public static SpeakerDtoBuilder from(SpeakerDto speaker) {
+        var builder = new SpeakerDtoBuilder();
+        builder.id = speaker.id();
+        builder.name = speaker.name();
+        builder.email = speaker.email();
+        builder.company = speaker.company();
+        builder.bio = speaker.bio();
+        return builder;
+    }
+
     public SpeakerDto build() {
         return new SpeakerDto(id, name, email, company, bio);
     }
