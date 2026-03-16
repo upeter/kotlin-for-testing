@@ -1,6 +1,8 @@
 package com.conference.website.service;
 
 import com.conference.website.api.dto.*;
+import com.conference.website.data.builders.CreateSpeakerRequestBuilder;
+import com.conference.website.data.builders.CreateTalkRequestBuilder;
 import com.conference.website.domain.TalkLevel;
 import com.conference.website.dto.TestDtoConversions;
 import org.junit.jupiter.api.Test;
@@ -59,6 +61,7 @@ class TalkServiceIT {
 
 
         assertEquals(savedTalkDto, expectedTalkDto);
+        assertThat(savedTalkDto.ratings()).isEmpty();
 
 
 
@@ -95,6 +98,23 @@ class TalkServiceIT {
 //                LocalDateTime.of(2026, 4, 8, 15, 0)
 //        ));
 
+
+    }
+
+    @Test
+    void shouldCreateTalkAndSpeakerCorrectly_UsingTestBuilders() {
+        var createSpeakerRequest = CreateSpeakerRequestBuilder.aCreateSpeakerRequest().build();
+        SpeakerDto savedSpeakerDto = speakerService.createSpeaker(createSpeakerRequest);
+
+        //show that if withPrimarySpeaker is not invoked an error is thrown
+        var createTalkRequest = CreateTalkRequestBuilder.aCreateTalkRequest().withPrimarySpeaker(savedSpeakerDto).build();
+        var savedTalkDto = talkService.createTalk(createTalkRequest);
+
+        var expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id(), createTalkRequest);
+        assertEquals(savedTalkDto, expectedTalkDto);
+
+        var talks = talkService.listTalks();
+        assertEquals(1, talks.size());
 
     }
 }

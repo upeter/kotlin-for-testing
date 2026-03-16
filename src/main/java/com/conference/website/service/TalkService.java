@@ -43,8 +43,8 @@ public class TalkService {
         Set<Tag> tags = resolveTags(request.tags());
 
         Talk talk = new Talk(
-                request.abstractText(),
                 request.title(),
+                request.abstractText(),
                 request.level(),
                 request.durationMinutes(),
                 primarySpeaker
@@ -106,7 +106,7 @@ public class TalkService {
 
         List<Speaker> coSpeakers = speakerRepository.findAllById(coSpeakerDtos.stream().map(SpeakerDto::id).toList());
         if (coSpeakers.size() != coSpeakerDtos.size()) {
-            throw new BadRequestException("One or more co-speaker emails are invalid");
+            throw new BadRequestException("One or more co-speaker are invalid");
         }
         if (coSpeakers.stream().map(Speaker::getId).toList().contains(primarySpeaker.getId())) {
             throw new BadRequestException("Primary speaker cannot also be a co-speaker");
