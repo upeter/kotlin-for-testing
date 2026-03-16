@@ -39,27 +39,20 @@ class TalkServiceIT {
                 "Pioneer in computing"
         );
         SpeakerDto savedSpeakerDto = speakerService.createSpeaker(createSpeakerRequest);
-        assertThat(savedSpeakerDto).isNotNull();
 
         var createTalkRequest = new CreateTalkRequest(
                 "Supercharging JVM tests",
                 "Practical patterns to reduce noisy test code",
                 TalkLevel.ADVANCED,
                 60,
-                savedSpeakerDto.email(),
+                savedSpeakerDto,
                 List.of(),
-                List.of(),
-                new ScheduleSlotRequest(
-                        "Room B",
-                        LocalDateTime.of(2026, 4, 8, 14, 0),
-                        LocalDateTime.of(2026, 4, 8, 15, 0)
-                )
+                List.of()
         );
-
 
         var savedTalkDto = talkService.createTalk(createTalkRequest);
 
-        var expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id(), TestDtoConversions.toDto(savedSpeakerDto.id(), createSpeakerRequest), TestDtoConversions.toDto(savedTalkDto.scheduleSlot().id(), createTalkRequest.scheduleSlot()), createTalkRequest);//talkService.getTalk(assertThat(savedTalkDto).isNotNull().actual().id());
+        var expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id(), createTalkRequest);
 
         var talks = talkService.listTalks();
         assertEquals(2, talks.size());
@@ -96,6 +89,11 @@ class TalkServiceIT {
 //
 //        assertThat(savedSpeakerDto).isEqualTo(expectedSpeakerDto);
 
+//        var scheduleSlotDto = talkService.assignSchedule(savedTalkDto.id(), new ScheduleSlotRequest(
+//                "Room B",
+//                LocalDateTime.of(2026, 4, 8, 14, 0),
+//                LocalDateTime.of(2026, 4, 8, 15, 0)
+//        ));
 
 
     }

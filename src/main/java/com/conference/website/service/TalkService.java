@@ -52,7 +52,6 @@ public class TalkService {
 
         talk.setCoSpeakers(coSpeakers);
         talk.setTags(tags);
-        talk.setScheduleSlot(toScheduleSlot(request.scheduleSlot()));
 
         return DtoConversions.toDto(talkRepository.save(talk));
     }

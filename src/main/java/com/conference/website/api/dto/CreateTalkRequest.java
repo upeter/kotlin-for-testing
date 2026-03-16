@@ -15,7 +15,8 @@ public record CreateTalkRequest(
         @NotNull @Min(5) Integer durationMinutes,
         @Valid SpeakerDto primarySpeaker,
         List<@Valid SpeakerDto> coSpeakers,
-        List<@Valid TagDto> tags,
-        @Valid ScheduleSlotRequest scheduleSlot
+        List<@Valid TagDto> tags
+//        List<@Valid RatingDto> ratings,
+//        @Valid ScheduleSlotDto scheduleSlot
 ) {
 }

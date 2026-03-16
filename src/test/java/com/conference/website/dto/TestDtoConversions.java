@@ -2,10 +2,9 @@ package com.conference.website.dto;
 
 import com.conference.website.api.dto.*;
 
-import java.time.Instant;
 import java.util.List;
 
-final public class TestDtoConversions {
+public final class TestDtoConversions {
 
     public static SpeakerDto toDto(Long id, CreateSpeakerRequest request) {
         return new SpeakerDto(id, request.name(), request.email(), request.company(), request.bio());
@@ -26,4 +25,7 @@ final public class TestDtoConversions {
     }
 
 
+    public static Record toDto(Long id, CreateTalkRequest request) {
+        return new TalkDto(id, request.title(), request.abstractText(), request.level(), request.durationMinutes(), request.primarySpeaker(), request.coSpeakers(), request.tags(), List.of(), null, 0.0, 0L);
+    }
 }
