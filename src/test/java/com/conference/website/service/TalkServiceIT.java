@@ -1,19 +1,20 @@
 package com.conference.website.service;
 
-import com.conference.website.api.dto.*;
 import com.conference.website.data.builders.CreateSpeakerRequestBuilder;
 import com.conference.website.data.builders.CreateTalkRequestBuilder;
 import com.conference.website.domain.TalkLevel;
+import com.conference.website.dto.CreateSpeakerRequest;
+import com.conference.website.dto.CreateTalkRequest;
+import com.conference.website.dto.SpeakerDto;
 import com.conference.website.dto.TestDtoConversions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.conference.website.api.dto.DtoConversions.toDto;
+import static com.conference.website.dto.DtoConversions.toDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

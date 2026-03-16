@@ -1,7 +1,5 @@
 package com.conference.website.dto;
 
-import com.conference.website.api.dto.*;
-
 import java.util.List;
 
 public final class TestDtoConversions {

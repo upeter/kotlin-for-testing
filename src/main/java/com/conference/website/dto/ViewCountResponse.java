@@ -1,4 +1,4 @@
-package com.conference.website.api.dto;
+package com.conference.website.dto;
 
 public record ViewCountResponse(
         Long talkId,

@@ -1,8 +1,7 @@
-package com.conference.website.api.dto;
+package com.conference.website.dto;
 
 import com.conference.website.domain.TalkLevel;
 
-import java.time.Instant;
 import java.util.List;
 
 public record TalkDto(

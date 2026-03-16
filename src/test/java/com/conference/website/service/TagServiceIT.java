@@ -1,6 +1,6 @@
 package com.conference.website.service;
 
-import com.conference.website.api.dto.CreateTagsRequest;
+import com.conference.website.dto.CreateTagsRequest;
 import com.conference.website.domain.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

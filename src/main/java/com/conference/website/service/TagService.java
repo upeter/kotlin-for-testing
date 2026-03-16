@@ -1,6 +1,6 @@
 package com.conference.website.service;
 
-import com.conference.website.api.dto.CreateTagsRequest;
+import com.conference.website.dto.CreateTagsRequest;
 import com.conference.website.domain.Tag;
 import com.conference.website.repository.TagRepository;
 import org.springframework.stereotype.Service;

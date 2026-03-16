@@ -1,4 +1,4 @@
-package com.conference.website.api.dto;
+package com.conference.website.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

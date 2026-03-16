@@ -1,13 +1,11 @@
 package com.conference.website.service
 
-import com.conference.website.api.dto.CreateTagsRequest
+import com.conference.website.dto.CreateTagsRequest
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.collections.containsInOrder
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,8 +1,8 @@
 package com.conference.website.service;
 
-import com.conference.website.api.dto.CreateSpeakerRequest;
-import com.conference.website.api.dto.DtoConversions;
-import com.conference.website.api.dto.SpeakerDto;
+import com.conference.website.dto.CreateSpeakerRequest;
+import com.conference.website.dto.DtoConversions;
+import com.conference.website.dto.SpeakerDto;
 import com.conference.website.domain.Speaker;
 import com.conference.website.repository.SpeakerRepository;
 import org.springframework.stereotype.Service;

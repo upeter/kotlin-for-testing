@@ -1,12 +1,12 @@
 package com.conference.website.service;
 
-import com.conference.website.api.dto.*;
 import com.conference.website.domain.Rating;
 import com.conference.website.domain.ScheduleSlot;
 import com.conference.website.domain.Speaker;
 import com.conference.website.domain.Tag;
 import com.conference.website.domain.Talk;
 import com.conference.website.domain.TalkLevel;
+import com.conference.website.dto.*;
 import com.conference.website.repository.SpeakerRepository;
 import com.conference.website.repository.TagRepository;
 import com.conference.website.repository.TalkRepository;

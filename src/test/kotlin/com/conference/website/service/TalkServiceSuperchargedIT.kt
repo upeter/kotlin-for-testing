@@ -1,12 +1,12 @@
 package com.conference.website.service
 
-import com.conference.website.api.dto.*
 import com.conference.website.domain.TalkLevel
+import com.conference.website.dto.CreateSpeakerRequest
+import com.conference.website.dto.CreateTalkRequest
 import com.conference.website.dto.TestDtoConversions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 import kotlin.test.Test
 
 @SpringBootTest

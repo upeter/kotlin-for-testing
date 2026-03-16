@@ -1,7 +1,7 @@
 package com.conference.website.api;
 
-import com.conference.website.api.dto.*;
 import com.conference.website.domain.TalkLevel;
+import com.conference.website.dto.*;
 import com.conference.website.service.TalkService;
 import com.conference.website.service.ViewTrackingService;
 import jakarta.validation.Valid;

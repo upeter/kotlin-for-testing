@@ -1,8 +1,7 @@
 package com.conference.website.api;
 
-import com.conference.website.api.dto.CreateSpeakerRequest;
-import com.conference.website.api.dto.DtoConversions;
-import com.conference.website.api.dto.SpeakerDto;
+import com.conference.website.dto.CreateSpeakerRequest;
+import com.conference.website.dto.SpeakerDto;
 import com.conference.website.service.SpeakerService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

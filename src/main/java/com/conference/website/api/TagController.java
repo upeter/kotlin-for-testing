@@ -1,8 +1,8 @@
 package com.conference.website.api;
 
-import com.conference.website.api.dto.CreateTagsRequest;
-import com.conference.website.api.dto.DtoConversions;
-import com.conference.website.api.dto.TagDto;
+import com.conference.website.dto.CreateTagsRequest;
+import com.conference.website.dto.DtoConversions;
+import com.conference.website.dto.TagDto;
 import com.conference.website.service.TagService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
