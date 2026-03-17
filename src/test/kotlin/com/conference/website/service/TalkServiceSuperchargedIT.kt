@@ -1,12 +1,13 @@
 package com.conference.website.service
 
-import kom.conference.website.data.createSpeakerRequest
-import com.conference.website.data.createTagsRequest
 import com.conference.website.data.createTalkRequest
 import com.conference.website.domain.TalkLevel
-import kom.conference.website.dto.CreateSpeakerRequest
 import com.conference.website.dto.CreateTalkRequest
+import com.conference.website.dto.SpeakerDto
 import com.conference.website.dto.TestDtoConversions
+import kom.conference.website.data.createSpeakerRequest
+import kom.conference.website.dto.CreateSpeakerRequest
+import org.assertj.core.api.Assertions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
@@ -49,6 +50,18 @@ class TalkServiceSuperchargedIT @Autowired constructor(
         assert(savedTalkDto == expectedTalkDto &&
                 talks.size == 2
         )
+
+        //Reflection names
+        Assertions.assertThat(expectedTalkDto.primarySpeaker)
+            .extracting(SpeakerDto::id.name, SpeakerDto::name.name, SpeakerDto::email.name, SpeakerDto::company.name, SpeakerDto::bio.name)
+            .containsExactly(
+                expectedTalkDto.id,
+                "Ada Lovelace",
+                "ada@example.com",
+                "Analytical Engines",
+                "Pioneer in computing"
+            )
+
     }
 
     @Test

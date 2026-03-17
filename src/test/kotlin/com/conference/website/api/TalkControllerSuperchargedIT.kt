@@ -9,6 +9,7 @@ import com.conference.website.data.createTalkRequest
 import com.conference.website.dto.TalkDto
 import com.conference.website.service.TalkService
 import com.conference.website.service.ViewTrackingService
+import com.conference.website.utils.authorizationHeader
 import com.conference.website.utils.jsonContent
 import com.conference.website.utils.objectMapper
 import com.ninjasquad.springmockk.MockkBean
@@ -40,9 +41,7 @@ class TalkControllerSuperchargedIT(
         val primarySpeaker = createSpeakerDto(id = 1L, company = "Tst AG")
         val coSpeaker = createSpeakerDto(id = 2L, name = "Joe ", email = "joe@example.com", company = "Tst AG")
         val talkRequest = createTalkRequest(primarySpeaker = primarySpeaker, coSpeakers = listOf(coSpeaker))
-        val createdTalk = createTalkDto(
-            request = talkRequest, scheduleSlot = createScheduleSlotDto()
-        )
+        val createdTalk = createTalkDto(request = talkRequest, scheduleSlot = createScheduleSlotDto())
 
         every { talkService.createTalk(talkRequest) } returns createdTalk
 
@@ -70,9 +69,7 @@ class TalkControllerSuperchargedIT(
         val primarySpeaker = createSpeakerDto(id = 1L, company = "Tst AG")
         val coSpeaker = createSpeakerDto(id = 2L, name = "Joe ", email = "joe@example.com", company = "Tst AG")
         val talkRequest = createTalkRequest(primarySpeaker = primarySpeaker, coSpeakers = listOf(coSpeaker))
-        val createdTalk = createTalkDto(
-            request = talkRequest, scheduleSlot = createScheduleSlotDto()
-        )
+        val createdTalk = createTalkDto(request = talkRequest, scheduleSlot = createScheduleSlotDto())
 
         every { talkService.createTalk(talkRequest) } returns createdTalk
 

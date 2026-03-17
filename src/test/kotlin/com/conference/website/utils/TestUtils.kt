@@ -20,3 +20,6 @@ inline fun <reified T:Any> ResultActions.readBody(): T = andReturn().readBody()
 
 inline fun <reified T> MockHttpServletRequestBuilder.jsonContent(obj: T): MockHttpServletRequestBuilder =
     this.contentType(MediaType.APPLICATION_JSON).content(obj.toJson())
+
+inline fun MockHttpServletRequestBuilder.authorizationHeader(token: String): MockHttpServletRequestBuilder =
+    this.header("Authorization", "Bearer $token")

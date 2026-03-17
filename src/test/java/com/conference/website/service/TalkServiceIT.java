@@ -20,6 +20,7 @@ import static com.conference.website.data.ObjectMotherKt.createSpeakerRequest;
 import static com.conference.website.data.ObjectMotherKt.createTalkRequest;
 import static com.conference.website.dto.DtoConversions.toDto;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -65,9 +66,21 @@ class TalkServiceIT {
         var talks = talkService.listTalks();
 
         //Assert
-        assertEquals(2, talks.size());
+        assertEquals(1, talks.size());
         assertEquals(savedTalkDto, expectedTalkDto);
         assertThat(savedTalkDto.ratings()).isEmpty();
+
+        assertThat(expectedTalkDto.primarySpeaker())
+                .extracting("id", "name", "email", "company", "bio")
+                .containsExactly(
+                        expectedTalkDto.id(),
+                        "Ada Lovelace",
+                        "ada@example.com",
+                        "Analytical Engines",
+                        "Pioneer in computing"
+                );
+
+
 
 //        assertThat(savedSpeakerDto.name()).isEqualTo("Ada Lovelace");
 //        assertThat(savedSpeakerDto.email()).isEqualTo("ada@example.com");
