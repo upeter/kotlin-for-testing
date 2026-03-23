@@ -11,6 +11,9 @@ import org.assertj.core.api.Assertions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
+import kotlin.reflect.KFunction1
+import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty1
 import kotlin.test.Test
 
 @SpringBootTest
@@ -48,7 +51,8 @@ class TalkServiceSuperchargedIT @Autowired constructor(
 
         val talks = talkService.listTalks()
         assert(savedTalkDto == expectedTalkDto &&
-                talks.size == 2
+                savedTalkDto.ratings.isEmpty() &&
+                talks.size == 1
         )
 
         //Reflection names

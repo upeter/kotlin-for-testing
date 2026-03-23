@@ -14,6 +14,24 @@ import com.conference.website.dto.ViewCountResponse
 import kom.conference.website.dto.CreateTagsRequest
 import java.time.LocalDateTime
 
+@JvmOverloads
+fun createRatingRequest(
+    reviewerName: String = "Test Reviewer",
+    score: Int = 5,
+    comment: String? = null
+) = CreateRatingRequest(reviewerName, score, comment)
+
+
+@JvmOverloads
+fun createTalkRequest(
+    primarySpeaker: SpeakerDto,
+    title: String = "Kotlin for Java Developers",
+    abstractText: String = "Learn Kotlin in 20 minutes",
+    level: TalkLevel = TalkLevel.BEGINNER,
+    durationMinutes: Int = 20,
+    coSpeakers: List<SpeakerDto> = emptyList(),
+    tags: List<TagDto> = emptyList()
+) = CreateTalkRequest(title, abstractText, level, durationMinutes, primarySpeaker, coSpeakers, tags)
 
 @JvmOverloads
 fun createSpeakerDto(
@@ -36,16 +54,6 @@ fun createTagDto(id: Long? = null, name: String = "java") =
 
 
 
-@JvmOverloads
-fun createTalkRequest(
-    primarySpeaker: SpeakerDto,
-    title: String = "Kotlin for Java Developers",
-    abstractText: String = "Learn Kotlin in 20 minutes",
-    level: TalkLevel = TalkLevel.BEGINNER,
-    durationMinutes: Int = 20,
-    coSpeakers: List<SpeakerDto> = emptyList(),
-    tags: List<TagDto> = emptyList()
-) = CreateTalkRequest(title, abstractText, level, durationMinutes, primarySpeaker, coSpeakers, tags)
 
 @JvmOverloads
 fun createTalkDto(
@@ -136,9 +144,3 @@ fun createSpeakerRequest(
     bio: String = "Pioneer in computing"
 ) = CreateSpeakerRequest(name, email, company, bio)
 
-@JvmOverloads
-fun createRatingRequest(
-    reviewerName: String = "Test Reviewer",
-    score: Int = 5,
-    comment: String? = null
-) = CreateRatingRequest(reviewerName, score, comment)

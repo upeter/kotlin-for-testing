@@ -4,6 +4,7 @@ import com.conference.website.dto.CreateTagsRequest
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContainInOrder
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
@@ -20,20 +21,31 @@ class TagServiceSuperchargedIT @Autowired constructor(
 ) {
 
     @Test
+    fun `should create tag`() {
+        val createdTags = tagService.createTags(CreateTagsRequest(mutableListOf("Kotlin")))
+        createdTags shouldHaveSize 1
+        createdTags.first().apply {
+            name shouldBe "kotlin"
+            id.shouldNotBeNull()
+        }
+    }
+
+    @Test
     fun `should reject duplicate tag names with supercharged assertions`() {
         //assertSoftly can wrap multiple assertion blocks
         assertSoftly {
 
-            tagService.createTags(CreateTagsRequest(listOf("java", "kotlin", "testing"))).apply {
+            tagService.createTags(CreateTagsRequest(listOf("Java", "kotlin", "Testing"))).apply {
                 //rely on standard collection methds
-                map { it.name }.shouldContainInOrder("java", "kotlin", "testing")
+                size shouldBe 2
                 forEach { it.id.shouldNotBeNull() }
+                map { it.name }.shouldContainInOrder("java", "kotlin", "testing")
             }
 
-            //String is a collection
+            //String is a collection too
             shouldThrow<BadRequestException> {
-                tagService.createTags(CreateTagsRequest(listOf("kotlin")))
-            }.message.shouldContainInOrder("Tag already exists", "kotlin")
+                tagService.createTags(CreateTagsRequest(listOf("Kotlin")))
+            }.message.shouldContainInOrder("Tag already exists", "java")
         }
 
     }
@@ -55,5 +67,8 @@ class TagServiceSuperchargedIT @Autowired constructor(
                         "kotlin" in message,
             )
         }
+
+
+
     }
 }

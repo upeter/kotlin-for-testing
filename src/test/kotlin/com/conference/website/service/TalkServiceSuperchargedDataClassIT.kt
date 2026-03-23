@@ -21,9 +21,7 @@ class TalkServiceSuperchargedDataClassIT @Autowired constructor(
     @Test
     fun `should create speaker and talk with object mother`() {
         //Arrange
-        val primarySpeakerRequest = createSpeakerRequest(
-          company = "Tst AG",
-        )
+        val primarySpeakerRequest = createSpeakerRequest(company = "Tst AG",)
         //copy approach: very flexible
         val coSpeakerRequest = primarySpeakerRequest.copy(name = "Sec Undo", email = "sec.undo@example.com")
         //Collection spice
@@ -42,7 +40,7 @@ class TalkServiceSuperchargedDataClassIT @Autowired constructor(
                 size shouldBe 1
                 first() shouldBe coSpeakerDto
             }
-            listOf(savedTalkDto.primarySpeaker().company, coSpeakerDto.company).toSet() shouldContain "Tst AG"
+            setOf(savedTalkDto.primarySpeaker().company, coSpeakerDto.company) shouldContain "Tst AG"
         }
     }
 

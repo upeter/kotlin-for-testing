@@ -11,6 +11,7 @@ import com.conference.website.dto.TalkDto;
 import com.conference.website.service.NotFoundException;
 import com.conference.website.service.TalkService;
 import com.conference.website.service.ViewTrackingService;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.conference.website.api.MockMvcTestUtils.performAndGetResponse;
+import static com.conference.website.api.MockMvcTestUtils.performAndGetResponseWithHeaders;
 import static com.conference.website.domain.TalkLevel.ADVANCED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(TalkController.class)
 @Import(ApiExceptionHandler.class)
+@AutoConfigureMockMvc
 class TalkControllerTest {
 
     @Autowired
@@ -54,6 +58,7 @@ class TalkControllerTest {
 
     @Test
     void shouldCreateTalk() throws Exception {
+        //Arrange
         SpeakerDto primarySpeaker = SpeakerDtoBuilder
                 .aSpeakerDto()
                 .withCompany("Tst AG")
@@ -77,8 +82,11 @@ class TalkControllerTest {
 
         given(talkService.createTalk(talkRequest)).willReturn(createdTalk);
 
+        //Act & Assert
         mockMvc.perform(post("/api/talks")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Correlation-Id", "1234567890")
+                        .header("Authorization", "Bearer token")
                         .content(objectMapper.writeValueAsString(talkRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(99))
@@ -110,6 +118,7 @@ class TalkControllerTest {
 
     @Test
     void shouldCreateTalkComparingDtos() throws Exception {
+        //Arrange
         SpeakerDto primarySpeaker = SpeakerDtoBuilder
                 .aSpeakerDto()
                 .withCompany("Tst AG")
@@ -134,15 +143,24 @@ class TalkControllerTest {
 
         given(talkService.createTalk(talkRequest)).willReturn(createdTalk);
 
-        String responseBody = mockMvc.perform(post("/api/talks")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(talkRequest)))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        //Act
+//        String body = mockMvc.perform(post("/api/talks")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .header("X-Correlation-Id", "1234567890")
+//                .header("Authorization", "Bearer token")
+//                .content(objectMapper.writeValueAsString(talkRequest)))
+//                .andReturn()
+//                .getResponse()
+//                .getContentAsString();
 
-        TalkDto actualTalk = objectMapper.readValue(responseBody, TalkDto.class);
+
+        String body = performAndGetResponseWithHeaders("83473847", mockMvc,  post("/api/talks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(talkRequest)));
+
+        TalkDto actualTalk = objectMapper.readValue(body, TalkDto.class);
+
+        //Assert
         assertThat(actualTalk).usingRecursiveComparison().isEqualTo(createdTalk);
     }
 

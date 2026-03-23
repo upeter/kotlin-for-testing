@@ -24,8 +24,9 @@ public class TagService {
         if (existingTags.size() == request.names().size()) {
             throw new BadRequestException("Tag already exists: " + existingTags.stream().map(Tag::getName).toList());
         }
-        return tagRepository.saveAll(request.names().stream().map(Tag::new).toList());
+        return tagRepository.saveAll(request.names().stream().map(Tag::new).peek(t -> t.setName(t.getName().toLowerCase())).toList());
     }
+
 
     @Transactional(readOnly = true)
     public List<Tag> getAllTags() {

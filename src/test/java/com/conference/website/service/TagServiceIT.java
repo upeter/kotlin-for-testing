@@ -11,6 +11,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
@@ -20,15 +22,24 @@ class TagServiceIT {
     private TagService tagService;
 
     @Test
+    void shouldCreateTag() {
+        List<Tag> createdTags = tagService.createTags(new CreateTagsRequest(List.of("Java")));
+        assertEquals(1, createdTags.size());
+        assertEquals("java", createdTags.getFirst().getName());
+        assertNotNull(createdTags.getFirst().getId());
+    }
+
+
+    @Test
     void shouldRejectDuplicateTagNames() {
         List<Tag> createdTags = tagService.createTags(new CreateTagsRequest(List.of("java", "kotlin", "testing")));
         assertThat(createdTags)
-                .hasSize(2)
+                .hasSize(3)
                 .allSatisfy(tag -> assertThat(tag.getId()).isNotNull())
                 .extracting(Tag::getName)
                 .containsExactlyInAnyOrder("java", "kotlin", "testing") ;
 
-        assertThatThrownBy(() -> tagService.createTags(new CreateTagsRequest(List.of("java"))))
+        assertThatThrownBy(() -> tagService.createTags(new CreateTagsRequest(List.of("Java"))))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Tag already exists")
                 .hasMessageContaining("java");

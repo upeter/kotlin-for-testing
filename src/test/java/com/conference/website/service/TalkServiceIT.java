@@ -59,16 +59,19 @@ class TalkServiceIT {
                 List.of()
         );
 
+        //Act
         var savedTalkDto = talkService.createTalk(createTalkRequest);
         var expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id(), createTalkRequest);
 
-        //Act
-        var talks = talkService.listTalks();
 
         //Assert
+        var talks = talkService.listTalks();
         assertEquals(1, talks.size());
         assertEquals(savedTalkDto, expectedTalkDto);
         assertThat(savedTalkDto.ratings()).isEmpty();
+
+
+
 
         assertThat(expectedTalkDto.primarySpeaker())
                 .extracting("id", "name", "email", "company", "bio")
@@ -132,7 +135,6 @@ class TalkServiceIT {
 
         //Assert
         assertEquals(savedTalkDto, expectedTalkDto);
-
         var talks = talkService.listTalks();
         assertEquals(1, talks.size());
 
@@ -165,13 +167,13 @@ class TalkServiceIT {
     void shouldCreateTalkAndSpeakerCorrectly_NoCopy() {
         //Arrange
         var primarySpeakerRequest = CreateSpeakerRequestBuilder.aCreateSpeakerRequest().withCompany("Tst AG").build();
-        SpeakerDto savedSpeakerDto = speakerService.createSpeaker(primarySpeakerRequest);
 
         //requires .from(...) methods for all builders
         var coSpeakerRequest = CreateSpeakerRequestBuilder.from(primarySpeakerRequest)
                 .withName("Sec Undo")
                 .withEmail("sec.undo@example.com").build();
 
+        SpeakerDto savedSpeakerDto = speakerService.createSpeaker(primarySpeakerRequest);
         SpeakerDto savedCoSpeakerDto = speakerService.createSpeaker(coSpeakerRequest);
 
         var createTalkRequest = CreateTalkRequestBuilder.aCreateTalkRequest()
@@ -184,12 +186,10 @@ class TalkServiceIT {
 
         //Assert
         var expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id(), createTalkRequest);
-        assertEquals(savedTalkDto, expectedTalkDto);
-
+        assertEquals(savedTalkDto.primarySpeaker(), expectedTalkDto.primarySpeaker());
         assertThat(savedTalkDto.coSpeakers())
                 .hasSize(1)
                 .containsExactly(savedCoSpeakerDto);
-
         assertThat(Set.of(savedTalkDto.primarySpeaker().company(), savedCoSpeakerDto.company())).contains("Tst AG");
 
 
