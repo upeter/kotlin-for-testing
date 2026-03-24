@@ -162,7 +162,7 @@ class TalkServiceTest {
         assertThat(savedTalkDto.coSpeakers())
                 .hasSize(1)
                 .containsExactly(savedCoSpeakerDto);
-        assertThat(Set.of(savedTalkDto.primarySpeaker().company(), savedCoSpeakerDto.company())).contains("Tst AG");
+        assertThat(List.of(savedTalkDto.primarySpeaker().company(), savedCoSpeakerDto.company())).contains("Tst AG");
 
 
 

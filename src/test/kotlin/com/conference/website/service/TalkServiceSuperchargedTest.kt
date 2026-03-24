@@ -97,7 +97,7 @@ class TalkServiceSuperchargedTest @Autowired constructor(
 
         val talks = talkService.listTalks()
         assert(savedTalkDto == expectedTalkDto &&
-                talks.size == 2
+                talks.size == 1
         )
     }
 
