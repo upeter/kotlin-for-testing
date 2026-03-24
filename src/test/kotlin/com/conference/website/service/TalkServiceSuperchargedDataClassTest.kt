@@ -2,7 +2,6 @@ package com.conference.website.service
 
 import kom.conference.website.data.createSpeakerRequest
 import com.conference.website.data.createTalkRequest
-import com.conference.website.dto.TestDtoConversions
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
@@ -13,7 +12,7 @@ import kotlin.test.Test
 
 @SpringBootTest
 @Transactional
-class TalkServiceSuperchargedDataClassIT @Autowired constructor(
+class TalkServiceSuperchargedDataClassTest @Autowired constructor(
    private val speakerService: SpeakerService,
     private val talkService: TalkService,
 ) {

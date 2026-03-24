@@ -15,6 +15,9 @@ fun talk(block: TalkDsl.() -> Unit): Talk =
 fun talks(block: TalksDsl.() -> Unit): List<Talk> =
     TalksDsl().apply(block).build()
 
+fun speaker(block: SpeakerDsl.() -> Unit): Speaker =
+    SpeakerDsl().apply(block).build()
+
 @TalkDslMarker
 class TalksDsl {
     private val talks = mutableListOf<Talk>()
@@ -37,24 +40,36 @@ class TalkDsl {
     var level: TalkLevel = TalkLevel.BEGINNER
     var durationMinutes: Int = 20
 
-    private var primarySpeaker: SpeakerDsl? = null
-    private val coSpeakers = mutableListOf<SpeakerDsl>()
-    private val tags = mutableListOf<TagDsl>()
+    private var primarySpeaker: Speaker? = null
+    private val coSpeakers = mutableListOf<Speaker>()
+    private val tags = mutableListOf<Tag>()
 
     fun primarySpeaker(block: SpeakerDsl.() -> Unit) {
-        primarySpeaker = SpeakerDsl().apply(block)
+        primarySpeaker = SpeakerDsl().apply(block).build()
+    }
+
+    fun primarySpeaker(speaker: Speaker) {
+        primarySpeaker = speaker
     }
 
     fun coSpeaker(block: SpeakerDsl.() -> Unit) {
-        coSpeakers += SpeakerDsl().apply(block)
+        coSpeakers += SpeakerDsl().apply(block).build()
+    }
+
+    fun coSpeakers(vararg speakers: Speaker) {
+        coSpeakers += speakers
     }
 
     fun tag(block: TagDsl.() -> Unit) {
-        tags += TagDsl().apply(block)
+        tags += TagDsl().apply(block).build()
+    }
+
+    fun tag(tag: Tag) {
+        tags += tag
     }
 
     fun tag(name: String) {
-        tags += TagDsl().apply { this.name = name }
+        tags += TagDsl().apply { this.name = name }.build()
     }
 
     fun tags(vararg names: String) {
@@ -80,10 +95,10 @@ class TalkDsl {
             abstractText,
             level,
             durationMinutes,
-            requiredPrimarySpeaker.build()
+            requiredPrimarySpeaker
         ).apply {
-            setCoSpeakers(LinkedHashSet(this@TalkDsl.coSpeakers.map { it.build() }))
-            setTags(LinkedHashSet(this@TalkDsl.tags.map { it.build() }))
+            setCoSpeakers(LinkedHashSet(this@TalkDsl.coSpeakers))
+            setTags(LinkedHashSet(this@TalkDsl.tags))
         }
     }
 }

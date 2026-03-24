@@ -5,7 +5,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
-import reactor.core.publisher.Mono
 import tools.jackson.databind.ObjectMapper
 import tools.jackson.module.kotlin.jacksonObjectMapper
 import tools.jackson.module.kotlin.readValue
@@ -26,8 +25,8 @@ fun <T> T.toJson(): String = objectMapper.writeValueAsString(this)
 fun MockHttpServletRequestBuilder.authorizationHeader(token: String = "default-token"): MockHttpServletRequestBuilder =
     this.header("Authorization", "Bearer $token")
 
-fun MockHttpServletRequestBuilder.correlationIdHeader(correltionId: String = "default-correclationId"): MockHttpServletRequestBuilder =
-    this.header("X-Correlation-id", correltionId)
+fun MockHttpServletRequestBuilder.correlationIdHeader(correlationId: String = "default-correlationId"): MockHttpServletRequestBuilder =
+    this.header("X-Correlation-id", correlationId)
 
-fun MockHttpServletRequestBuilder.defaultHeaders(token: String = "default-token", correltionId: String = "default-correclationId"): MockHttpServletRequestBuilder =
+fun MockHttpServletRequestBuilder.defaultHeaders(token: String = "default-token", correltionId: String = "default-correlationId "): MockHttpServletRequestBuilder =
     this.authorizationHeader(token).correlationIdHeader(correltionId)

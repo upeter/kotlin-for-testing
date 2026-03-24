@@ -2,14 +2,12 @@ package com.conference.website.api
 
 import com.conference.website.data.createTagDto
 import com.conference.website.data.createTagsRequest
-import com.conference.website.dto.TalkDto
 import com.conference.website.service.TagService
 import com.conference.website.utils.defaultHeaders
 import com.conference.website.utils.jsonContent
 import com.conference.website.utils.readBody
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.matchers.collections.shouldContainInOrder
-import io.kotest.matchers.shouldBe
 import io.mockk.every
 import kom.conference.website.dto.TagDto
 import org.junit.jupiter.api.Test
@@ -26,7 +24,7 @@ import java.util.List
 @WebMvcTest(TagController::class)
 @Import(ApiExceptionHandler::class)
 @AutoConfigureMockMvc
-class TagControllerSuperchargedIT @Autowired constructor (
+class TagControllerSuperchargedTest @Autowired constructor (
     val mockMvc: MockMvc,
     @MockkBean
     val tagService: TagService,

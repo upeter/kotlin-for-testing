@@ -1,12 +1,9 @@
-package com.conference.website.api;
+package com.conference.website.utils;
 
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import tools.jackson.databind.ObjectMapper;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MockMvcTestUtils {
     private MockMvcTestUtils() {}

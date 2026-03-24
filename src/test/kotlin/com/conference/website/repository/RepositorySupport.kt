@@ -1,5 +1,6 @@
 package com.conference.website.repository
 
+import com.conference.website.domain.Speaker
 import com.conference.website.domain.Talk
 import java.util.Locale
 
@@ -9,6 +10,11 @@ interface RepositorySupport {
     val talkRepository: TalkRepository
 
     fun Talk.persistGraph(): Talk = listOf(this).persistGraph().single()
+
+    fun Talk.persist(): Talk = talkRepository.save(this)
+    fun List<Talk>.persist(): List<Talk> = talkRepository.saveAll(this)
+    fun Speaker.persist(): Speaker = speakerRepository.save(this)
+    //fun List<Speaker>.persist(): List<Speaker> = speakerRepository.saveAll(this)
 
     fun List<Talk>.persistGraph(): List<Talk> {
         val uniqueSpeakers = asSequence()

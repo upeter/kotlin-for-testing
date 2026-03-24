@@ -24,7 +24,7 @@ import kotlin.test.Test
 
 @SpringBootTest
 @Transactional
-class TalkServiceSuperchargedIT @Autowired constructor(
+class TalkServiceSuperchargedTest @Autowired constructor(
     private val speakerService: SpeakerService,
     private val tagService: TagService,
     private val talkService: TalkService,

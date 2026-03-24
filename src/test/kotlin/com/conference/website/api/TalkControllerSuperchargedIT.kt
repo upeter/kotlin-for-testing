@@ -1,120 +1,80 @@
 package com.conference.website.api
 
-import com.conference.website.data.createRatingDto
-import com.conference.website.data.createScheduleSlotDto
-import com.conference.website.data.createSpeakerDto
-import com.conference.website.data.createTalkDto
-import com.conference.website.data.createTalkRequest
+import com.conference.website.domain.TalkLevel
+import com.conference.website.dsl.speaker
+import com.conference.website.dsl.testDataScope
+import com.conference.website.dsl.talks
+import com.conference.website.dsl.withNewTransaction
 import com.conference.website.dto.TalkDto
-import com.conference.website.service.TalkEngagementService
-import com.conference.website.service.TalkService
-import com.conference.website.service.ViewTrackingService
+import com.conference.website.repository.RepositorySupport
+import com.conference.website.repository.SpeakerRepository
+import com.conference.website.repository.TagRepository
+import com.conference.website.repository.TalkRepository
 import com.conference.website.utils.defaultHeaders
-import com.conference.website.utils.jsonContent
-import com.conference.website.utils.objectMapper
-import com.ninjasquad.springmockk.MockkBean
-import io.kotest.matchers.equality.shouldBeEqualUsingFields
-import io.mockk.every
-import org.junit.jupiter.api.Test
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
-import org.springframework.context.annotation.Import
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import com.conference.website.utils.readBody
-import io.kotest.matchers.shouldBe
+import io.kotest.matchers.collections.shouldContainAll
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import kotlin.coroutines.coroutineContext
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.web.servlet.client.RestTestClient
+import org.springframework.transaction.annotation.Transactional
 
-@WebMvcTest(TalkController::class)
-@Import(ApiExceptionHandler::class)
-@AutoConfigureMockMvc
-class TalkControllerSuperchargedIT @Autowired constructor (
-    val mockMvc: MockMvc,
-    @MockkBean
-    val talkService: TalkService,
-    @MockkBean
-    val viewTrackingService: ViewTrackingService,
-    @MockkBean
-    val talkEngagementService: TalkEngagementService
-) {
-
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureRestTestClient
+@Transactional
+class TalksControllerSuperchargedIT @Autowired constructor(
+    private val restTestClient: RestTestClient,
+    override  val speakerRepository: SpeakerRepository,
+    override  val talkRepository: TalkRepository,
+    override val tagRepository: TagRepository,
+): RepositorySupport {
 
     @Test
-    fun `POST should create talk`() {
+    fun `should hide uncommitted talks and show them after commit using dsl and scope`() = testDataScope {
         //Arrange
-        val primarySpeaker = createSpeakerDto(id = 1L, company = "Tst AG")
-        val coSpeaker = createSpeakerDto(id = 2L, name = "Joe ", email = "joe@example.com", company = "Tst AG")
-        val talkRequest = createTalkRequest(primarySpeaker = primarySpeaker, coSpeakers = listOf(coSpeaker))
-        val createdTalk = createTalkDto(request = talkRequest, scheduleSlot = createScheduleSlotDto())
+        val uniqueSuffix = System.nanoTime().toString()
+        val firstTitle = "RestTestClient kotlin boundary first $uniqueSuffix"
+        val secondTitle = "RestTestClient kotlin boundary second $uniqueSuffix"
 
-        every { talkService.createTalk(talkRequest) } returns createdTalk
+        val speaker = speaker {
+            name = "Ada Lovelace"
+            email = "ada.$uniqueSuffix@example.com"
+            company = "Analytical Engines"
+            bio = "Pioneer in computing"
+        }.persist()
+
+        val talks = talks {
+            talk {
+                title = firstTitle
+                abstractText = "DSL fixtures stay readable"
+                level = TalkLevel.INTERMEDIATE
+                durationMinutes = 45
+                primarySpeaker(speaker)
+            }
+            talk {
+                title = secondTitle
+                abstractText = "Transaction boundaries via HTTP"
+                level = TalkLevel.ADVANCED
+                durationMinutes = 60
+                primarySpeaker(speaker)
+            }
+        }.persist()
 
         //Act
-        val responseBody = mockMvc.perform(
-            post("/api/talks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(talkRequest))
-        )
-            .andExpect(status().isCreated)
-            .andReturn()
-            .response
-            .contentAsString
-
-        val actualTalk = objectMapper.readValue(responseBody, TalkDto::class.java)
-        //Assert
-        actualTalk shouldBe createdTalk
-    }
-
-    @Test
-    fun `POST should create talk with custom Extensions`() {
-        //Arrange
-        val primarySpeaker = createSpeakerDto(id = 1L, company = "Tst AG")
-        val coSpeaker = createSpeakerDto(id = 2L, name = "Joe ", email = "joe@example.com", company = "Tst AG")
-        val talkRequest = createTalkRequest(primarySpeaker = primarySpeaker, coSpeakers = listOf(coSpeaker))
-        val createdTalk = createTalkDto(request = talkRequest, scheduleSlot = createScheduleSlotDto())
-
-        every { talkService.createTalk(talkRequest) } returns createdTalk
-
-        //Act
-        val response = mockMvc.perform(
-            post("/api/talks")
-                .defaultHeaders(correltionId = "23232323")
-                .jsonContent(talkRequest))
-                .andExpect(status().isCreated)
-                .andReturn()
-                .response
-                .contentAsString
-
-        val actualTalk = objectMapper.readValue(response, TalkDto::class.java)
+        val repliedTalks =
+        withNewTransaction {
+            restTestClient.get()
+                .uri("/api/talks")
+                .defaultHeaders()
+                .exchangeSuccessfully()
+                .expectStatus().isOk()
+                .readBody<List<TalkDto>>()
+        }
 
         //Assert
-        actualTalk shouldBe createdTalk
+        repliedTalks.map { it.title() }
+            .shouldContainAll(firstTitle, secondTitle)
     }
 
-    @Test
-    fun `POST should create talk with DSL`() {
-        //Arrange
-        val primarySpeaker = createSpeakerDto(id = 1L, company = "Tst AG")
-        val coSpeaker = createSpeakerDto(id = 2L, name = "Joe ", email = "joe@example.com", company = "Tst AG")
-        val talkRequest = createTalkRequest(primarySpeaker = primarySpeaker, coSpeakers = listOf(coSpeaker))
-        val createdTalk = createTalkDto(request = talkRequest, scheduleSlot = createScheduleSlotDto())
-
-        every { talkService.createTalk(talkRequest) } returns createdTalk
-
-        //Act
-        val actualTalk = mockMvc.perform(
-            post("/api/talks")
-                .defaultHeaders(correltionId = "23232323")
-                .jsonContent(talkRequest)
-        ).andExpect(status().isCreated)
-            .readBody<TalkDto>()
-
-        //Assert
-        actualTalk shouldBe createdTalk
-    }
 }

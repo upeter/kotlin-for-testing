@@ -51,11 +51,10 @@ inline fun testDataScope(block: TestDataScope.() -> Unit) =
  * no longer be removed by a transaction rollback. This is enforced through the TestDataScope receiver, even though
  * the TestDataScope is not used.
  */
-fun <T> TestDataScope.withTransaction(block: () -> T): T {
+fun <T> TestDataScope.withNewTransaction(block: () -> T): T {
     TestTransaction.flagForCommit()
-    val result = block()
     TestTransaction.end()
     TestTransaction.start()
     TestTransaction.flagForCommit()
-    return result
+    return block()
 }

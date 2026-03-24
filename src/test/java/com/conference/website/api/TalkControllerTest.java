@@ -26,8 +26,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.conference.website.api.MockMvcTestUtils.performAndGetResponse;
-import static com.conference.website.api.MockMvcTestUtils.performAndGetResponseWithHeaders;
+import static com.conference.website.utils.MockMvcTestUtils.performAndGetResponseWithHeaders;
 import static com.conference.website.domain.TalkLevel.ADVANCED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

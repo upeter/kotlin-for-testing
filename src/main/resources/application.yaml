@@ -8,10 +8,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    defer-datasource-initialization: true
     properties:
       hibernate:
         format_sql: true
     open-in-view: false
+  sql:
+    init:
+      mode: always
   h2:
     console:
       enabled: false
@@ -23,5 +27,4 @@ spring:
 #    web:
 #      exposure:
 #        include: health,info,metrics
-
 
