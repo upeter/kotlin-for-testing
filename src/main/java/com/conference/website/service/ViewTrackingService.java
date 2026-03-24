@@ -1,52 +1,33 @@
 package com.conference.website.service;
 
 import com.conference.website.repository.TalkRepository;
+import com.conference.website.integration.MetricsClient;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicLong;
-
+import java.time.Duration;
 @Service
 public class ViewTrackingService {
 
+    private static final Duration CLIENT_TIMEOUT = Duration.ofSeconds(2);
+
     private final TalkRepository talkRepository;
-    private final ConcurrentHashMap<Long, AtomicLong> viewCounterByTalk = new ConcurrentHashMap<>();
+    private final MetricsClient metricsClient;
 
-    public ViewTrackingService(TalkRepository talkRepository) {
+    public ViewTrackingService(TalkRepository talkRepository, MetricsClient metricsClient) {
         this.talkRepository = talkRepository;
+        this.metricsClient = metricsClient;
     }
 
-    public long recordView(long talkId) {
+    public Mono<Long> recordView(long talkId) {
         ensureTalkExists(talkId);
-        AtomicLong counter = viewCounterByTalk.computeIfAbsent(talkId, ignored -> new AtomicLong(0));
-        return counter.incrementAndGet();
+        return metricsClient.incrementViews(talkId).timeout(CLIENT_TIMEOUT).map(Long::longValue);
     }
 
-    public long simulateConcurrentViews(long talkId, int viewEvents) {
+    public Mono<Long> getCurrentViews(long talkId) {
         ensureTalkExists(talkId);
-
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            List<Future<Long>> tasks = new ArrayList<>();
-            for (int i = 0; i < viewEvents; i++) {
-                tasks.add(executor.submit(() -> recordView(talkId)));
-            }
-            for (Future<Long> task : tasks) {
-                task.get();
-            }
-        } catch (Exception exception) {
-            throw new RuntimeException("Unable to simulate concurrent view traffic", exception);
-        }
-
-        return getCurrentViews(talkId);
-    }
-
-    public long getCurrentViews(long talkId) {
-        ensureTalkExists(talkId);
-        return viewCounterByTalk.getOrDefault(talkId, new AtomicLong(0)).get();
+        return metricsClient.getViews(talkId).timeout(CLIENT_TIMEOUT);
     }
 
     private void ensureTalkExists(long talkId) {
