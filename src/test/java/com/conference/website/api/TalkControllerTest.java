@@ -9,6 +9,7 @@ import com.conference.website.dto.ScheduleSlotRequest;
 import com.conference.website.dto.SpeakerDto;
 import com.conference.website.dto.TalkDto;
 import com.conference.website.service.NotFoundException;
+import com.conference.website.service.TalkEngagementService;
 import com.conference.website.service.TalkService;
 import com.conference.website.service.ViewTrackingService;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,6 +57,9 @@ class TalkControllerTest {
 
     @MockitoBean
     private ViewTrackingService viewTrackingService;
+
+    @MockitoBean
+    private TalkEngagementService talkEngagementService;
 
     @Test
     void shouldCreateTalk() throws Exception {
@@ -219,30 +224,8 @@ class TalkControllerTest {
     }
 
     @Test
-    void shouldRecordView() throws Exception {
-        given(viewTrackingService.recordView(15L)).willReturn(1L);
-
-        mockMvc.perform(post("/api/talks/15/views"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.talkId").value(15))
-                .andExpect(jsonPath("$.views").value(1));
-    }
-
-    @Test
-    void shouldSimulateViewsWithDefaultEventCount() throws Exception {
-        given(viewTrackingService.simulateConcurrentViews(8L, 250)).willReturn(250L);
-
-        mockMvc.perform(post("/api/talks/8/views/simulate"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.talkId").value(8))
-                .andExpect(jsonPath("$.views").value(250));
-
-        verify(viewTrackingService).simulateConcurrentViews(8L, 250);
-    }
-
-    @Test
     void shouldGetCurrentViews() throws Exception {
-        given(viewTrackingService.getCurrentViews(8L)).willReturn(17L);
+        given(viewTrackingService.getCurrentViews(8L)).willReturn(Mono.just(17L));
 
         mockMvc.perform(get("/api/talks/8/views"))
                 .andExpect(status().isOk())

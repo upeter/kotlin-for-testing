@@ -35,3 +35,4 @@ or with Maven:
 - `POST /api/talks/{talkId}/views`
 - `POST /api/talks/{talkId}/views/simulate?events=1000`
 - `GET /api/talks/{talkId}/views`
+- `GET /api/talks/{talkId}/engagement`

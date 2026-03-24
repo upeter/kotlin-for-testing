@@ -3,6 +3,7 @@ package com.conference.website.api;
 import com.conference.website.domain.TalkLevel;
 import com.conference.website.dto.*;
 import com.conference.website.service.TalkService;
+import com.conference.website.service.TalkEngagementService;
 import com.conference.website.service.ViewTrackingService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import reactor.core.publisher.Mono;
 
 @Validated
 @RestController
@@ -29,10 +31,14 @@ public class TalkController {
 
     private final TalkService talkService;
     private final ViewTrackingService viewTrackingService;
+    private final TalkEngagementService talkEngagementService;
 
-    public TalkController(TalkService talkService, ViewTrackingService viewTrackingService) {
+    public TalkController(TalkService talkService,
+                          ViewTrackingService viewTrackingService,
+                          TalkEngagementService talkEngagementService) {
         this.talkService = talkService;
         this.viewTrackingService = viewTrackingService;
+        this.talkEngagementService = talkEngagementService;
     }
 
     @PostMapping
@@ -64,18 +70,19 @@ public class TalkController {
     }
 
     @PostMapping("/{talkId}/views")
-    public ViewCountResponse recordView(@PathVariable Long talkId) {
-        return new ViewCountResponse(talkId, viewTrackingService.recordView(talkId));
-    }
-
-    @PostMapping("/{talkId}/views/simulate")
-    public ViewCountResponse simulateViews(@PathVariable Long talkId,
-                                           @RequestParam(defaultValue = "250") @Min(1) @Max(50_000) int events) {
-        return new ViewCountResponse(talkId, viewTrackingService.simulateConcurrentViews(talkId, events));
+    public Mono<ViewCountResponse> recordView(@PathVariable Long talkId) {
+        return viewTrackingService.recordView(talkId)
+                .map(views -> new ViewCountResponse(talkId, views));
     }
 
     @GetMapping("/{talkId}/views")
-    public ViewCountResponse getViews(@PathVariable Long talkId) {
-        return new ViewCountResponse(talkId, viewTrackingService.getCurrentViews(talkId));
+    public Mono<ViewCountResponse> getViews(@PathVariable Long talkId) {
+        return viewTrackingService.getCurrentViews(talkId)
+                .map(views -> new ViewCountResponse(talkId, views));
+    }
+
+    @GetMapping("/{talkId}/engagement")
+    public Mono<TalkEngagementDto> getEngagement(@PathVariable Long talkId) {
+        return talkEngagementService.getEngagement(talkId);
     }
 }
