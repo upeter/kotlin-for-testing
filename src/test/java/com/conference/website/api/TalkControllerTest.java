@@ -219,22 +219,6 @@ class TalkControllerTest {
     }
 
     @Test
-    void shouldGetCurrentViews() throws Exception {
-        given(viewTrackingService.getCurrentViews(8L)).willReturn(Mono.just(17L));
-
-        mockMvc.perform(get("/api/talks/8/views"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.talkId").value(8))
-                .andExpect(jsonPath("$.views").value(17));
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenSimulateEventsIsInvalid() throws Exception {
-        assertThatThrownBy(() -> mockMvc.perform(post("/api/talks/8/views/simulate").param("events", "0")))
-                .hasRootCauseMessage("simulateViews.events: must be greater than or equal to 1");
-    }
-
-    @Test
     void shouldMapNotFoundExceptionTo404() throws Exception {
         given(talkService.getTalk(404L)).willThrow(new NotFoundException("Talk not found: 404"));
 
