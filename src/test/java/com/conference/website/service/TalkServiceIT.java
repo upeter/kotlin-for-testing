@@ -1,13 +1,15 @@
 package com.conference.website.service;
 
 import com.conference.website.data.ObjectMotherKt;
-import com.conference.website.data.builders.CreateSpeakerRequestBuilder;
-import com.conference.website.data.builders.CreateTalkRequestBuilder;
+import com.conference.website.data.builders.*;
+import com.conference.website.domain.Speaker;
+import com.conference.website.domain.Tag;
+import com.conference.website.domain.Talk;
 import com.conference.website.domain.TalkLevel;
-import com.conference.website.dto.CreateSpeakerRequest;
-import com.conference.website.dto.CreateTalkRequest;
-import com.conference.website.dto.SpeakerDto;
-import com.conference.website.dto.TestDtoConversions;
+import com.conference.website.dto.*;
+import com.conference.website.repository.SpeakerRepository;
+import com.conference.website.repository.TagRepository;
+import com.conference.website.repository.TalkRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +34,13 @@ class TalkServiceIT {
     private SpeakerService speakerService;
 
     @Autowired
-    private TagService tagService;
+    private SpeakerRepository speakerRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
+
+    @Autowired
+    private TalkRepository talkRepository;
 
     @Autowired
     private TalkService talkService;
@@ -82,40 +90,6 @@ class TalkServiceIT {
                         "Analytical Engines",
                         "Pioneer in computing"
                 );
-
-
-
-//        assertThat(savedSpeakerDto.name()).isEqualTo("Ada Lovelace");
-//        assertThat(savedSpeakerDto.email()).isEqualTo("ada@example.com");
-//        assertThat(savedSpeakerDto.company()).isEqualTo("Analytical Engines");
-//        assertThat(savedSpeakerDto.bio()).isEqualTo("Pioneer in computing");
-//
-//
-//        assertThat(savedSpeakerDto)
-//                .extracting("id", "name", "email", "company", "bio")
-//                .containsExactly(
-//                        savedSpeakerDto.id(),
-//                        "Ada Lovelace",
-//                        "ada@example.com",
-//                        "Analytical Engines",
-//                        "Pioneer in computing"
-//                );
-
-
-//        assertThat(savedSpeakerDto).isNotNull().satisfies(saved -> {
-//                    assertThat(saved.name()).isEqualTo(expectedSpeakerDto.name());
-//                    assertThat(saved.email()).isEqualTo(expectedSpeakerDto.email());
-//                    assertThat(saved.company()).isEqualTo(expectedSpeakerDto.company());
-//                    assertThat(saved.bio()).isEqualTo(expectedSpeakerDto.bio());
-//                });
-//
-//        assertThat(savedSpeakerDto).isEqualTo(expectedSpeakerDto);
-
-//        var scheduleSlotDto = talkService.assignSchedule(savedTalkDto.id(), new ScheduleSlotRequest(
-//                "Room B",
-//                LocalDateTime.of(2026, 4, 8, 14, 0),
-//                LocalDateTime.of(2026, 4, 8, 15, 0)
-//        ));
 
 
     }
@@ -194,5 +168,84 @@ class TalkServiceIT {
 
 
 
+    }
+
+    @Test
+    void shouldCreateMultipleTalksWithEntityBuildersAndTemporaryVariables() {
+        Speaker primarySpeakerTalkOne = SpeakerBuilder.aSpeaker()
+                .withName("Ada Lovelace")
+                .withEmail("ada@example.com")
+                .withCompany("Analytical Engines")
+                .withBio("Pioneer in computing")
+                .build();
+
+        Speaker coSpeakerTalkOne = SpeakerBuilder.from(primarySpeakerTalkOne)
+                .withName("Grace Hopper")
+                .withEmail("grace@example.com")
+                .withCompany("US Navy")
+                .withBio("COBOL pioneer")
+                .build();
+
+        Speaker primarySpeakerTalkTwo = SpeakerBuilder.aSpeaker()
+                .withName("Linus Torvalds")
+                .withEmail("linus@example.com")
+                .withCompany("Kernel Inc")
+                .withBio("Created Linux")
+                .build();
+
+        Tag kotlinTag = TagBuilder.aTag()
+                .withName("kotlin")
+                .build();
+
+        Tag testingTag = TagBuilder.aTag()
+                .withName("testing")
+                .build();
+
+        Tag springTag = TagBuilder.aTag()
+                .withName("spring")
+                .build();
+
+        Talk talkEntityOne = TalkBuilder.aTalk()
+                .withTitle("Kotlin DSL Power")
+                .withAbstractText("Scope fixtures without temporary variables")
+                .withLevel(TalkLevel.INTERMEDIATE)
+                .withDurationMinutes(45)
+                .withPrimarySpeaker(primarySpeakerTalkOne)
+                .withCoSpeaker(coSpeakerTalkOne)
+                .withTag(kotlinTag)
+                .withTag(testingTag)
+                .build();
+
+        Talk talkEntityTwo = TalkBuilder.aTalk()
+                .withTitle("Spring Testing at Scale")
+                .withAbstractText("Keep setup readable while growing scenarios")
+                .withLevel(TalkLevel.ADVANCED)
+                .withDurationMinutes(60)
+                .withPrimarySpeaker(primarySpeakerTalkTwo)
+                .withTags(List.of(springTag))
+                .build();
+
+        List<Talk> savedTalkEntities = TalkGraphPersistence.persistGraph(
+                List.of(talkEntityOne, talkEntityTwo),
+                speakerRepository,
+                tagRepository,
+                talkRepository
+        );
+
+        List<TalkDto> createdTalks = savedTalkEntities.stream().map(DtoConversions::toDto).toList();
+        TalkDto createdTalkOne = createdTalks.getFirst();
+        TalkDto createdTalkTwo = createdTalks.getLast();
+
+        assertThat(createdTalks).hasSize(2);
+        assertThat(createdTalks)
+                .extracting(TalkDto::title)
+                .containsExactly("Kotlin DSL Power", "Spring Testing at Scale");
+
+        assertThat(createdTalkOne.primarySpeaker().name()).isEqualTo("Ada Lovelace");
+        assertThat(createdTalkOne.coSpeakers()).extracting(SpeakerDto::name).containsExactly("Grace Hopper");
+        assertThat(createdTalkOne.tags()).extracting(TagDto::name).containsExactlyInAnyOrder("kotlin", "testing");
+
+        assertThat(createdTalkTwo.primarySpeaker().name()).isEqualTo("Linus Torvalds");
+        assertThat(createdTalkTwo.tags()).extracting(TagDto::name).containsExactly("spring");
     }
 }
