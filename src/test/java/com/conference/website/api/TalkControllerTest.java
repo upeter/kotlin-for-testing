@@ -9,7 +9,6 @@ import com.conference.website.dto.ScheduleSlotRequest;
 import com.conference.website.dto.SpeakerDto;
 import com.conference.website.dto.TalkDto;
 import com.conference.website.service.NotFoundException;
-import com.conference.website.service.TalkEngagementService;
 import com.conference.website.service.TalkService;
 import com.conference.website.service.ViewTrackingService;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -56,9 +55,6 @@ class TalkControllerTest {
 
     @MockitoBean
     private ViewTrackingService viewTrackingService;
-
-    @MockitoBean
-    private TalkEngagementService talkEngagementService;
 
     @Test
     void shouldCreateTalk() throws Exception {

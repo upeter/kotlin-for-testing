@@ -3,11 +3,8 @@ package com.conference.website.api;
 import com.conference.website.domain.TalkLevel;
 import com.conference.website.dto.*;
 import com.conference.website.service.TalkService;
-import com.conference.website.service.TalkEngagementService;
 import com.conference.website.service.ViewTrackingService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -31,14 +28,11 @@ public class TalkController {
 
     private final TalkService talkService;
     private final ViewTrackingService viewTrackingService;
-    private final TalkEngagementService talkEngagementService;
 
     public TalkController(TalkService talkService,
-                          ViewTrackingService viewTrackingService,
-                          TalkEngagementService talkEngagementService) {
+                          ViewTrackingService viewTrackingService) {
         this.talkService = talkService;
         this.viewTrackingService = viewTrackingService;
-        this.talkEngagementService = talkEngagementService;
     }
 
     @PostMapping
@@ -81,8 +75,4 @@ public class TalkController {
                 .map(views -> new ViewCountResponse(talkId, views));
     }
 
-    @GetMapping("/{talkId}/engagement")
-    public Mono<TalkEngagementDto> getEngagement(@PathVariable Long talkId) {
-        return talkEngagementService.getEngagement(talkId);
-    }
 }
