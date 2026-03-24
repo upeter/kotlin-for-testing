@@ -1,6 +1,5 @@
 package com.conference.website.service;
 
-import com.conference.website.data.ObjectMotherKt;
 import com.conference.website.data.builders.*;
 import com.conference.website.domain.Speaker;
 import com.conference.website.domain.Tag;
@@ -22,13 +21,12 @@ import static com.conference.website.data.ObjectMotherKt.createSpeakerRequest;
 import static com.conference.website.data.ObjectMotherKt.createTalkRequest;
 import static com.conference.website.dto.DtoConversions.toDto;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
-class TalkServiceIT {
+class TalkServiceTest {
 
     @Autowired
     private SpeakerService speakerService;

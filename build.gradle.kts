@@ -47,6 +47,17 @@ dependencies {
     implementation(kotlin("stdlib"))
 }
 
+val integrationTest by sourceSets.creating {
+    java.srcDirs("src/integrationTest/java", "src/integrationTest/kotlin")
+    resources.srcDir("src/integrationTest/resources")
+
+    compileClasspath += sourceSets["main"].output + sourceSets["test"].output + configurations["testRuntimeClasspath"]
+    runtimeClasspath += output + compileClasspath
+}
+
+configurations[integrationTest.implementationConfigurationName].extendsFrom(configurations.testImplementation.get())
+configurations[integrationTest.runtimeOnlyConfigurationName].extendsFrom(configurations.testRuntimeOnly.get())
+
 powerAssert {
     functions = listOf(
         "kotlin.assert",
@@ -69,7 +80,32 @@ tasks.withType<Test> {
     }
 }
 
+val integrationTestTask = tasks.register<Test>("integrationTest") {
+    description = "Runs integration tests"
+    group = "verification"
+    testClassesDirs = integrationTest.output.classesDirs
+    classpath = integrationTest.runtimeClasspath
+    shouldRunAfter(tasks.test)
+
+    useJUnitPlatform()
+    testLogging {
+        events("failed")
+        exceptionFormat = TestExceptionFormat.FULL
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+    }
+}
+
+tasks.named("check") {
+    dependsOn(integrationTestTask)
+}
+
 tasks.named<JavaCompile>("compileTestJava") {
+    options.release = 21
+}
+
+tasks.named<JavaCompile>("compileIntegrationTestJava") {
     options.release = 21
 }
 

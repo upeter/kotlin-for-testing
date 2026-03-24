@@ -17,8 +17,10 @@ Never improve or modernise the Java tests. That contrast is the point of the tal
 ## Build
 
 ```bash
-./gradlew test          # preferred — power-assert plugin active
-./mvnw test             # alternative
+./gradlew test          # unit-style tests only
+./gradlew integrationTest
+./mvnw test             # unit-style tests only
+./mvnw verify           # runs integration tests via failsafe
 ./gradlew bootRun       # run the app
 ```
 
@@ -47,12 +49,17 @@ src/main/java/com/conference/website/
 
 src/test/java/com/conference/website/
   api/          Java unit tests — WebMvcTest + Mockito (BEFORE)
-  service/      Java integration tests — SpringBootTest (BEFORE)
   data/builders/ 11 Java builder classes for test data
 
-src/test/kotlin/com/conference/website/
+src/integrationTest/java/com/conference/website/
+  api/          Java integration tests — SpringBootTest (BEFORE)
+  service/      Java integration tests — SpringBootTest (BEFORE)
+
+src/integrationTest/kotlin/com/conference/website/
   api/          Kotlin integration tests (AFTER)
-  service/      Kotlin integration tests (AFTER)
+
+src/test/kotlin/com/conference/website/
+  service/      Kotlin tests (AFTER)
   data/         ObjectMother.kt — factory functions with named/default args
   utils/        TestUtils.kt — extensions + reified generics
 ```
@@ -61,4 +68,6 @@ src/test/kotlin/com/conference/website/
 
 Detailed coding conventions live in `.claude/rules/` and load only when relevant:
 - `kotlin-tests.md` — applies to `src/test/kotlin/**`
+- `kotlin-tests.md` — applies to `src/integrationTest/kotlin/**`
 - `java-tests.md`  — applies to `src/test/java/**`
+- `java-tests.md`  — applies to `src/integrationTest/java/**`

@@ -21,6 +21,15 @@ or with Maven:
 ./mvnw spring-boot:run
 ```
 
+## Tests
+
+```bash
+./gradlew test          # unit-style tests only
+./gradlew integrationTest
+./mvnw test             # unit-style tests only
+./mvnw verify           # runs integration tests via failsafe
+```
+
 ## Initial API surface
 
 - `POST /api/speakers`

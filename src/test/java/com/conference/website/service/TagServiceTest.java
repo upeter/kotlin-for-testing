@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-class TagServiceIT {
+class TagServiceTest {
 
     @Autowired
     private TagService tagService;
