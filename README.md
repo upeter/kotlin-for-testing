@@ -30,6 +30,8 @@ or with Maven:
 ./mvnw verify           # runs integration tests via failsafe
 ```
 
+Integration tests use PostgreSQL Testcontainers (`jdbc:tc:` datasource URL), so Docker must be available.
+
 ## Initial API surface
 
 - `POST /api/speakers`

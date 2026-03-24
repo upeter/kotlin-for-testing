@@ -13,6 +13,7 @@ plugins {
 
 group = "com.conference"
 version = "0.0.1-SNAPSHOT"
+val testcontainersVersion = "2.0.4"
 
 java {
     toolchain {
@@ -49,7 +50,6 @@ dependencies {
 
 val integrationTest by sourceSets.creating {
     java.srcDirs("src/integrationTest/java", "src/integrationTest/kotlin")
-    resources.srcDir("src/integrationTest/resources")
 
     compileClasspath += sourceSets["main"].output + sourceSets["test"].output + configurations["testRuntimeClasspath"]
     runtimeClasspath += output + compileClasspath
@@ -57,6 +57,12 @@ val integrationTest by sourceSets.creating {
 
 configurations[integrationTest.implementationConfigurationName].extendsFrom(configurations.testImplementation.get())
 configurations[integrationTest.runtimeOnlyConfigurationName].extendsFrom(configurations.testRuntimeOnly.get())
+
+dependencies {
+    add(integrationTest.implementationConfigurationName, "org.testcontainers:testcontainers-postgresql:$testcontainersVersion")
+    add(integrationTest.runtimeOnlyConfigurationName, "org.testcontainers:testcontainers-jdbc:$testcontainersVersion")
+    add(integrationTest.runtimeOnlyConfigurationName, "org.postgresql:postgresql")
+}
 
 powerAssert {
     functions = listOf(
@@ -86,6 +92,7 @@ val integrationTestTask = tasks.register<Test>("integrationTest") {
     testClassesDirs = integrationTest.output.classesDirs
     classpath = integrationTest.runtimeClasspath
     shouldRunAfter(tasks.test)
+    systemProperty("spring.profiles.active", "integrationtest")
 
     useJUnitPlatform()
     testLogging {
