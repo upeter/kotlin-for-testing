@@ -95,7 +95,7 @@ class TalkControllerSuperchargedIT @Autowired constructor (
 
     @Test
     fun `POST should create talk with DSL`() {
-        //Arange
+        //Arrange
         val primarySpeaker = createSpeakerDto(id = 1L, company = "Tst AG")
         val coSpeaker = createSpeakerDto(id = 2L, name = "Joe ", email = "joe@example.com", company = "Tst AG")
         val talkRequest = createTalkRequest(primarySpeaker = primarySpeaker, coSpeakers = listOf(coSpeaker))
@@ -112,10 +112,6 @@ class TalkControllerSuperchargedIT @Autowired constructor (
             .readBody<TalkDto>()
 
         //Assert
-        actualTalk shouldBeEqualUsingFields {
-            //excludedProperties = setOf(TalkDto::primarySpeaker.name, TalkDto::coSpeakers.name, TalkDto::tags.name)
-            createdTalk
-        }
-        //assertThat(actualTalk).usingRecursiveComparison().isEqualTo(createdTalk)
+        actualTalk shouldBe createdTalk
     }
 }
