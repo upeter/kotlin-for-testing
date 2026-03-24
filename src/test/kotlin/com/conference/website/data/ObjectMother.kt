@@ -3,6 +3,7 @@ package com.conference.website.data
 import com.conference.website.domain.TalkLevel
 import com.conference.website.dto.CreateRatingRequest
 import com.conference.website.dto.CreateSpeakerRequest
+import com.conference.website.dto.CreateTagsRequest
 import com.conference.website.dto.CreateTalkRequest
 import com.conference.website.dto.RatingDto
 import com.conference.website.dto.ScheduleSlotDto
@@ -11,7 +12,6 @@ import com.conference.website.dto.SpeakerDto
 import com.conference.website.dto.TagDto
 import com.conference.website.dto.TalkDto
 import com.conference.website.dto.ViewCountResponse
-import kom.conference.website.dto.CreateTagsRequest
 import java.time.LocalDateTime
 
 @JvmOverloads
@@ -46,12 +46,11 @@ fun createSpeakerDto(
 
 @JvmOverloads
 fun createTagsRequest(vararg names: String = arrayOf("java")) =
-    CreateTagsRequest( names.toList())
+    CreateTagsRequest(names.toList())
 
 @JvmOverloads
 fun createTagDto(id: Long? = null, name: String = "java") =
     TagDto(id, name)
-
 
 
 

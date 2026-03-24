@@ -28,13 +28,11 @@ public class TagController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public List<TagDto> createTags(@Valid @RequestBody CreateTagsRequest request) {
-        return tagService.createTags(request).stream().map(DtoConversions::toDto).toList();
+        return tagService.createTags(request);
     }
 
     @GetMapping
     public List<TagDto> listTags() {
-        return tagService.getAllTags().stream()
-                .map(DtoConversions::toDto)
-                .toList();
+        return tagService.getAllTags();
     }
 }

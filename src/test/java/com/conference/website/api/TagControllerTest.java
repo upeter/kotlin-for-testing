@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,13 +43,38 @@ class TagControllerTest {
 
     @Test
     void shouldCreateTags() throws Exception {
+        //Arrange
         CreateTagsRequest request = new CreateTagsRequest(List.of("java", "kotlin"));
-        given(tagService.createTags(request)).willReturn(List.of(new Tag("java"), new Tag("kotlin")));
+        List<TagDto> tagDtos = IntStream.range(0, request.names().size())
+                .mapToObj(i -> new TagDto((long) i, request.names().get(i)))
+                .toList();
+        given(tagService.createTags(request)).willReturn(tagDtos);
 
+        //Act
         var response = mockMvc.perform(post("/api/tags")
+                        .header("X-Correlation-Id", "1234567890")
+                        .header("Authorization", "Bearer token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        var tags = objectMapper.readValue(response, new TypeReference<List<TagDto>>() {});
+
+        //Assert
+        assertThat(tags)
+                .extracting(TagDto::name)
+                .containsExactlyInAnyOrder(request.names().toArray(new String[0]));
+
+    }
+
+    @Test
+    void shouldListTags() throws Exception {
+        given(tagService.getAllTags()).willReturn(List.of(new  TagDto(1L, "java"), new  TagDto(2L, "testing")));
+
+        var response = mockMvc.perform(get("/api/tags"))
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -55,30 +82,24 @@ class TagControllerTest {
         var tags = objectMapper.readValue(response, new TypeReference<List<TagDto>>() {});
         assertThat(tags)
                 .extracting(TagDto::name)
-                .containsExactlyInAnyOrder("java", "kotlin");
-
-    }
-
-    @Test
-    void shouldListTags() throws Exception {
-        given(tagService.getAllTags()).willReturn(List.of(new Tag("java"), new Tag("testing")));
-
-        mockMvc.perform(get("/api/tags"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("java"))
-                .andExpect(jsonPath("$[1].name").value("testing"));
+                .containsExactlyInAnyOrder("java", "testing");
     }
 
     @Test
     void shouldReturnBadRequestWhenNamesIsEmpty() throws Exception {
         CreateTagsRequest request = new CreateTagsRequest(List.of());
 
-        mockMvc.perform(post("/api/tags")
+        var response = mockMvc.perform(post("/api/tags")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.title").value("Validation failure"))
-                .andExpect(jsonPath("$.detail").value("Request validation failed"));
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        var errorResponse = objectMapper.readValue(response, ProblemDetail.class);
+        assertEquals("Validation failure", errorResponse.getTitle());
+        assertEquals("Request validation failed", errorResponse.getDetail());
     }
 
     @Test
