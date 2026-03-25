@@ -11,9 +11,9 @@ interface RepositorySupport {
 
     fun Talk.persistGraph(): Talk = listOf(this).persistGraph().single()
 
-    fun Talk.persist(): Talk = talkRepository.save(this)
-    fun List<Talk>.persist(): List<Talk> = talkRepository.saveAll(this)
-    fun Speaker.persist(): Speaker = speakerRepository.save(this)
+    fun Talk.persistWithPostUndo(): Talk = talkRepository.save(this)
+    fun List<Talk>.persistWithPostUndo(): List<Talk> = talkRepository.saveAll(this)
+    fun Speaker.persistWithPostUndo(): Speaker = speakerRepository.save(this)
     //fun List<Speaker>.persist(): List<Speaker> = speakerRepository.saveAll(this)
 
     fun List<Talk>.persistGraph(): List<Talk> {

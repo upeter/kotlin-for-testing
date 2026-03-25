@@ -2,7 +2,7 @@ package com.conference.website.api
 
 import com.conference.website.domain.TalkLevel
 import com.conference.website.dsl.speaker
-import com.conference.website.dsl.testDataScope
+import com.conference.website.dsl.undoDataScope
 import com.conference.website.dsl.talks
 import com.conference.website.dsl.withNewTransaction
 import com.conference.website.dto.TalkDto
@@ -33,35 +33,33 @@ class TalksControllerSuperchargedIT @Autowired constructor(
 ): RepositorySupport {
 
     @Test
-    fun `should hide uncommitted talks and show them after commit using dsl and scope`() = testDataScope {
+    fun `should hide uncommitted talks and show them after commit using dsl and scope`() = undoDataScope {
         //Arrange
         val uniqueSuffix = System.nanoTime().toString()
-        val firstTitle = "RestTestClient kotlin boundary first $uniqueSuffix"
-        val secondTitle = "RestTestClient kotlin boundary second $uniqueSuffix"
 
         val speaker = speaker {
             name = "Ada Lovelace"
             email = "ada.$uniqueSuffix@example.com"
             company = "Analytical Engines"
             bio = "Pioneer in computing"
-        }.persist()
+        }.persistWithPostUndo()
 
         val talks = talks {
             talk {
-                title = firstTitle
+                title = "RestTestClient kotlin boundary first: $uniqueSuffix"
                 abstractText = "DSL fixtures stay readable"
                 level = TalkLevel.INTERMEDIATE
                 durationMinutes = 45
                 primarySpeaker(speaker)
             }
             talk {
-                title = secondTitle
+                title = "RestTestClient kotlin boundary second: $uniqueSuffix"
                 abstractText = "Transaction boundaries via HTTP"
                 level = TalkLevel.ADVANCED
                 durationMinutes = 60
                 primarySpeaker(speaker)
             }
-        }.persist()
+        }.persistWithPostUndo()
 
         //Act
         val repliedTalks =
@@ -75,8 +73,8 @@ class TalksControllerSuperchargedIT @Autowired constructor(
         }
 
         //Assert
-        repliedTalks.map { it.title() }
-            .shouldContainAll(firstTitle, secondTitle)
+        repliedTalks.map { it.title }
+            .shouldContainAll(talks.map { it.title })
     }
 
 }
