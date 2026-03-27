@@ -11,7 +11,7 @@ import com.conference.website.dto.ScheduleSlotRequest
 import com.conference.website.dto.SpeakerDto
 import com.conference.website.dto.TagDto
 import com.conference.website.dto.TalkDto
-import com.conference.website.dto.ViewCountResponse
+import com.conference.website.dto.ViewCountDto
 import java.time.LocalDateTime
 
 @JvmOverloads
@@ -118,7 +118,7 @@ fun createRatingDto(
 fun createViewCountResponse(
     talkId: Long = 1L,
     views: Long = 100L
-) = ViewCountResponse(talkId, views)
+) = ViewCountDto(talkId, views)
 
 @JvmOverloads
 fun createScheduleSlotRequest(

@@ -1,6 +1,6 @@
 package com.conference.website.data.builders;
 
-import com.conference.website.dto.ViewCountResponse;
+import com.conference.website.dto.ViewCountDto;
 
 public class ViewCountResponseBuilder {
 
@@ -21,7 +21,7 @@ public class ViewCountResponseBuilder {
         return this;
     }
 
-    public ViewCountResponse build() {
-        return new ViewCountResponse(talkId, views);
+    public ViewCountDto build() {
+        return new ViewCountDto(talkId, views);
     }
 }

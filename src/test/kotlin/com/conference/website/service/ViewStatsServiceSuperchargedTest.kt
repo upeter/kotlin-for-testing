@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 @Transactional
-class ViewTrackingServiceSuperchargedTest @Autowired constructor(
+class ViewStatsServiceSuperchargedTest @Autowired constructor(
     private val speakerService: SpeakerService,
     private val talkService: TalkService,
     private val viewTrackingService: ViewTrackingService,

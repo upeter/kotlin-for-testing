@@ -63,16 +63,6 @@ public class TalkController {
         return talkService.assignSchedule(talkId, request);
     }
 
-    @PostMapping("/{talkId}/views")
-    public Mono<ViewCountResponse> recordView(@PathVariable Long talkId) {
-        return viewTrackingService.recordView(talkId)
-                .map(views -> new ViewCountResponse(talkId, views));
-    }
 
-    @GetMapping("/{talkId}/views")
-    public Mono<ViewCountResponse> getViews(@PathVariable Long talkId) {
-        return viewTrackingService.getCurrentViews(talkId)
-                .map(views -> new ViewCountResponse(talkId, views));
-    }
 
 }
