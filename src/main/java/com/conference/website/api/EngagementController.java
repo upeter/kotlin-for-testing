@@ -1,7 +1,7 @@
 package com.conference.website.api;
 
 import com.conference.website.dto.*;
-import com.conference.website.service.ViewTrackingService;
+import com.conference.website.service.EngagementService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -9,23 +9,23 @@ import reactor.core.publisher.Mono;
 @Validated
 @RestController
 @RequestMapping("/api/talks/stats")
-public class ViewStatsController {
+public class EngagementController {
 
-    private final ViewTrackingService viewTrackingService;
+    private final EngagementService engagementService;
 
-    public ViewStatsController(
-                               ViewTrackingService viewTrackingService) {
-        this.viewTrackingService = viewTrackingService;
+    public EngagementController(
+                               EngagementService engagementService) {
+        this.engagementService = engagementService;
     }
 
     @PostMapping("/{talkId}/engagement")
     public Mono<EngagementCountDto> recordEngagement(@PathVariable Long talkId, @RequestBody EngagementUpdateRequest request) {
-        return viewTrackingService.recordEngagement(talkId, request);
+        return engagementService.recordEngagement(talkId, request);
     }
 
     @GetMapping("/{talkId}/engagement")
     public Mono<EngagementCountDto> getEngagement(@PathVariable Long talkId) {
-        return viewTrackingService.getCurrentEngagement(talkId);
+        return engagementService.getCurrentEngagement(talkId);
     }
 
 }

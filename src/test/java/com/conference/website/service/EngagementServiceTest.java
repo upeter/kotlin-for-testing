@@ -2,9 +2,6 @@ package com.conference.website.service;
 
 import com.conference.website.data.builders.CreateSpeakerRequestBuilder;
 import com.conference.website.data.builders.CreateTalkRequestBuilder;
-import com.conference.website.domain.TalkLevel;
-import com.conference.website.dto.CreateSpeakerRequest;
-import com.conference.website.dto.CreateTalkRequest;
 import com.conference.website.dto.EngagementCountDto;
 import com.conference.website.dto.EngagementUpdateRequest;
 import com.conference.website.dto.SpeakerDto;
@@ -15,12 +12,11 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class ViewStatsServiceTest {
+class EngagementServiceTest {
 
     @Autowired
     private SpeakerService speakerService;
@@ -29,7 +25,7 @@ class ViewStatsServiceTest {
     private TalkService talkService;
 
     @Autowired
-    private ViewTrackingService viewTrackingService;
+    private EngagementService engagementService;
 
 
     @Test
@@ -46,10 +42,10 @@ class ViewStatsServiceTest {
         //Act & Assert
         StepVerifier.create(
                         Mono.zip(
-                                        viewTrackingService.recordEngagement(talk.id(), firstRequest),
-                                        viewTrackingService.recordEngagement(talk.id(), secondRequest)
+                                        engagementService.recordEngagement(talk.id(), firstRequest),
+                                        engagementService.recordEngagement(talk.id(), secondRequest)
                                 )
-                                .flatMap(recorded -> viewTrackingService.getCurrentEngagement(talk.id())
+                                .flatMap(recorded -> engagementService.getCurrentEngagement(talk.id())
                                         .map(current -> List.of(recorded.getT1(), recorded.getT2(), current)))
                 )
                 .assertNext(result -> {

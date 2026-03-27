@@ -2,8 +2,8 @@ package com.conference.website.api;
 
 import com.conference.website.domain.TalkLevel;
 import com.conference.website.dto.*;
+import com.conference.website.service.EngagementService;
 import com.conference.website.service.TalkService;
-import com.conference.website.service.ViewTrackingService;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import reactor.core.publisher.Mono;
 
 @Validated
 @RestController
@@ -27,12 +26,12 @@ import reactor.core.publisher.Mono;
 public class TalkController {
 
     private final TalkService talkService;
-    private final ViewTrackingService viewTrackingService;
+    private final EngagementService engagementService;
 
     public TalkController(TalkService talkService,
-                          ViewTrackingService viewTrackingService) {
+                          EngagementService engagementService) {
         this.talkService = talkService;
-        this.viewTrackingService = viewTrackingService;
+        this.engagementService = engagementService;
     }
 
     @PostMapping

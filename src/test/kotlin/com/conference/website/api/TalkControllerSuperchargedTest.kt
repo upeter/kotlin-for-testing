@@ -6,7 +6,7 @@ import com.conference.website.data.createTalkDto
 import com.conference.website.data.createTalkRequest
 import com.conference.website.dto.TalkDto
 import com.conference.website.service.TalkService
-import com.conference.website.service.ViewTrackingService
+import com.conference.website.service.EngagementService
 import com.conference.website.utils.defaultHeaders
 import com.conference.website.utils.jsonContent
 import com.conference.website.utils.objectMapper
@@ -32,7 +32,7 @@ class TalkControllerSuperchargedTest @Autowired constructor (
     @MockkBean
     val talkService: TalkService,
     @MockkBean
-    val viewTrackingService: ViewTrackingService,
+    val viewTrackingService: EngagementService,
 ) {
 
 

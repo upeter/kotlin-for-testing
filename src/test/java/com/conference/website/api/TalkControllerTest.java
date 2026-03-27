@@ -8,11 +8,10 @@ import com.conference.website.dto.CreateTalkRequest;
 import com.conference.website.dto.ScheduleSlotRequest;
 import com.conference.website.dto.SpeakerDto;
 import com.conference.website.dto.TalkDto;
+import com.conference.website.service.EngagementService;
 import com.conference.website.service.NotFoundException;
 import com.conference.website.service.TalkService;
-import com.conference.website.service.ViewTrackingService;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import reactor.core.publisher.Mono;
 
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -56,7 +53,7 @@ class TalkControllerTest {
     private TalkService talkService;
 
     @MockitoBean
-    private ViewTrackingService viewTrackingService;
+    private EngagementService engagementService;
 
     @Test
     void shouldCreateTalk() throws Exception {

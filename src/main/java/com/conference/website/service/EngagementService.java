@@ -9,14 +9,14 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 @Service
-public class ViewTrackingService {
+public class EngagementService {
 
     private static final Duration CLIENT_TIMEOUT = Duration.ofSeconds(2);
 
     private final TalkRepository talkRepository;
     private final MetricsClient metricsClient;
 
-    public ViewTrackingService(TalkRepository talkRepository, MetricsClient metricsClient) {
+    public EngagementService(TalkRepository talkRepository, MetricsClient metricsClient) {
         this.talkRepository = talkRepository;
         this.metricsClient = metricsClient;
     }
