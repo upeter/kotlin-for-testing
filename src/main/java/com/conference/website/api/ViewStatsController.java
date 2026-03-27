@@ -30,4 +30,14 @@ public class ViewStatsController {
                 .map(views -> new ViewCountDto(talkId, views));
     }
 
+    @PostMapping("/{talkId}/engagement")
+    public Mono<EngagementCountDto> recordEngagement(@PathVariable Long talkId, @RequestBody EngagementUpdateRequest request) {
+        return viewTrackingService.recordEngagement(talkId, request);
+    }
+
+    @GetMapping("/{talkId}/engagement")
+    public Mono<EngagementCountDto> getEngagement(@PathVariable Long talkId) {
+        return viewTrackingService.getCurrentEngagement(talkId);
+    }
+
 }

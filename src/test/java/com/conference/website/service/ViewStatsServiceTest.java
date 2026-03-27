@@ -3,6 +3,8 @@ package com.conference.website.service;
 import com.conference.website.domain.TalkLevel;
 import com.conference.website.dto.CreateSpeakerRequest;
 import com.conference.website.dto.CreateTalkRequest;
+import com.conference.website.dto.EngagementCountDto;
+import com.conference.website.dto.EngagementUpdateRequest;
 import com.conference.website.dto.SpeakerDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,54 @@ class ViewStatsServiceTest {
                     assertThat(result).hasSize(3);
                     assertThat(List.of(result.get(0), result.get(1))).containsExactlyInAnyOrder(1L, 2L);
                     assertThat(result.get(2)).isEqualTo(2L);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRecordEngagementAndReadCurrentCountsWithStepVerifier() {
+        //Arrange
+        String uniqueEmail = "ada-" + UUID.randomUUID() + "@example.com";
+        CreateSpeakerRequest speakerRequest = new CreateSpeakerRequest(
+                "Ada Lovelace",
+                uniqueEmail,
+                "Analytical Engines",
+                "Pioneer in computing"
+        );
+        SpeakerDto speaker = speakerService.createSpeaker(speakerRequest);
+
+        CreateTalkRequest talkRequest = new CreateTalkRequest(
+                "Coroutines + Reactor",
+                "Combining asynchronous sources",
+                TalkLevel.ADVANCED,
+                45,
+                speaker,
+                List.of(),
+                List.of()
+        );
+
+        var talk = talkService.createTalk(talkRequest);
+
+        EngagementUpdateRequest firstRequest = new EngagementUpdateRequest(true, true, false);
+        EngagementUpdateRequest secondRequest = new EngagementUpdateRequest(false, true, true);
+
+        //Act & Assert
+        StepVerifier.create(
+                        Mono.zip(
+                                        viewTrackingService.recordEngagement(talk.id(), firstRequest),
+                                        viewTrackingService.recordEngagement(talk.id(), secondRequest)
+                                )
+                                .flatMap(recorded -> viewTrackingService.getCurrentEngagement(talk.id())
+                                        .map(current -> List.of(recorded.getT1(), recorded.getT2(), current)))
+                )
+                .assertNext(result -> {
+                    assertThat(result).hasSize(3);
+
+                    EngagementCountDto current = result.get(2);
+
+                    assertThat(current.views()).isEqualTo(1L);
+                    assertThat(current.likes()).isEqualTo(2L);
+                    assertThat(current.attends()).isEqualTo(1L);
                 })
                 .verifyComplete();
     }

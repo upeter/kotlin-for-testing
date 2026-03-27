@@ -24,8 +24,32 @@ public class RedisMetricsClient implements MetricsClient {
     }
 
     @Override
+    public Mono<Long> incrementLikes(Long talkId) {
+        return Mono.fromCallable(() -> metricsDatabase.incrementAndGetLikes(talkId))
+                .delayElement(WRITE_LATENCY);
+    }
+
+    @Override
+    public Mono<Long> incrementAttends(Long talkId) {
+        return Mono.fromCallable(() -> metricsDatabase.incrementAndGetAttends(talkId))
+                .delayElement(WRITE_LATENCY);
+    }
+
+    @Override
     public Mono<Long> getViews(Long talkId) {
         return Mono.fromCallable(() -> metricsDatabase.getViews(talkId))
+                .delayElement(READ_LATENCY);
+    }
+
+    @Override
+    public Mono<Long> getLikes(Long talkId) {
+        return Mono.fromCallable(() -> metricsDatabase.getLikes(talkId))
+                .delayElement(READ_LATENCY);
+    }
+
+    @Override
+    public Mono<Long> getAttends(Long talkId) {
+        return Mono.fromCallable(() -> metricsDatabase.getAttends(talkId))
                 .delayElement(READ_LATENCY);
     }
 }
