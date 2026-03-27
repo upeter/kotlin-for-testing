@@ -1,5 +1,7 @@
 package com.conference.website.service;
 
+import com.conference.website.data.builders.CreateSpeakerRequestBuilder;
+import com.conference.website.data.builders.CreateTalkRequestBuilder;
 import com.conference.website.domain.TalkLevel;
 import com.conference.website.dto.CreateSpeakerRequest;
 import com.conference.website.dto.CreateTalkRequest;
@@ -29,73 +31,17 @@ class ViewStatsServiceTest {
     @Autowired
     private ViewTrackingService viewTrackingService;
 
-    @Test
-    void shouldRecordViewAndReadCurrentViewsWithStepVerifier() {
-        //Arrange
-        String uniqueEmail = "ada-" + UUID.randomUUID() + "@example.com";
-        CreateSpeakerRequest speakerRequest = new CreateSpeakerRequest(
-                "Ada Lovelace",
-                uniqueEmail,
-                "Analytical Engines",
-                "Pioneer in computing"
-        );
-        SpeakerDto speaker = speakerService.createSpeaker(speakerRequest);
-
-        CreateTalkRequest talkRequest = new CreateTalkRequest(
-                "Coroutines + Reactor",
-                "Combining asynchronous sources",
-                TalkLevel.ADVANCED,
-                45,
-                speaker,
-                List.of(),
-                List.of()
-        );
-
-        var talk = talkService.createTalk(talkRequest);
-
-        //Act & Assert
-        StepVerifier.create(
-                        Mono.zip(
-                                        viewTrackingService.recordView(talk.id()),
-                                        viewTrackingService.recordView(talk.id())
-                                )
-                                .flatMap(recordedViews -> viewTrackingService.getCurrentViews(talk.id())
-                                        .map(currentViews -> List.of(recordedViews.getT1(), recordedViews.getT2(), currentViews)))
-                )
-                .assertNext(result -> {
-                    assertThat(result).hasSize(3);
-                    assertThat(List.of(result.get(0), result.get(1))).containsExactlyInAnyOrder(1L, 2L);
-                    assertThat(result.get(2)).isEqualTo(2L);
-                })
-                .verifyComplete();
-    }
 
     @Test
     void shouldRecordEngagementAndReadCurrentCountsWithStepVerifier() {
         //Arrange
-        String uniqueEmail = "ada-" + UUID.randomUUID() + "@example.com";
-        CreateSpeakerRequest speakerRequest = new CreateSpeakerRequest(
-                "Ada Lovelace",
-                uniqueEmail,
-                "Analytical Engines",
-                "Pioneer in computing"
-        );
-        SpeakerDto speaker = speakerService.createSpeaker(speakerRequest);
+        var createSpeakerRequest = CreateSpeakerRequestBuilder.aCreateSpeakerRequest().build();
+        SpeakerDto savedSpeakerDto = speakerService.createSpeaker(createSpeakerRequest);
+        var createTalkRequest = CreateTalkRequestBuilder.aCreateTalkRequest().withPrimarySpeaker(savedSpeakerDto).build();
+        var talk = talkService.createTalk(createTalkRequest);
 
-        CreateTalkRequest talkRequest = new CreateTalkRequest(
-                "Coroutines + Reactor",
-                "Combining asynchronous sources",
-                TalkLevel.ADVANCED,
-                45,
-                speaker,
-                List.of(),
-                List.of()
-        );
-
-        var talk = talkService.createTalk(talkRequest);
-
-        EngagementUpdateRequest firstRequest = new EngagementUpdateRequest(true, true, false);
-        EngagementUpdateRequest secondRequest = new EngagementUpdateRequest(false, true, true);
+        var firstRequest = new EngagementUpdateRequest(true, true, false);
+        var secondRequest = new EngagementUpdateRequest(false, true, true);
 
         //Act & Assert
         StepVerifier.create(

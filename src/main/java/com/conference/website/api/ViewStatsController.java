@@ -18,18 +18,6 @@ public class ViewStatsController {
         this.viewTrackingService = viewTrackingService;
     }
 
-    @PostMapping("/{talkId}/views")
-    public Mono<ViewCountDto> recordView(@PathVariable Long talkId) {
-        return viewTrackingService.recordView(talkId)
-                .map(views -> new ViewCountDto(talkId, views));
-    }
-
-    @GetMapping("/{talkId}/views")
-    public Mono<ViewCountDto> getViews(@PathVariable Long talkId) {
-        return viewTrackingService.getCurrentViews(talkId)
-                .map(views -> new ViewCountDto(talkId, views));
-    }
-
     @PostMapping("/{talkId}/engagement")
     public Mono<EngagementCountDto> recordEngagement(@PathVariable Long talkId, @RequestBody EngagementUpdateRequest request) {
         return viewTrackingService.recordEngagement(talkId, request);

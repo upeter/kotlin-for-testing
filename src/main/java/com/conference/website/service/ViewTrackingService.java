@@ -21,16 +21,6 @@ public class ViewTrackingService {
         this.metricsClient = metricsClient;
     }
 
-    public Mono<Long> recordView(long talkId) {
-        ensureTalkExists(talkId);
-        return metricsClient.incrementViews(talkId).timeout(CLIENT_TIMEOUT).map(Long::longValue);
-    }
-
-    public Mono<Long> getCurrentViews(long talkId) {
-        ensureTalkExists(talkId);
-        return metricsClient.getViews(talkId).timeout(CLIENT_TIMEOUT);
-    }
-
     public Mono<EngagementCountDto> recordEngagement(long talkId, EngagementUpdateRequest request) {
         ensureTalkExists(talkId);
 
