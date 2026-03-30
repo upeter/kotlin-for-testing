@@ -2,12 +2,14 @@ package com.conference.website.service
 
 import com.conference.website.data.createTalkRequest
 import com.conference.website.domain.TalkLevel
+import com.conference.website.dsl.talk
 import com.conference.website.repository.RepositorySupport
 import com.conference.website.dsl.talks
 import com.conference.website.dto.CreateTalkRequest
 import com.conference.website.dto.DtoConversions
 import com.conference.website.dto.SpeakerDto
 import com.conference.website.dto.TestDtoConversions
+import com.conference.website.dto.toDto
 import com.conference.website.repository.SpeakerRepository
 import com.conference.website.repository.TagRepository
 import com.conference.website.repository.TalkRepository
@@ -136,7 +138,7 @@ class TalkServiceSuperchargedTest @Autowired constructor(
             }
         }
 
-        val createdTalks = talkEntities.persistGraph().map(DtoConversions::toDto)
+        val createdTalks = talkEntities.persistGraph().map{it.toDto()}
 
         createdTalks shouldHaveSize 2
         createdTalks.map { it.title }.shouldContainInOrder("Kotlin DSL Power", "Spring Testing at Scale")

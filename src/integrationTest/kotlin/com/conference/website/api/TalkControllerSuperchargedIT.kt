@@ -2,8 +2,9 @@ package com.conference.website.api
 
 import com.conference.website.domain.TalkLevel
 import com.conference.website.dsl.speaker
-import com.conference.website.dsl.undoDataScope
+import com.conference.website.dsl.talk
 import com.conference.website.dsl.talks
+import com.conference.website.dsl.undoDataScope
 import com.conference.website.dsl.withNewTransaction
 import com.conference.website.dto.TalkDto
 import com.conference.website.repository.RepositorySupport
@@ -20,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.client.RestTestClient
 import org.springframework.transaction.annotation.Transactional
+import java.util.function.Consumer
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient
@@ -61,6 +63,11 @@ class TalksControllerSuperchargedIT @Autowired constructor(
             }
         }.persistWithPostUndo()
 
+        buildList {
+            add("countdown:")
+            addAll((10 downTo 1).map { " $it" })
+        }
+
         //Act
         val repliedTalks =
         withNewTransaction {
@@ -76,5 +83,6 @@ class TalksControllerSuperchargedIT @Autowired constructor(
         repliedTalks.map { it.title }
             .shouldContainAll(talks.map { it.title })
     }
+
 
 }

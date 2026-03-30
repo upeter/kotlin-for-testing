@@ -26,10 +26,6 @@ class TalksDsl {
     fun talks(block: TalksDsl.() -> Unit): Nothing =
         error("Nested talks { } blocks are not supported")
 
-    fun talk(block: TalkDsl.() -> Unit) {
-        talks += com.conference.website.dsl.talk(block)
-    }
-
     internal fun build(): List<Talk> = talks.toList()
 }
 
