@@ -9,17 +9,37 @@ import java.util.concurrent.atomic.AtomicReference
  * this is the replacement of the nested: doWith... approach
  */
 
+class TestDataScope2 : AutoCloseable {
+    private val finalizers = mutableListOf<() -> Unit>()
+
+    fun <T : Any> T.registerCleanup(cleanup: (T) -> Unit): T =
+        this.apply { finalizers.add({ cleanup(this) }) }
+
+    fun <T : Any> JpaRepository<T, *>.persistWithUndo(entities: List<T>): List<T> =
+        saveAll(entities).apply { registerCleanup({deleteAll(entities)}) }
+
+    override fun close() = finalizers.reversed().forEach { it.invoke() }
+
+}
+
+inline fun testDataScope2(block: TestDataScope2.() -> Unit) =
+    TestDataScope2().use(block)
+
+//fun TestDataScope2.persistAndPostCleanup
+
+
 class TestDataScope : AutoCloseable {
-    private val finalizers: AtomicReference<List<() -> Unit>> = AtomicReference(emptyList())
+    typealias CleanupFunction = () -> Unit
 
-    fun <T : Any> T.postCleanup(doLast: Boolean = false, finalize: (T) -> Unit): T =
-        also { entity -> finalizers.updateAndGet {
-            if (doLast) listOf { finalize(entity) } + it else  it + { finalize(entity) } }
-        }
+    private val finalizers: AtomicReference<List<CleanupFunction>> = AtomicReference(emptyList())
 
-    fun <T : Any> JpaRepository<T, *>.persistWithPostCleanup(vararg entities: T): List<T> = persistWithPostCleanup(entities.toList())
+    fun <T : Any> T.registerCleanup(cleanup: (T) -> Unit): T =
+        this.apply { finalizers.updateAndGet { it + { cleanup(this) } } }
 
-    fun <T : Any> JpaRepository<T, *>.persistWithPostCleanup(entities: List<T>): List<T> =
+    fun <T : Any> JpaRepository<T, *>.persistWithUndo(vararg entities: T): List<T> =
+        persistWithUndo(entities.toList())
+
+    fun <T : Any> JpaRepository<T, *>.persistWithUndo(entities: List<T>): List<T> =
         if (entities.isEmpty()) emptyList() else saveAll(entities).also { addToFinalizer(it) }
 
     private fun <T : Any> JpaRepository<T, *>.addToFinalizer(entities: List<T>) =
@@ -55,3 +75,4 @@ fun <T> TestDataScope.withNewTransaction(block: () -> T): T {
     TestTransaction.flagForCommit()
     return block()
 }
+

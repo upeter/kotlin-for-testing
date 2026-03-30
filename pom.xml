@@ -196,6 +196,9 @@
                         <option>power-assert:function=kotlin.test.assertTrue</option>
                         <option>power-assert:function=kotlin.test.assertContentEquals</option>
                     </pluginOptions>
+                    <args>
+                        <arg>-Xcontext-parameters</arg>
+                    </args>
                 </configuration>
 
                 <dependencies>

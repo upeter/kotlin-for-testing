@@ -43,7 +43,7 @@ class TalksControllerSuperchargedIT @Autowired constructor(
             email = "ada.$uniqueSuffix@example.com"
             company = "Analytical Engines"
             bio = "Pioneer in computing"
-        }.persistWithPostUndo()
+        }.persistWithUndo()
 
         val talks = talks {
             talk {
@@ -60,12 +60,7 @@ class TalksControllerSuperchargedIT @Autowired constructor(
                 durationMinutes = 60
                 primarySpeaker(speaker)
             }
-        }.persistWithPostUndo()
-
-        buildList {
-            add("countdown:")
-            addAll((10 downTo 1).map { " $it" })
-        }
+        }.persistWithUndo()
 
         //Act
         val repliedTalks =
