@@ -4,7 +4,7 @@ import com.conference.website.domain.TalkLevel
 import com.conference.website.dsl.speaker
 import com.conference.website.dsl.talk
 import com.conference.website.dsl.talks
-import com.conference.website.dsl.undoDataScope
+import com.conference.website.dsl.testDataScope
 import com.conference.website.dsl.withNewTransaction
 import com.conference.website.dto.TalkDto
 import com.conference.website.repository.RepositorySupport
@@ -21,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.client.RestTestClient
 import org.springframework.transaction.annotation.Transactional
-import java.util.function.Consumer
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient
@@ -35,7 +34,7 @@ class TalksControllerSuperchargedIT @Autowired constructor(
 ): RepositorySupport {
 
     @Test
-    fun `should hide uncommitted talks and show them after commit using dsl and scope`() = undoDataScope {
+    fun `should hide uncommitted talks and show them after commit using dsl and scope`() = testDataScope {
         //Arrange
         val uniqueSuffix = System.nanoTime().toString()
 
