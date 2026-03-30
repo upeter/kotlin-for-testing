@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>21</java.version>
-        <kotlin.version>2.3.10</kotlin.version>
+        <kotlin.version>2.3.20</kotlin.version>
         <testcontainers.version>2.0.4</testcontainers.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     </properties>
@@ -67,11 +67,21 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlin-jupyter-spring-starter</artifactId>
-            <version>0.15.0-615</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jetbrains.kotlinx</groupId>-->
+<!--            <artifactId>kotlin-jupyter-spring-starter</artifactId>-->
+<!--            <version>0.14.1-551</version>-->
+<!--&lt;!&ndash;            <version>0.17.1-775</version>&ndash;&gt;-->
+<!--&lt;!&ndash;            <version>0.19.0-880-1</version>&ndash;&gt;-->
+
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.jetbrains.kotlinx</groupId>-->
+<!--            <artifactId>kotlin-jupyter-kernel</artifactId>-->
+<!--&lt;!&ndash;            <version>0.19.0-880-1</version>&ndash;&gt;-->
+<!--&lt;!&ndash;            <version>0.17.1-775</version>&ndash;&gt;-->
+<!--            <version>0.14.1-551</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>tools.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
@@ -148,6 +158,19 @@
 
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>jetbrains-teamcity</id>
+            <url>https://packages.jetbrains.team</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!-- Other repositories like Maven Central go here -->
+    </repositories>
     <build>
         <plugins>
             <plugin>
