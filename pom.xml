@@ -67,20 +67,11 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
         </dependency>
-<!--        <dependency>-->
+<!-- causes compilation issues in intellij, gradle work well -->
+        <!--        <dependency>-->
 <!--            <groupId>org.jetbrains.kotlinx</groupId>-->
 <!--            <artifactId>kotlin-jupyter-spring-starter</artifactId>-->
-<!--            <version>0.14.1-551</version>-->
-<!--&lt;!&ndash;            <version>0.17.1-775</version>&ndash;&gt;-->
-<!--&lt;!&ndash;            <version>0.19.0-880-1</version>&ndash;&gt;-->
-
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.jetbrains.kotlinx</groupId>-->
-<!--            <artifactId>kotlin-jupyter-kernel</artifactId>-->
-<!--&lt;!&ndash;            <version>0.19.0-880-1</version>&ndash;&gt;-->
-<!--&lt;!&ndash;            <version>0.17.1-775</version>&ndash;&gt;-->
-<!--            <version>0.14.1-551</version>-->
+<!--            <version>0.17.1-775</version>-->
 <!--        </dependency>-->
         <dependency>
             <groupId>tools.jackson.module</groupId>
