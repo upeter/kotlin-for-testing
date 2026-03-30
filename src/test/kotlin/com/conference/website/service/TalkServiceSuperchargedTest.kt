@@ -29,10 +29,11 @@ import kotlin.test.Test
 class TalkServiceSuperchargedTest @Autowired constructor(
     private val speakerService: SpeakerService,
     private val tagService: TagService,
-    private val talkService: TalkService,
+    @Autowired private val talkService: TalkService,
     override val speakerRepository: SpeakerRepository,
     override val tagRepository: TagRepository,
     override val talkRepository: TalkRepository,
+    service: TalkService,
 ) : RepositorySupport {
 
     @Test
@@ -106,7 +107,7 @@ class TalkServiceSuperchargedTest @Autowired constructor(
 
     @Test
     fun `should create multiple talks with local scoped dsl blocks`() {
-        val talkEntities = talks {
+        talks {
             talk {
                 title = "Kotlin DSL Power"
                 abstractText = "Scope fixtures without temporary variables"
@@ -136,21 +137,23 @@ class TalkServiceSuperchargedTest @Autowired constructor(
                 }
                 tag("spring")
             }
-        }
+        }.persistGraph()
 
-        val createdTalks = talkEntities.persistGraph().map{it.toDto()}
+        //Act
+        val talks = talkService.listTalks()
 
-        createdTalks shouldHaveSize 2
-        createdTalks.map { it.title }.shouldContainInOrder("Kotlin DSL Power", "Spring Testing at Scale")
+        //Assert
+        talks shouldHaveSize 2
+        talks.map { it.title }.shouldContainInOrder("Kotlin DSL Power", "Spring Testing at Scale")
 
-        createdTalks.first().apply {
+        talks.first().apply {
             primarySpeaker.name shouldBe "Ada Lovelace"
             primarySpeaker.email shouldBe "ada@example.com"
             coSpeakers.map { it.name }.shouldContainInOrder("Grace Hopper")
             tags.map { it.name }.shouldContainInOrder("kotlin", "testing")
         }
 
-        createdTalks.last().apply {
+        talks.last().apply {
             primarySpeaker.name shouldBe "Linus Torvalds"
             primarySpeaker.email shouldBe "linus@example.com"
             tags.map { it.name }.shouldContainInOrder("spring")

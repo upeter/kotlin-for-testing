@@ -170,6 +170,7 @@ class TalkServiceTest {
 
     @Test
     void shouldCreateMultipleTalksWithEntityBuildersAndTemporaryVariables() {
+        //Arrange
         Speaker primarySpeakerTalkOne = SpeakerBuilder.aSpeaker()
                 .withName("Ada Lovelace")
                 .withEmail("ada@example.com")
@@ -223,14 +224,18 @@ class TalkServiceTest {
                 .withTags(List.of(springTag))
                 .build();
 
-        List<Talk> savedTalkEntities = TalkGraphPersistence.persistGraph(
+        TalkGraphPersistence.persistGraph(
                 List.of(talkEntityOne, talkEntityTwo),
                 speakerRepository,
                 tagRepository,
                 talkRepository
         );
 
-        List<TalkDto> createdTalks = savedTalkEntities.stream().map(DtoConversions::toDto).toList();
+
+        //Act
+        List<TalkDto> createdTalks = talkService.listTalks();
+
+        //Assert
         TalkDto createdTalkOne = createdTalks.getFirst();
         TalkDto createdTalkTwo = createdTalks.getLast();
 
