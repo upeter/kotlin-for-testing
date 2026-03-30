@@ -8,8 +8,8 @@ import com.conference.website.domain.TalkLevel;
 import com.conference.website.dto.TalkDto;
 import com.conference.website.repository.SpeakerRepository;
 import com.conference.website.repository.TalkRepository;
-import com.conference.website.utils.EntityLifecycleTestUtils;
-import com.conference.website.utils.TransactionTestUtils;
+import com.conference.website.utils.E02_EntityLifecycleTestUtils;
+import com.conference.website.utils.E02_TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureRestTestClient
 @Transactional
 @ActiveProfiles("it")
-class TalkControllerAdvancedIT {
+class E02_TalkControllerAdvancedIT {
 
     @Autowired
     private RestTestClient restTestClient;
@@ -49,14 +49,14 @@ class TalkControllerAdvancedIT {
                 .withEmail("grace." + uniqueSuffix + "@example.com")
                 .build();
 
-        EntityLifecycleTestUtils.doWithSpeaker(speakerRepository, speaker, savedSpeaker -> {
+        E02_EntityLifecycleTestUtils.doWithSpeaker(speakerRepository, speaker, savedSpeaker -> {
             Talk firstTalk = TalkBuilder.aTalk()
                     .withTitle(firstTitle)
                     .withLevel(TalkLevel.INTERMEDIATE)
                     .withPrimarySpeaker(savedSpeaker)
                     .build();
 
-            EntityLifecycleTestUtils.doWithTalk(
+            E02_EntityLifecycleTestUtils.doWithTalk(
                     talkRepository,
                     firstTalk,
                     savedFirstTalk -> {
@@ -66,11 +66,11 @@ class TalkControllerAdvancedIT {
                                 .withPrimarySpeaker(savedSpeaker)
                                 .build();
 
-                        EntityLifecycleTestUtils.doWithTalk(
+                        E02_EntityLifecycleTestUtils.doWithTalk(
                                 talkRepository,
                                 secondTalk,
                                 savedSecondTalk -> {
-                                    List<TalkDto> talksAfterCommit = TransactionTestUtils.withNewTransaction(() ->
+                                    List<TalkDto> talksAfterCommit = E02_TransactionTestUtils.withNewTransaction(() ->
                                             restTestClient.get()
                                             .uri("/api/talks")
                                             .header("X-Transaction-Timeout", "1000")

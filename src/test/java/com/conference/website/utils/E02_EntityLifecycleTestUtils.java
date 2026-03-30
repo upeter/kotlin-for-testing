@@ -7,9 +7,9 @@ import com.conference.website.repository.TalkRepository;
 
 import java.util.function.Function;
 
-public final class EntityLifecycleTestUtils {
+public final class E02_EntityLifecycleTestUtils {
 
-    private EntityLifecycleTestUtils() {
+    private E02_EntityLifecycleTestUtils() {
     }
 
     public static <T> T doWithSpeaker(
@@ -23,7 +23,7 @@ public final class EntityLifecycleTestUtils {
         }
         finally {
             Long speakerId = savedSpeaker.getId();
-            TransactionTestUtils.doInCommittedTransaction(() -> {
+            E02_TransactionTestUtils.doInCommittedTransaction(() -> {
                 if (speakerId != null && speakerRepository.existsById(speakerId)) {
                     speakerRepository.deleteById(speakerId);
                 }
@@ -41,7 +41,7 @@ public final class EntityLifecycleTestUtils {
             return callback.apply(savedTalk);
         }
         finally {
-            TransactionTestUtils.doInCommittedTransaction(() -> {
+            E02_TransactionTestUtils.doInCommittedTransaction(() -> {
                 Long talkId = savedTalk.getId();
                 if (talkId != null && talkRepository.existsById(talkId)) {
                     talkRepository.deleteById(talkId);

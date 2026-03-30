@@ -9,9 +9,6 @@ import java.util.LinkedHashSet
 @DslMarker
 annotation class TalkDslMarker
 
-//fun talk(block: TalkDsl.() -> Unit): Talk =
-//    TalkDsl().apply(block).build()
-
 fun talks(block: TalksDsl.() -> Unit): List<Talk> =
     TalksDsl().apply(block).build()
 
@@ -118,6 +115,13 @@ class SpeakerDsl {
 @TalkDslMarker
 class TagDsl {
     var name: String = "java"
-
     internal fun build(): Tag = Tag(name)
 }
+
+fun tag(block: TagDsl.() -> Unit):Tag {
+    val tagDsl = TagDsl()
+    block(tagDsl)
+    return tagDsl.build()
+}
+
+

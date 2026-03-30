@@ -16,10 +16,6 @@ inline fun <reified T:Any> MvcResult.readBody(): T =
 
 inline fun <reified T:Any> ResultActions.readBody(): T = andReturn().readBody()
 
-fun <T> MockHttpServletRequestBuilder.jsonContent(obj: T): MockHttpServletRequestBuilder =
-    this.contentType(MediaType.APPLICATION_JSON).content(obj.toJson())
-
-fun <T> T.toJson(): String = objectMapper.writeValueAsString(this)
 
 
 fun MockHttpServletRequestBuilder.authorizationHeader(token: String = "default-token"): MockHttpServletRequestBuilder =
@@ -28,5 +24,10 @@ fun MockHttpServletRequestBuilder.authorizationHeader(token: String = "default-t
 fun MockHttpServletRequestBuilder.correlationIdHeader(correlationId: String = "default-correlationId"): MockHttpServletRequestBuilder =
     this.header("X-Correlation-id", correlationId)
 
-fun MockHttpServletRequestBuilder.defaultHeaders(token: String = "default-token", correltionId: String = "default-correlationId "): MockHttpServletRequestBuilder =
-    this.authorizationHeader(token).correlationIdHeader(correltionId)
+fun MockHttpServletRequestBuilder.defaultHeaders(token: String = "default-token", correlationId: String = "default-correlationId "): MockHttpServletRequestBuilder =
+    this.authorizationHeader(token).correlationIdHeader(correlationId)
+
+fun <T> T.toJson(): String = objectMapper.writeValueAsString(this)
+
+fun <T> MockHttpServletRequestBuilder.jsonContent(obj: T): MockHttpServletRequestBuilder =
+    this.contentType(MediaType.APPLICATION_JSON).content(obj.toJson())

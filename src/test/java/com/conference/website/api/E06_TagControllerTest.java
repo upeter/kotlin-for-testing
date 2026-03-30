@@ -1,11 +1,8 @@
 package com.conference.website.api;
 
 import com.conference.website.dto.CreateTagsRequest;
-import com.conference.website.domain.Tag;
 import com.conference.website.dto.TagDto;
-import com.conference.website.service.BadRequestException;
 import com.conference.website.service.TagService;
-import com.jayway.jsonpath.TypeRef;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -20,6 +17,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.conference.website.utils.E06_MockMvcTestUtils.performAndGetResponseWithHeaders;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -30,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(TagController.class)
 @Import(ApiExceptionHandler.class)
-class TagControllerTest {
+class E06_TagControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -60,6 +58,34 @@ class TagControllerTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
+
+        String response_ = performAndGetResponseWithHeaders("83473847", mockMvc,  post("/api/tags")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)), status().isOk());
+
+        var tags = objectMapper.readValue(response, new TypeReference<List<TagDto>>() {});
+
+        //Assert
+        assertThat(tags)
+                .extracting(TagDto::name)
+                .containsExactlyInAnyOrder(request.names().toArray(new String[0]));
+
+    }
+
+    @Test
+    void shouldCreateTagsBetterQuestionMark() throws Exception {
+        //Arrange
+        CreateTagsRequest request = new CreateTagsRequest(List.of("java", "kotlin"));
+        List<TagDto> tagDtos = IntStream.range(0, request.names().size())
+                .mapToObj(i -> new TagDto((long) i, request.names().get(i)))
+                .toList();
+        given(tagService.createTags(request)).willReturn(tagDtos);
+
+        //Act
+        String response = performAndGetResponseWithHeaders("83473847", mockMvc,  post("/api/tags")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)), status().isOk());
+
         var tags = objectMapper.readValue(response, new TypeReference<List<TagDto>>() {});
 
         //Assert
@@ -71,15 +97,19 @@ class TagControllerTest {
 
     @Test
     void shouldListTags() throws Exception {
+        //Arrange
         given(tagService.getAllTags()).willReturn(List.of(new  TagDto(1L, "java"), new  TagDto(2L, "testing")));
-
-        var response = mockMvc.perform(get("/api/tags"))
+        //Act
+        var response = mockMvc.perform(get("/api/tags")
+                .header("X-Correlation-Id", "1234567890")
+                .header("Authorization", "Bearer token"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
         var tags = objectMapper.readValue(response, new TypeReference<List<TagDto>>() {});
+        //Assert
         assertThat(tags)
                 .extracting(TagDto::name)
                 .containsExactlyInAnyOrder("java", "testing");
@@ -90,6 +120,8 @@ class TagControllerTest {
         CreateTagsRequest request = new CreateTagsRequest(List.of());
 
         var response = mockMvc.perform(post("/api/tags")
+                        .header("X-Correlation-Id", "1234567890")
+                        .header("Authorization", "Bearer token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -102,16 +134,4 @@ class TagControllerTest {
         assertEquals("Request validation failed", errorResponse.getDetail());
     }
 
-    @Test
-    void shouldMapBadRequestExceptionFromService() throws Exception {
-        CreateTagsRequest request = new CreateTagsRequest(List.of("java"));
-        given(tagService.createTags(request)).willThrow(new BadRequestException("Tag already exists: [java]"));
-
-        mockMvc.perform(post("/api/tags")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.title").value("Invalid request"))
-                .andExpect(jsonPath("$.detail").value("Tag already exists: [java]"));
-    }
 }

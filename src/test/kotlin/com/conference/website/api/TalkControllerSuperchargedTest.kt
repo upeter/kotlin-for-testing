@@ -75,7 +75,7 @@ class TalkControllerSuperchargedTest @Autowired constructor (
         //Act
         val response = mockMvc.perform(
             post("/api/talks")
-                .defaultHeaders(correltionId = "23232323")
+                .defaultHeaders(correlationId = "23232323")
                 .jsonContent(talkRequest))
                 .andExpect(status().isCreated)
                 .andReturn()
@@ -101,7 +101,7 @@ class TalkControllerSuperchargedTest @Autowired constructor (
         //Act
         val actualTalk = mockMvc.perform(
             post("/api/talks")
-                .defaultHeaders(correltionId = "23232323")
+                .defaultHeaders(correlationId = "23232323")
                 .jsonContent(talkRequest)
         ).andExpect(status().isCreated)
             .readBody<TalkDto>()

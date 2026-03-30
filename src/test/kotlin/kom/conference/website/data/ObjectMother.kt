@@ -64,6 +64,7 @@ fun createScheduleSlotRequest(
 ) = ScheduleSlotRequest(roomName, startTime, endTime)
 
 
+@JvmOverloads
 fun createSpeakerRequest(
     name: String = "Ada Lovelace",
     email: String = "ada@example.com",

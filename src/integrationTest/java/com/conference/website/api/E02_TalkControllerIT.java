@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureRestTestClient
 @Transactional
 @ActiveProfiles("it")
-class TalkControllerIT {
+class E02_TalkControllerIT {
 
     @Autowired
     private RestTestClient restTestClient;

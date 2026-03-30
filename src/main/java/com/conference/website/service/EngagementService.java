@@ -21,7 +21,8 @@ public class EngagementService {
         this.metricsClient = metricsClient;
     }
 
-    public Mono<EngagementCountDto> recordEngagement(long talkId, EngagementUpdateRequest request) {
+    public Mono<EngagementCountDto> recordEngagement(long talkId,
+                                                     EngagementUpdateRequest request) {
         ensureTalkExists(talkId);
 
         Mono<Void> recordViews = request.view()
@@ -38,6 +39,9 @@ public class EngagementService {
                 .timeout(CLIENT_TIMEOUT)
                 .then(getCurrentEngagement(talkId));
     }
+
+
+
 
     public Mono<EngagementCountDto> getCurrentEngagement(long talkId) {
         ensureTalkExists(talkId);

@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.conference.website.utils.MockMvcTestUtils.performAndGetResponseWithHeaders;
+import static com.conference.website.utils.E06_MockMvcTestUtils.performAndGetResponseWithHeaders;
 import static com.conference.website.domain.TalkLevel.ADVANCED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -155,7 +155,7 @@ class TalkControllerTest {
 
         String body = performAndGetResponseWithHeaders("83473847", mockMvc,  post("/api/talks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(talkRequest)));
+                .content(objectMapper.writeValueAsString(talkRequest)), status().isCreated());
 
         var actualTalk = objectMapper.readValue(body, TalkDto.class);
 

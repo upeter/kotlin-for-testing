@@ -4,9 +4,9 @@ import org.springframework.test.context.transaction.TestTransaction;
 
 import java.util.function.Supplier;
 
-public final class TransactionTestUtils {
+public final class E02_TransactionTestUtils {
 
-    private TransactionTestUtils() {
+    private E02_TransactionTestUtils() {
     }
 
     public static void withNewTransaction(Runnable callback) {

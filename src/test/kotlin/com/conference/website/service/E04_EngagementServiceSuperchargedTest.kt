@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 @Transactional
-class EngagementServiceSuperchargedTest @Autowired constructor(
+class E04_EngagementServiceSuperchargedTest @Autowired constructor(
     private val speakerService: SpeakerService,
     private val talkService: TalkService,
     private val engagementService: EngagementService,
@@ -26,7 +26,8 @@ class EngagementServiceSuperchargedTest @Autowired constructor(
     fun `should submit views likes and attends together with coroutines`() = runTest {
         //Arrange
         val speaker = speakerService.createSpeaker(createSpeakerRequest())
-        val talk = talkService.createTalk(createTalkRequest(primarySpeaker = speaker))
+        val talk = talkService.createTalk(
+            createTalkRequest(primarySpeaker = speaker))
 
         //Act
         val payloads = listOf(
@@ -34,8 +35,11 @@ class EngagementServiceSuperchargedTest @Autowired constructor(
             EngagementUpdateRequest(false, true, true),
         )
 
-        val recordedEngagements = payloads.map { engagementService.recordEngagement(talk.id, it) }.awaitAll()
-        val currentEngagement = engagementService.getCurrentEngagement(talk.id).awaitSingle()
+        val recordedEngagements = payloads.map {
+            engagementService.recordEngagement(talk.id, it) }
+            .awaitAll()
+        val currentEngagement = engagementService
+            .getCurrentEngagement(talk.id).awaitSingle()
 
         //Assert
         recordedEngagements shouldHaveSize 2

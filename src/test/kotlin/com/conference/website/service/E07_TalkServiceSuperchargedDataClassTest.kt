@@ -12,7 +12,7 @@ import kotlin.test.Test
 
 @SpringBootTest
 @Transactional
-class TalkServiceSuperchargedDataClassTest @Autowired constructor(
+class E07_TalkServiceSuperchargedDataClassTest @Autowired constructor(
    private val speakerService: SpeakerService,
     private val talkService: TalkService,
 ) {
