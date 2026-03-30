@@ -5,20 +5,18 @@ import com.conference.website.domain.TalkLevel
 import com.conference.website.repository.RepositorySupport
 import com.conference.website.dsl.talks
 import com.conference.website.dto.CreateTalkRequest
-import com.conference.website.dto.DtoConversions
 import com.conference.website.dto.SpeakerDto
 import com.conference.website.dto.TestDtoConversions
-import com.conference.website.dto.toDto
 import com.conference.website.repository.SpeakerRepository
 import com.conference.website.repository.TagRepository
 import com.conference.website.repository.TalkRepository
 import io.kotest.matchers.collections.shouldContainAllInAnyOrder
-import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import kom.conference.website.data.createSpeakerRequest
 import kom.conference.website.dto.CreateSpeakerRequest
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
@@ -26,7 +24,7 @@ import kotlin.test.Test
 
 @SpringBootTest
 @Transactional
-class TalkServiceSuperchargedTest @Autowired constructor(
+class E09_TalkServiceSuperchargedTest @Autowired constructor(
     private val speakerService: SpeakerService,
     private val tagService: TagService,
     @Autowired private val talkService: TalkService,
@@ -38,6 +36,7 @@ class TalkServiceSuperchargedTest @Autowired constructor(
 
     @Test
     fun `should create speaker and talk`() {
+        //Arrange
         val createSpeakerRequest = CreateSpeakerRequest(
             "Ada Lovelace",
             "ada@example.com",
@@ -56,19 +55,20 @@ class TalkServiceSuperchargedTest @Autowired constructor(
             mutableListOf(),
         )
 
-
         val savedTalkDto = talkService.createTalk(createTalkRequest)
-
         val expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id, createTalkRequest) //talkService.getTalk(assertThat(savedTalkDto).isNotNull().actual().id());
 
+        //Act
         val talks = talkService.listTalks()
+
+        //Assert
         assert(savedTalkDto == expectedTalkDto &&
                 savedTalkDto.ratings.isEmpty() &&
-                talks.size == 1
+                talks.size == 2
         )
 
         //Reflection names
-        Assertions.assertThat(expectedTalkDto.primarySpeaker)
+        assertThat(expectedTalkDto.primarySpeaker)
             .extracting(SpeakerDto::name.name, SpeakerDto::email.name, SpeakerDto::company.name, SpeakerDto::bio.name)
             .containsExactly(
                 "Ada Lovelace",

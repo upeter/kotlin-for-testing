@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-class TagServiceTest {
+class E10_TagServiceTest {
 
     @Autowired
     private TagService tagService;
@@ -30,6 +30,14 @@ class TagServiceTest {
     }
 
 
+
+
+
+
+
+
+
+    
     @Test
     void shouldRejectDuplicateTagNames() {
         List<TagDto> createdTags = tagService.createTags(new CreateTagsRequest(List.of("java", "kotlin", "testing")));

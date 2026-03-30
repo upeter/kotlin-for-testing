@@ -16,13 +16,13 @@ import kotlin.test.assertTrue
 
 @SpringBootTest
 @Transactional
-class TagServiceSuperchargedTest @Autowired constructor(
+class E10_TagServiceSuperchargedTest @Autowired constructor(
     private val tagService: TagService,
 ) {
 
     @Test
-    fun `should create tag`() {
-        val createdTags = tagService.createTags(CreateTagsRequest(mutableListOf("Kotlin")))
+    fun `should create tag 2`() {
+        val createdTags = tagService.createTags(CreateTagsRequest(listOf("Kotlin")))
         createdTags shouldHaveSize 1
         createdTags.first().apply {
             name shouldBe "kotlin"
@@ -37,7 +37,7 @@ class TagServiceSuperchargedTest @Autowired constructor(
 
             tagService.createTags(CreateTagsRequest(listOf("Java", "kotlin", "Testing"))).apply {
                 //rely on standard collection methds
-                size shouldBe 3
+                this shouldHaveSize 3
                 forEach { it.id.shouldNotBeNull() }
                 map { it.name }.shouldContainInOrder("java", "kotlin", "testing")
             }

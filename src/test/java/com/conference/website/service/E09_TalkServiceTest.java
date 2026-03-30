@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 import static com.conference.website.data.ObjectMotherKt.createSpeakerRequest;
 import static com.conference.website.data.ObjectMotherKt.createTalkRequest;
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
-class TalkServiceTest {
+class E09_TalkServiceTest {
 
     @Autowired
     private SpeakerService speakerService;
@@ -64,20 +63,16 @@ class TalkServiceTest {
                 List.of(),
                 List.of()
         );
-
-        //Act
         var savedTalkDto = talkService.createTalk(createTalkRequest);
         var expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id(), createTalkRequest);
 
+        //Act
+        var talks = talkService.listTalks();
 
         //Assert
-        var talks = talkService.listTalks();
         assertEquals(1, talks.size());
         assertEquals(savedTalkDto, expectedTalkDto);
         assertThat(savedTalkDto.ratings()).isEmpty();
-
-
-
 
         assertThat(expectedTalkDto.primarySpeaker())
                 .extracting("name", "email", "company", "bio")
