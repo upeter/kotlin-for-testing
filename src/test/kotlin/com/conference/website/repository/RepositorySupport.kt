@@ -24,23 +24,20 @@ interface RepositorySupport {
     fun Speaker.persistWithUndo(): Speaker =  with(scope){
         speakerRepository.persistWithUndo(this@persistWithUndo).first()
     }
-    //fun List<Speaker>.persist(): List<Speaker> = speakerRepository.saveAll(this)
 
     fun List<Talk>.persistGraph(): List<Talk> {
-        val uniqueSpeakers = asSequence()
-            .flatMap { sequenceOf(it.primarySpeaker) + it.coSpeakers.asSequence() }
+        val uniqueSpeakers = flatMap { listOf(it.primarySpeaker) + it.coSpeakers }
             .groupBy { it.email.lowercase(Locale.ROOT) }
             .values
             .map { it.first() }
 
-        val uniqueTags = asSequence()
-            .flatMap { it.tags.asSequence() }
+        val uniqueTags = flatMap { it.tags }
             .groupBy { it.name.lowercase(Locale.ROOT) }
             .values
             .map { it.first() }
 
         speakerRepository.saveAll(uniqueSpeakers)
         tagRepository.saveAll(uniqueTags)
-        return talkRepository.saveAll(this)
+        return talkRepository.saveAll(this).also { talkRepository.flush() }
     }
 }

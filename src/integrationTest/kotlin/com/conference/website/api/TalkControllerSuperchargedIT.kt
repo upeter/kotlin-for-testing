@@ -2,7 +2,6 @@ package com.conference.website.api
 
 import com.conference.website.domain.TalkLevel
 import com.conference.website.dsl.speaker
-import com.conference.website.dsl.talk
 import com.conference.website.dsl.talks
 import com.conference.website.dsl.testDataScope
 import com.conference.website.dsl.withNewTransaction

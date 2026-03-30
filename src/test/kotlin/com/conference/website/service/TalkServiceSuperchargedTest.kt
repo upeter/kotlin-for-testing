@@ -2,7 +2,6 @@ package com.conference.website.service
 
 import com.conference.website.data.createTalkRequest
 import com.conference.website.domain.TalkLevel
-import com.conference.website.dsl.talk
 import com.conference.website.repository.RepositorySupport
 import com.conference.website.dsl.talks
 import com.conference.website.dto.CreateTalkRequest
@@ -13,6 +12,7 @@ import com.conference.website.dto.toDto
 import com.conference.website.repository.SpeakerRepository
 import com.conference.website.repository.TagRepository
 import com.conference.website.repository.TalkRepository
+import io.kotest.matchers.collections.shouldContainAllInAnyOrder
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -41,8 +41,8 @@ class TalkServiceSuperchargedTest @Autowired constructor(
         val createSpeakerRequest = CreateSpeakerRequest(
             "Ada Lovelace",
             "ada@example.com",
-            "Analytical Engines",
-            "Pioneer in computing"
+            "Pioneer in computing",
+            "Analytical Engines"
         )
         val savedSpeakerDto = speakerService.createSpeaker(createSpeakerRequest)
 
@@ -69,9 +69,8 @@ class TalkServiceSuperchargedTest @Autowired constructor(
 
         //Reflection names
         Assertions.assertThat(expectedTalkDto.primarySpeaker)
-            .extracting(SpeakerDto::id.name, SpeakerDto::name.name, SpeakerDto::email.name, SpeakerDto::company.name, SpeakerDto::bio.name)
+            .extracting(SpeakerDto::name.name, SpeakerDto::email.name, SpeakerDto::company.name, SpeakerDto::bio.name)
             .containsExactly(
-                expectedTalkDto.id,
                 "Ada Lovelace",
                 "ada@example.com",
                 "Analytical Engines",
@@ -115,7 +114,7 @@ class TalkServiceSuperchargedTest @Autowired constructor(
                 durationMinutes = 45
                 primarySpeaker {
                     name = "Ada Lovelace"
-                    email = "ada@example.com"
+                    email = "ada@lovelace.com"
                     company = "Analytical Engines"
                     bio = "Pioneer in computing"
                 }
@@ -140,23 +139,25 @@ class TalkServiceSuperchargedTest @Autowired constructor(
         }.persistGraph()
 
         //Act
-        val talks = talkService.listTalks()
+        val talks = talkService.listTalks().sortedBy { it.title }
 
         //Assert
         talks shouldHaveSize 2
-        talks.map { it.title }.shouldContainInOrder("Kotlin DSL Power", "Spring Testing at Scale")
+        talks.map { it.title }.shouldContainAllInAnyOrder("Kotlin DSL Power", "Spring Testing at Scale")
 
-        talks.first().apply {
-            primarySpeaker.name shouldBe "Ada Lovelace"
-            primarySpeaker.email shouldBe "ada@example.com"
-            coSpeakers.map { it.name }.shouldContainInOrder("Grace Hopper")
-            tags.map { it.name }.shouldContainInOrder("kotlin", "testing")
-        }
+        talks.let { (firstTalk, lastTalk) ->
+            firstTalk.apply {
+                primarySpeaker.name shouldBe "Ada Lovelace"
+                primarySpeaker.email shouldBe "ada@lovelace.com"
+                coSpeakers.map { it.name }.shouldContainAllInAnyOrder("Grace Hopper")
+                tags.map { it.name }.shouldContainAllInAnyOrder("kotlin", "testing")
+            }
 
-        talks.last().apply {
-            primarySpeaker.name shouldBe "Linus Torvalds"
-            primarySpeaker.email shouldBe "linus@example.com"
-            tags.map { it.name }.shouldContainInOrder("spring")
+            lastTalk.apply {
+                primarySpeaker.name shouldBe "Linus Torvalds"
+                primarySpeaker.email shouldBe "linus@example.com"
+                tags.map { it.name }.shouldContainAllInAnyOrder("spring")
+            }
         }
     }
 

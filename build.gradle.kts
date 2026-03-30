@@ -32,6 +32,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("io.projectreactor:reactor-core")
     implementation("tools.jackson.module:jackson-module-kotlin:3.0.4")
+    implementation("org.jetbrains.kotlinx:kotlin-jupyter-spring-starter:0.15.0-615")
     compileOnly("org.jspecify:jspecify:1.0.0")
 
     runtimeOnly("com.h2database:h2")

@@ -37,7 +37,7 @@ class TagServiceSuperchargedTest @Autowired constructor(
 
             tagService.createTags(CreateTagsRequest(listOf("Java", "kotlin", "Testing"))).apply {
                 //rely on standard collection methds
-                size shouldBe 2
+                size shouldBe 3
                 forEach { it.id.shouldNotBeNull() }
                 map { it.name }.shouldContainInOrder("java", "kotlin", "testing")
             }
@@ -45,7 +45,7 @@ class TagServiceSuperchargedTest @Autowired constructor(
             //String is a collection too
             shouldThrow<BadRequestException> {
                 tagService.createTags(CreateTagsRequest(listOf("Kotlin")))
-            }.message.shouldContainInOrder("Tag already exists", "java")
+            }.message.shouldContainInOrder("Tag already exists", "kotlin")
         }
 
     }

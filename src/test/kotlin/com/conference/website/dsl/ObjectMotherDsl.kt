@@ -9,14 +9,17 @@ import java.util.LinkedHashSet
 @DslMarker
 annotation class TalkDslMarker
 
-fun talk(block: TalkDsl.() -> Unit): Talk =
-    TalkDsl().apply(block).build()
+//fun talk(block: TalkDsl.() -> Unit): Talk =
+//    TalkDsl().apply(block).build()
 
 fun talks(block: TalksDsl.() -> Unit): List<Talk> =
     TalksDsl().apply(block).build()
 
 fun speaker(block: SpeakerDsl.() -> Unit): Speaker =
     SpeakerDsl().apply(block).build()
+
+
+
 
 @TalkDslMarker
 class TalksDsl {
@@ -25,6 +28,9 @@ class TalksDsl {
     @Deprecated("Nested talks { } blocks are not supported", level = DeprecationLevel.ERROR)
     fun talks(block: TalksDsl.() -> Unit): Nothing =
         error("Nested talks { } blocks are not supported")
+
+    fun talk(block: TalkDsl.() -> Unit): Talk =
+        TalkDsl().apply(block).build().apply { talks += this }
 
     internal fun build(): List<Talk> = talks.toList()
 }
