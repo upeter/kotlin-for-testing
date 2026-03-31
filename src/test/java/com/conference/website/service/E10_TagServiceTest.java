@@ -23,7 +23,9 @@ class E10_TagServiceTest {
 
     @Test
     void shouldCreateTag() {
-        List<TagDto> createdTags = tagService.createTags(new CreateTagsRequest(List.of("Java")));
+        List<TagDto> createdTags = tagService.
+           createTags(new CreateTagsRequest(List.of("Java")));
+
         assertEquals(1, createdTags.size());
         assertEquals("java", createdTags.getFirst().name());
         assertNotNull(createdTags.getFirst().id());
@@ -37,20 +39,41 @@ class E10_TagServiceTest {
 
 
 
-    
+
+
+
+
+
+
+
+
+
+
     @Test
     void shouldRejectDuplicateTagNames() {
-        List<TagDto> createdTags = tagService.createTags(new CreateTagsRequest(List.of("java", "kotlin", "testing")));
-        assertThat(createdTags)
-                .hasSize(3)
-                .allSatisfy(tag -> assertThat(tag.id()).isNotNull())
-                .extracting(TagDto::name)
-                .containsExactlyInAnyOrder("java", "kotlin", "testing") ;
+        List<TagDto> createdTags = tagService
+           .createTags(new CreateTagsRequest(
+              List.of("java", "kotlin")));
 
-        assertThatThrownBy(() -> tagService.createTags(new CreateTagsRequest(List.of("Java"))))
+        assertThat(createdTags)
+           .hasSize(3)
+                .allSatisfy(tag ->
+                   assertThat(tag.id()).isNotNull())
+                .extracting(TagDto::name)
+           .containsExactlyInAnyOrder("java", "kotlin") ;
+
+        assertThatThrownBy(() -> tagService
+           .createTags(new CreateTagsRequest(List.of("Java"))))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Tag already exists")
                 .hasMessageContaining("java");
     }
 
 }
+
+
+
+
+
+
+

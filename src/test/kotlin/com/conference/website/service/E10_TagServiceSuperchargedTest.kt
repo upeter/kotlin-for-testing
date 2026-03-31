@@ -21,54 +21,70 @@ class E10_TagServiceSuperchargedTest @Autowired constructor(
 ) {
 
     @Test
-    fun `should create tag 2`() {
+    fun `should create tag`() {
         val createdTags = tagService.createTags(CreateTagsRequest(listOf("Kotlin")))
         createdTags shouldHaveSize 1
         createdTags.first().apply {
             name shouldBe "kotlin"
             id.shouldNotBeNull()
         }
+
+
     }
 
-    @Test
-    fun `should reject duplicate tag names with supercharged assertions`() {
-        //assertSoftly can wrap multiple assertion blocks
-        assertSoftly {
 
-            tagService.createTags(CreateTagsRequest(listOf("Java", "kotlin", "Testing"))).apply {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Test
+    fun `should reject duplicate tag names`() {
+        assertSoftly {
+            tagService.createTags(
+                CreateTagsRequest(
+                    listOf("Java", "kotlin", "Testing")
+                )
+            ).apply {
                 //rely on standard collection methds
                 this shouldHaveSize 3
                 forEach { it.id.shouldNotBeNull() }
                 map { it.name }.shouldContainInOrder("java", "kotlin", "testing")
-            }
 
-            //String is a collection too
-            shouldThrow<BadRequestException> {
-                tagService.createTags(CreateTagsRequest(listOf("Kotlin")))
-            }.message.shouldContainInOrder("Tag already exists", "kotlin")
+                //String is a collection too
+                shouldThrow<BadRequestException> {
+                    tagService.createTags(CreateTagsRequest(listOf("Kotlin")))
+                }.message.shouldContainInOrder("Tag already exists", "kotlin")
+            }
         }
 
     }
 
-    @Test
-    fun `should reject duplicate tag single names with supercharged assertions`() {
-        assertSoftly {
-            tagService.createTags(CreateTagsRequest(listOf("kotlin"))).first().apply {
-                id.shouldNotBeNull()
-                name shouldBe "kotlin"
-            }
-        }
-        shouldThrow<BadRequestException> {
-            tagService.createTags(CreateTagsRequest(listOf("kotlin")))
-        }.message.let { message ->
-            assertTrue(
-                message != null &&
-                        "Tag already exists" in message &&
-                        "kotlin" in message,
-            )
-        }
 
 
 
-    }
+
+
 }
