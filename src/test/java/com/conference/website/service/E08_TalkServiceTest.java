@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.conference.website.data.ObjectMotherKt.createSpeakerRequest;
-import static com.conference.website.data.ObjectMotherKt.createTalkRequest;
+import static com.conference.website.data.E08_ObjectMotherKt.createSpeakerRequest;
+import static com.conference.website.data.E08_ObjectMotherKt.createTalkRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
