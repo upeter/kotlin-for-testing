@@ -17,6 +17,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.conference.website.utils.E06_MockMvcTestUtils.objectMapper;
 import static com.conference.website.utils.E06_MockMvcTestUtils.performAndGetResponseWithHeaders;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,36 +42,37 @@ class E05_TagControllerTest {
     @Test
     void shouldCreateTags() throws Exception {
         //Arrange
-        CreateTagsRequest request = new CreateTagsRequest(List.of("java", "kotlin"));
-        List<TagDto> tagDtos = IntStream.range(0, request.names().size())
-                .mapToObj(i -> new TagDto((long) i, request.names().get(i)))
-                .toList();
-        given(tagService.createTags(request)).willReturn(tagDtos);
+        CreateTagsRequest request = new CreateTagsRequest(
+           List.of("java", "kotlin"));
+        List<TagDto> expectedTags =
+           IntStream.range(0, request.names().size())
+              .mapToObj(i ->
+                 new TagDto((long) i, request.names().get(i)))
+              .toList();
+
+        given(tagService.createTags(request)).willReturn(expectedTags);
 
         //Act
         var response = mockMvc.perform(post("/api/tags")
-                        .header("X-Correlation-Id", "1234567890")
-                        .header("Authorization", "Bearer token")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+              .header("X-Correlation-Id", "1234567890")
+              .header("Authorization", "Bearer token")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(request)))
+           .andExpect(status().isCreated())
+           .andReturn()
+           .getResponse()
+           .getContentAsString();
 
-        String response_ = performAndGetResponseWithHeaders("83473847", mockMvc,  post("/api/tags")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)), status().isOk());
-
-
-        var tags = objectMapper.readValue(response, new TypeReference<List<TagDto>>() {});
+        var createdTags = objectMapper.readValue(response,
+           new TypeReference<List<TagDto>>() {});
 
         //Assert
-        assertThat(tags)
-                .extracting(TagDto::name)
-                .containsExactlyInAnyOrder(request.names().toArray(new String[0]));
+        assertThat(createdTags)
+           .extracting(TagDto::name)
+           .containsExactlyInAnyOrder(request.names().toArray(new String[0]));
 
     }
+
 
     @Test
     void shouldCreateTagsBetterQuestionMark() throws Exception {
@@ -84,7 +86,7 @@ class E05_TagControllerTest {
         //Act
         String response = performAndGetResponseWithHeaders("83473847", mockMvc,  post("/api/tags")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)), status().isOk());
+                .content(objectMapper.writeValueAsString(request)), status().isCreated());
 
         var tags = objectMapper.readValue(response, new TypeReference<List<TagDto>>() {});
 

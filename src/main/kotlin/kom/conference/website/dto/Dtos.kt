@@ -86,17 +86,18 @@ data class ScheduleSlotRequest(
     val endTime: LocalDateTime,
 )
 
-@JvmRecord
-data class CreateSpeakerRequest(
-    @field:NotBlank val name: String,
-    @field:NotBlank @field:Email val email: String,
-    @field:NotBlank val bio: String,
-    @field:NotBlank val company: String? = null,
-)
 
 @JvmRecord
 data class CreateRatingRequest(
     @field:NotBlank val reviewerName: String,
     @field:Min(1) @field:Max(5) val score: Int,
     @field:NotBlank val comment: String? = null,
+)
+
+@JvmRecord
+data class CreateSpeakerRequest(
+    @field:NotBlank val name: String,
+    @field:NotBlank @field:Email val email: String,
+    @field:NotBlank val bio: String,
+    @field:NotBlank val company: String? = null,
 )

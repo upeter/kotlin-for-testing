@@ -5,6 +5,7 @@ import com.conference.website.data.createSpeakerDto
 import com.conference.website.data.createTalkDto
 import com.conference.website.data.createTalkRequest
 import com.conference.website.domain.TalkLevel
+import com.conference.website.dsl.speaker
 import com.conference.website.dsl.talks
 import com.conference.website.repository.RepositorySupport
 import com.conference.website.repository.SpeakerRepository
@@ -59,6 +60,11 @@ class E03_TalkServiceSuperchargedTest @Autowired constructor(
                 tag("spring")
             }
         }.persistGraph()
+
+
+
+
+
 
         //Act
         val talks = talkService.listTalks().sortedBy { it.title }

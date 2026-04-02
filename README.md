@@ -32,6 +32,30 @@ or with Maven:
 
 Integration tests use PostgreSQL Testcontainers (`jdbc:tc:` datasource URL), so Docker must be available.
 
+## Talk subject → test mapping
+
+The talk content is organized by numbered subjects. In the codebase, the same number is used as a file prefix:
+
+- Subject `N` maps to files named `E0N_...`
+- Tests use `...Test` / `...IT` suffixes
+- Supporting utilities for a subject (DSL/helpers/object mothers) may use the same `E0N_` prefix without `Test` in the filename
+
+Use this index when navigating:
+
+| # | Subject | Marker to search |
+|---|---------|------------------|
+| 1 | Kotlin Matcher DSLs | `E10_`           |
+| 2 | Power Assert | `E09_`           |
+| 3 | Test Data Builders | `E08_`           |
+| 4 | Test Data Mutators | `E07_`           |
+| 5 | Custom Test Extensions | `E06_`           |
+| 6 | Serialization Utilities | `E05_`           |
+| 7 | Coroutines | `E04_`           |
+| 8 | Test Data Creation DSL | `E03_`           |
+| 9 | Test Data Lifecycle DSL | `E02_`           |
+| 10 | Kotlin Notebooks | `E01_`           |
+
+
 ## Initial API surface
 
 - `POST /api/speakers`

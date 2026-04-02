@@ -26,12 +26,10 @@ import kotlin.test.Test
 @Transactional
 class E08_TalkServiceSuperchargedTest @Autowired constructor(
     private val speakerService: SpeakerService,
-    private val tagService: TagService,
     private val talkService: TalkService,
     override val speakerRepository: SpeakerRepository,
     override val tagRepository: TagRepository,
     override val talkRepository: TalkRepository,
-    service: TalkService,
 ) : RepositorySupport {
 
 
@@ -42,9 +40,14 @@ class E08_TalkServiceSuperchargedTest @Autowired constructor(
             name = "Jack Vanilla",
             email = "jva@example.com"
         )
-        val savedSpeakerDto = speakerService.createSpeaker(createSpeakerRequest)
-        //save approach, because the speaker is required, which in a builder cannot be enforced
-        val createTalkRequest = createTalkRequest(primarySpeaker = savedSpeakerDto, durationMinutes = 20)
+        val savedSpeakerDto = speakerService
+                .createSpeaker(createSpeakerRequest)
+
+        //safe approach, because the speaker is required,
+        // which in a builder cannot be enforced
+        val createTalkRequest = createTalkRequest(
+                primarySpeaker = savedSpeakerDto,
+                durationMinutes = 20)
 
         //Act
         val savedTalkDto = talkService.createTalk(createTalkRequest)

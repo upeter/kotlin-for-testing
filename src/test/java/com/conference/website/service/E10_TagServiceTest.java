@@ -23,12 +23,15 @@ class E10_TagServiceTest {
 
     @Test
     void shouldCreateTag() {
-        List<TagDto> createdTags = tagService.
-           createTags(new CreateTagsRequest(List.of("Java")));
+        //Arrange, Act
+        List<TagDto> createdTags = tagService.createTags(
+           new CreateTagsRequest(List.of("Java")));
 
-        assertEquals(1, createdTags.size());
-        assertEquals("java", createdTags.getFirst().name());
-        assertNotNull(createdTags.getFirst().id());
+        //Assert
+        assertEquals(2, createdTags.size());
+        var firstTag = createdTags.getFirst();
+        assertEquals("java", firstTag.name());
+        assertNotNull(firstTag.id());
     }
 
 

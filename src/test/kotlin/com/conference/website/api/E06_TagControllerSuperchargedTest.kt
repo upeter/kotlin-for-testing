@@ -4,15 +4,16 @@ import com.conference.website.data.createTagDto
 import com.conference.website.data.createTagsRequest
 import com.conference.website.dto.CreateTagsRequest
 import com.conference.website.service.TagService
+import com.conference.website.utils.authorizationHeader
+import com.conference.website.utils.defaultHeaders
+import com.conference.website.utils.jsonContent
 import com.conference.website.utils.objectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import kom.conference.website.dto.TagDto
-import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.BDDMockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
@@ -39,27 +40,35 @@ class E06_TagControllerSuperchargedTest @Autowired constructor (
     @Test
     fun `POST to tags should create tags`() {
         //Arrange
-        val tagRequest = createTagsRequest("java", "kotlin")
-        val expectedTags = tagRequest.names.mapIndexed { index, tag ->  createTagDto(index.toLong(), name = tag)  }
-        every { tagService.createTags(tagRequest) } returns expectedTags
+        val request = createTagsRequest("java", "kotlin")
+        val expectedTags = request.names.mapIndexed { index, tag ->
+            createTagDto(index.toLong(), name = tag)
+        }
+
+        every { tagService.createTags(request) } returns expectedTags
 
         //Act
         val response = mockMvc.perform(post("/api/tags")
-            .header("X-Correlation-Id", "1234567890")
-            .header("Authorization", "Bearer token")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(tagRequest))
+            .defaultHeaders(token = "my-token")
+            .jsonContent(request)
         )
         .andExpect(status().isCreated)
         .andReturn()
         .response
         .contentAsString
 
-        val createdTags = objectMapper.readValue(response, object : TypeReference<List<TagDto>>() {})
+        val createdTags = objectMapper
+            .readValue(response,
+                object : TypeReference<List<TagDto>>() {})
 
         //Assert
-        createdTags.map { it.name } shouldContainInOrder tagRequest.names
+        createdTags.map { it.name } shouldContainInOrder request.names
     }
+
+
+
+
+
 
     @Test
     fun `should list tags`() {

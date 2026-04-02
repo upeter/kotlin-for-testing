@@ -23,19 +23,19 @@ class E04_EngagementServiceSuperchargedTest @Autowired constructor(
 ) {
 
     @Test
-    fun `should submit views likes and attends together with coroutines`() = runTest {
+    fun `should record engagements and read counts`() = runTest {
         //Arrange
-        val speaker = speakerService.createSpeaker(createSpeakerRequest())
+        val speaker = speakerService.createSpeaker(
+            createSpeakerRequest())
         val talk = talkService.createTalk(
             createTalkRequest(primarySpeaker = speaker))
 
-        //Act
-        val payloads = listOf(
+        val engagements = listOf(
             EngagementUpdateRequest(true, true, false),
-            EngagementUpdateRequest(false, true, true),
-        )
+            EngagementUpdateRequest(false, true, true),)
 
-        val recordedEngagements = payloads.map {
+        //Act
+        val recordedEngagements = engagements.map {
             engagementService.recordEngagement(talk.id, it) }
             .awaitAll()
         val currentEngagement = engagementService
@@ -43,7 +43,21 @@ class E04_EngagementServiceSuperchargedTest @Autowired constructor(
 
         //Assert
         recordedEngagements shouldHaveSize 2
-        currentEngagement shouldBe EngagementCountDto(talk.id, 1L, 2L, 1L)
+        currentEngagement shouldBe
+                EngagementCountDto(talk.id, 1L, 2L, 1L)
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

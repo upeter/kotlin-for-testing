@@ -22,6 +22,7 @@ public final class E02_EntityLifecycleTestUtils {
             return callback.apply(savedSpeaker);
         }
         finally {
+            //always ensure the speaker is deleted
             Long speakerId = savedSpeaker.getId();
             E02_TransactionTestUtils.doInCommittedTransaction(() -> {
                 if (speakerId != null && speakerRepository.existsById(speakerId)) {

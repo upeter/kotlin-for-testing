@@ -20,14 +20,30 @@ class E07_TalkServiceSuperchargedDataClassTest @Autowired constructor(
     @Test
     fun `should create speaker and talk with object mother`() {
         //Arrange
-        val primarySpeakerRequest = createSpeakerRequest(company = "Tst AG",)
-        //copy approach: very flexible
-        val coSpeakerRequest = primarySpeakerRequest.copy(name = "Sec Undo", email = "sec.undo@example.com")
-        //Collection spice
-        val(primarySpeakerDto, coSpeakerDto) = listOf(primarySpeakerRequest, coSpeakerRequest).map(speakerService::createSpeaker)
+        val primarySpeakerRequest = createSpeakerRequest(
+            company = "Tst AG",)
 
-        //save approach, because the speaker is required, which in a builder cannot be enforced
-        val createTalkRequest = createTalkRequest(primarySpeaker = primarySpeakerDto, coSpeakers = listOf(coSpeakerDto))
+        //copy approach: very flexible
+        val coSpeakerRequest = primarySpeakerRequest.copy(
+                name = "Sec Undo",
+                email = "sec.undo@example.com")
+
+        //Collection spice
+        val(primarySpeakerDto, coSpeakerDto) =
+            listOf(primarySpeakerRequest, coSpeakerRequest)
+                .map(speakerService::createSpeaker)
+
+        val createTalkRequest = createTalkRequest(
+            primarySpeaker = primarySpeakerDto,
+            coSpeakers = listOf(coSpeakerDto))
+
+
+
+
+
+
+
+
 
         //Act
         val savedTalkDto = talkService.createTalk(createTalkRequest)
@@ -45,13 +61,3 @@ class E07_TalkServiceSuperchargedDataClassTest @Autowired constructor(
 
 
 }
-
-//https://youtrack.jetbrains.com/projects/KTIJ/issues/KTIJ-32562/Power-assert-compiler-plugin-cant-be-used-by-JPS-if-imported-from-a-maven-based-project
-/**
- *             ScheduleSlotRequest(
- *                 "Room B",
- *                 LocalDateTime.of(2026, 4, 8, 14, 0),
- *                 LocalDateTime.of(2026, 4, 8, 15, 0)
- *             )
- *
- */

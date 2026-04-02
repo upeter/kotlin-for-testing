@@ -100,6 +100,11 @@ class E03_TalkServiceTest {
         );
 
 
+
+
+
+        
+
         //Act
         List<TalkDto> createdTalks = talkService.listTalks();
 

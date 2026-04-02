@@ -9,29 +9,11 @@ import java.util.concurrent.atomic.AtomicReference
  * this is the replacement of the nested: doWith... approach
  */
 
-class TestDataScope2 : AutoCloseable {
-    private val finalizers = mutableListOf<() -> Unit>()
-
-    fun <T : Any> T.registerCleanup(cleanup: (T) -> Unit): T =
-        this.apply { finalizers.add({ cleanup(this) }) }
-
-    fun <T : Any> JpaRepository<T, *>.persistWithUndo(entities: List<T>): List<T> =
-        saveAll(entities).apply { registerCleanup({deleteAll(entities)}) }
-
-    override fun close() = finalizers.reversed().forEach { it.invoke() }
-
-}
-
-inline fun testDataScope2(block: TestDataScope2.() -> Unit) =
-    TestDataScope2().use(block)
-
-//fun TestDataScope2.persistAndPostCleanup
-
-
 class TestDataScope : AutoCloseable {
     typealias CleanupFunction = () -> Unit
 
-    private val finalizers: AtomicReference<List<CleanupFunction>> = AtomicReference(emptyList())
+    private val finalizers: AtomicReference<List<CleanupFunction>> =
+        AtomicReference(emptyList())
 
     fun <T : Any> T.registerCleanup(cleanup: (T) -> Unit): T =
         this.apply { finalizers.updateAndGet { it + { cleanup(this) } } }
@@ -40,16 +22,19 @@ class TestDataScope : AutoCloseable {
         persistWithUndo(entities.toList())
 
     fun <T : Any> JpaRepository<T, *>.persistWithUndo(entities: List<T>): List<T> =
-        if (entities.isEmpty()) emptyList() else saveAll(entities).also { addToFinalizer(it) }
+        if (entities.isEmpty()) emptyList()
+        else saveAll(entities).also { addToFinalizer(it) }
 
     private fun <T : Any> JpaRepository<T, *>.addToFinalizer(entities: List<T>) =
         finalizers.updateAndGet { it + { deleteAll(entities) } }
 
     override fun close() {
-        finalizers.get().reversed().fold(null as Throwable?) { exception, finalizer ->
-            val finalizeException = runCatching { finalizer.invoke() }.exceptionOrNull()
-            if (exception != null) exception.add(finalizeException) else finalizeException
-
+        finalizers.get().reversed()
+            .fold(null as Throwable?) { exception, finalizer ->
+                val finalizeException = runCatching { finalizer.invoke() }
+                    .exceptionOrNull()
+            if (exception != null) exception.add(finalizeException)
+            else finalizeException
         }?.let { throw it }
     }
 
@@ -70,9 +55,10 @@ inline fun testDataScope(block: TestDataScope.() -> Unit) =
  */
 fun <T> TestDataScope.withNewTransaction(block: () -> T): T {
     TestTransaction.flagForCommit()
+    val result = block()
     TestTransaction.end()
     TestTransaction.start()
     TestTransaction.flagForCommit()
-    return block()
+    return result
 }
 

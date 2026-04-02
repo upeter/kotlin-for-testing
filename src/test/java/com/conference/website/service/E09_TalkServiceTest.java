@@ -27,15 +27,6 @@ class E09_TalkServiceTest {
     private SpeakerService speakerService;
 
     @Autowired
-    private SpeakerRepository speakerRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
-    private TalkRepository talkRepository;
-
-    @Autowired
     private TalkService talkService;
 
 
@@ -70,14 +61,32 @@ class E09_TalkServiceTest {
         assertEquals(savedTalkDto, expectedTalkDto);
         assertThat(savedTalkDto.ratings()).isEmpty();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         assertThat(expectedTalkDto.primarySpeaker())
-                .extracting("name", "email", "company", "bio")
-                .containsExactly(
-                        "Ada Lovelace",
-                        "ada@example.com",
-                        "Analytical Engines",
-                        "Pioneer in computing"
-                );
+           .extracting("name", "email", "company", "bio")
+           .containsExactly(
+              "Ada Lovelace",
+              "ada@example.com",
+              "Analytical Engines",
+              "Pioneer in computing");
 
 
     }

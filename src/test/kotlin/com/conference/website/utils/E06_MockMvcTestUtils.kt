@@ -11,23 +11,77 @@ import tools.jackson.module.kotlin.readValue
 
 val objectMapper: ObjectMapper = jacksonObjectMapper()
 
-inline fun <reified T:Any> MvcResult.readBody(): T =
-    objectMapper.readValue<T>(response.contentAsByteArray).shouldNotBeNull()
-
-inline fun <reified T:Any> ResultActions.readBody(): T = andReturn().readBody()
-
-
-
-fun MockHttpServletRequestBuilder.authorizationHeader(token: String = "default-token"): MockHttpServletRequestBuilder =
+fun MockHttpServletRequestBuilder.authorizationHeader(
+        token: String = "default-token"): MockHttpServletRequestBuilder =
     this.header("Authorization", "Bearer $token")
 
-fun MockHttpServletRequestBuilder.correlationIdHeader(correlationId: String = "default-correlationId"): MockHttpServletRequestBuilder =
+fun MockHttpServletRequestBuilder.correlationIdHeader(
+        correlationId: String = "default-correlationId"): MockHttpServletRequestBuilder =
     this.header("X-Correlation-id", correlationId)
 
-fun MockHttpServletRequestBuilder.defaultHeaders(token: String = "default-token", correlationId: String = "default-correlationId "): MockHttpServletRequestBuilder =
+fun MockHttpServletRequestBuilder.defaultHeaders(
+        token: String = "default-token",
+        correlationId: String = "default-correlationId "): MockHttpServletRequestBuilder =
     this.authorizationHeader(token).correlationIdHeader(correlationId)
 
-fun <T> T.toJson(): String = objectMapper.writeValueAsString(this)
+
 
 fun <T> MockHttpServletRequestBuilder.jsonContent(obj: T): MockHttpServletRequestBuilder =
     this.contentType(MediaType.APPLICATION_JSON).content(obj.toJson())
+
+fun <T> T.toJson(): String = objectMapper.writeValueAsString(this)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+inline fun <reified T:Any> MvcResult.readBody(): T =
+    objectMapper.readValue<T>(response.contentAsByteArray)
+        .shouldNotBeNull()
+
+inline fun <reified T:Any> ResultActions.readBody(): T =
+    andReturn().readBody()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

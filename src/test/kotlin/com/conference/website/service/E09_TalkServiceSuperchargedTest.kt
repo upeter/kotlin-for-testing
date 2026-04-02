@@ -26,16 +26,10 @@ import kotlin.test.Test
 @Transactional
 class E09_TalkServiceSuperchargedTest @Autowired constructor(
     private val speakerService: SpeakerService,
-    private val tagService: TagService,
-    @Autowired private val talkService: TalkService,
-    override val speakerRepository: SpeakerRepository,
-    override val tagRepository: TagRepository,
-    override val talkRepository: TalkRepository,
-    service: TalkService,
-) : RepositorySupport {
+    private val talkService: TalkService)  {
 
     @Test
-    fun `should create speaker and talk`() {
+    fun `should create speaker and talk correctly`() {
         //Arrange
         val createSpeakerRequest = CreateSpeakerRequest(
             "Ada Lovelace",
@@ -67,108 +61,36 @@ class E09_TalkServiceSuperchargedTest @Autowired constructor(
                 talks.size == 2
         )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         //Reflection names
         assertThat(expectedTalkDto.primarySpeaker)
-            .extracting(SpeakerDto::name.name, SpeakerDto::email.name, SpeakerDto::company.name, SpeakerDto::bio.name)
+            .extracting(SpeakerDto::name.name, SpeakerDto::email.name,
+                SpeakerDto::company.name, SpeakerDto::bio.name)
             .containsExactly(
                 "Ada Lovelace",
                 "ada@example.com",
                 "Analytical Engines",
-                "Pioneer in computing"
-            )
+                "Pioneer in computing")
 
-    }
-
-    @Test
-    fun `should create speaker and talk with object mother`() {
-        //Arrange
-        val createSpeakerRequest = createSpeakerRequest(
-            name = "Jack Vanilla",
-            email = "jva@example.com"
-        )
-        val savedSpeakerDto = speakerService.createSpeaker(createSpeakerRequest)
-        //save approach, because the speaker is required, which in a builder cannot be enforced
-        val createTalkRequest = createTalkRequest(primarySpeaker = savedSpeakerDto)
-
-        //Act
-        val savedTalkDto = talkService.createTalk(createTalkRequest)
-
-        //Assert
-        //a bit clumsy
-        val expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id, createTalkRequest)
-
-        val talks = talkService.listTalks()
-        assert(savedTalkDto == expectedTalkDto &&
-                talks.size == 1
-        )
-    }
-
-
-    @Test
-    fun `should create multiple talks with local scoped dsl blocks`() {
-        talks {
-            talk {
-                title = "Kotlin DSL Power"
-                abstractText = "Scope fixtures without temporary variables"
-                level = TalkLevel.INTERMEDIATE
-                durationMinutes = 45
-                primarySpeaker {
-                    name = "Ada Lovelace"
-                    email = "ada@lovelace.com"
-                    company = "Analytical Engines"
-                    bio = "Pioneer in computing"
-                }
-                coSpeaker {
-                    name = "Grace Hopper"
-                }
-                tags("kotlin", "testing")
-            }
-            talk {
-                title = "Spring Testing at Scale"
-                abstractText = "Keep setup readable while growing scenarios"
-                level = TalkLevel.ADVANCED
-                durationMinutes = 60
-                primarySpeaker {
-                    name = "Linus Torvalds"
-                    email = "linus@example.com"
-                    company = "Kernel Inc"
-                    bio = "Created Linux"
-                }
-                tag("spring")
-            }
-        }.persistGraph()
-
-        //Act
-        val talks = talkService.listTalks().sortedBy { it.title }
-
-        //Assert
-        talks shouldHaveSize 2
-        talks.map { it.title }.shouldContainAllInAnyOrder("Kotlin DSL Power", "Spring Testing at Scale")
-
-        talks.let { (firstTalk, lastTalk) ->
-            firstTalk.apply {
-                primarySpeaker.name shouldBe "Ada Lovelace"
-                primarySpeaker.email shouldBe "ada@lovelace.com"
-                coSpeakers.map { it.name }.shouldContainAllInAnyOrder("Grace Hopper")
-                tags.map { it.name }.shouldContainAllInAnyOrder("kotlin", "testing")
-            }
-
-            lastTalk.apply {
-                primarySpeaker.name shouldBe "Linus Torvalds"
-                primarySpeaker.email shouldBe "linus@example.com"
-                tags.map { it.name }.shouldContainAllInAnyOrder("spring")
-            }
-        }
     }
 
 }
-
-//https://youtrack.jetbrains.com/projects/KTIJ/issues/KTIJ-32562/Power-assert-compiler-plugin-cant-be-used-by-JPS-if-imported-from-a-maven-based-project
-/**
- *             ScheduleSlotRequest(
- *                 "Room B",
- *                 LocalDateTime.of(2026, 4, 8, 14, 0),
- *                 LocalDateTime.of(2026, 4, 8, 15, 0)
- *             )
- *
- */

@@ -48,8 +48,21 @@ class E05_TagControllerSuperchargedTest @Autowired constructor (
         ).andExpect(status().isCreated)
             .readBody<List<TagDto>>()
 
+
         //Assert
         createdTags.map { it.name } shouldContainInOrder tagRequest.names
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+

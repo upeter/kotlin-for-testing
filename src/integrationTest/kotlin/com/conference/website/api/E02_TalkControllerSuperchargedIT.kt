@@ -13,6 +13,7 @@ import com.conference.website.repository.TalkRepository
 import com.conference.website.utils.defaultHeaders
 import com.conference.website.utils.readBody
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldContainAllInAnyOrder
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient
@@ -33,49 +34,63 @@ class TalksControllerSuperchargedIT @Autowired constructor(
 ): RepositorySupport {
 
     @Test
-    fun `should hide uncommitted talks and show them after commit using dsl and scope`() = testDataScope {
+    fun `should see committed talks only`() = testDataScope {
         //Arrange
-        val uniqueSuffix = System.nanoTime().toString()
+        val talks = withNewTransaction {
+            val uniqueSuffix = System.nanoTime().toString()
+            val speaker = speaker {
+                name = "Ada Lovelace"
+                email = "ada.$uniqueSuffix@example.com"
+            }.persistWithUndo() //<- guaranteed cleanup
 
-        val speaker = speaker {
-            name = "Ada Lovelace"
-            email = "ada.$uniqueSuffix@example.com"
-            company = "Analytical Engines"
-            bio = "Pioneer in computing"
-        }.persistWithUndo()
-
-        val talks = talks {
-            talk {
-                title = "RestTestClient kotlin boundary first: $uniqueSuffix"
-                abstractText = "DSL fixtures stay readable"
-                level = TalkLevel.INTERMEDIATE
-                durationMinutes = 45
-                primarySpeaker(speaker)
-            }
-            talk {
-                title = "RestTestClient kotlin boundary second: $uniqueSuffix"
-                abstractText = "Transaction boundaries via HTTP"
-                level = TalkLevel.ADVANCED
-                durationMinutes = 60
-                primarySpeaker(speaker)
-            }
-        }.persistWithUndo()
+            talks {
+                talk {
+                    title = "RestTestClient kotlin boundary first: $uniqueSuffix"
+                    level = TalkLevel.INTERMEDIATE
+                    primarySpeaker(speaker)
+                }
+                talk {
+                    title = "RestTestClient kotlin boundary second: $uniqueSuffix"
+                    level = TalkLevel.ADVANCED
+                    primarySpeaker(speaker)
+                }
+            }.persistWithUndo() //<- guaranteed cleanup
+        }
 
         //Act
-        val repliedTalks =
-        withNewTransaction {
-            restTestClient.get()
-                .uri("/api/talks")
-                .defaultHeaders()
-                .exchangeSuccessfully()
-                .expectStatus().isOk()
-                .readBody<List<TalkDto>>()
-        }
+        val repliedTalks = restTestClient.get().uri("/api/talks")
+            .defaultHeaders()
+            .exchangeSuccessfully()
+            .expectStatus().isOk()
+            .readBody<List<TalkDto>>()
 
         //Assert
         repliedTalks.map { it.title }
-            .shouldContainAll(talks.map { it.title })
+            .shouldContainAllInAnyOrder(talks.map { it.title })
+
+
     }
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

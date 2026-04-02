@@ -2,6 +2,7 @@ package com.conference.website.service;
 
 import com.conference.website.data.builders.*;
 import com.conference.website.dto.*;
+import kom.conference.website.dto.CreateSpeakerRequest;
 import com.conference.website.repository.SpeakerRepository;
 import com.conference.website.repository.TagRepository;
 import com.conference.website.repository.TalkRepository;
@@ -39,7 +40,8 @@ class E07_TalkServiceTest {
     @Test
     void shouldCreateTalkAndSpeakerCorrectly_NoCopy() {
         //Arrange
-        var primarySpeakerRequest = CreateSpeakerRequestBuilder.aCreateSpeakerRequest().withCompany("Tst AG").build();
+        var primarySpeakerRequest = CreateSpeakerRequestBuilder
+           .aCreateSpeakerRequest().withCompany("Tst AG").build();
 
         var coSpeakerRequest0 = new CreateSpeakerRequest(
                 "Sec Undo",
@@ -48,12 +50,15 @@ class E07_TalkServiceTest {
                 primarySpeakerRequest.bio());
 
         //requires .from(...) methods for all builders
-        var coSpeakerRequest = CreateSpeakerRequestBuilder.from(primarySpeakerRequest)
+        var coSpeakerRequest = CreateSpeakerRequestBuilder
+           .from(primarySpeakerRequest) //<- copy all fields from primarySpeakerRequest
                 .withName("Sec Undo")
                 .withEmail("sec.undo@example.com").build();
 
-        SpeakerDto savedSpeakerDto = speakerService.createSpeaker(primarySpeakerRequest);
-        SpeakerDto savedCoSpeakerDto = speakerService.createSpeaker(coSpeakerRequest);
+        SpeakerDto savedSpeakerDto = speakerService
+           .createSpeaker(primarySpeakerRequest);
+        SpeakerDto savedCoSpeakerDto = speakerService
+           .createSpeaker(coSpeakerRequest);
 
         var createTalkRequest = CreateTalkRequestBuilder.aCreateTalkRequest()
                 .withPrimarySpeaker(savedSpeakerDto)

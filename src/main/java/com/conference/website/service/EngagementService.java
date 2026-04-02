@@ -21,8 +21,10 @@ public class EngagementService {
         this.metricsClient = metricsClient;
     }
 
-    public Mono<EngagementCountDto> recordEngagement(long talkId,
-                                                     EngagementUpdateRequest request) {
+    public Mono<EngagementCountDto> recordEngagement(
+            long talkId,
+            EngagementUpdateRequest request) {
+
         ensureTalkExists(talkId);
 
         Mono<Void> recordViews = request.view()
@@ -41,8 +43,6 @@ public class EngagementService {
     }
 
 
-
-
     public Mono<EngagementCountDto> getCurrentEngagement(long talkId) {
         ensureTalkExists(talkId);
         return Mono.zip(
@@ -54,6 +54,14 @@ public class EngagementService {
                 .map(tuple -> new EngagementCountDto(talkId, tuple.getT1(), tuple.getT2(), tuple.getT3()));
     }
 
+
+
+
+
+
+
+
+    
     private void ensureTalkExists(long talkId) {
         if (!talkRepository.existsById(talkId)) {
             throw new NotFoundException("Talk not found: " + talkId);

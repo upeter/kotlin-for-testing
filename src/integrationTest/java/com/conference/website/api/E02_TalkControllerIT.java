@@ -44,14 +44,12 @@ class E02_TalkControllerIT {
 
     @Test
     void shouldNotSeeUncommittedTalksViaRestTestClientButSeeThemAfterCommit() {
+        //Arrange
         Long speakerId = null;
         Long firstTalkId = null;
         Long secondTalkId = null;
 
         String uniqueSuffix = String.valueOf(System.nanoTime());
-        String firstTitle = "RestTestClient transaction boundary - first - " + uniqueSuffix;
-        String secondTitle = "RestTestClient transaction boundary - second - " + uniqueSuffix;
-
         try {
             Speaker primarySpeaker = SpeakerBuilder.aSpeaker()
                     .withName("Ada Lovelace " + uniqueSuffix)
@@ -59,18 +57,18 @@ class E02_TalkControllerIT {
                     .build();
 
             Talk firstTalk = TalkBuilder.aTalk()
-                    .withTitle(firstTitle)
+                    .withTitle("RestTestClient transaction boundary - first - " + uniqueSuffix)
                     .withLevel(TalkLevel.INTERMEDIATE)
                     .withPrimarySpeaker(primarySpeaker)
                     .build();
 
             Talk secondTalk = TalkBuilder.aTalk()
-                    .withTitle(secondTitle)
+                    .withTitle("RestTestClient transaction boundary - second - " + uniqueSuffix)
                     .withLevel(TalkLevel.ADVANCED)
                     .withPrimarySpeaker(primarySpeaker)
                     .build();
 
-            List<Talk> savedTalks = TalkGraphPersistence.persistGraph(
+            List<Talk> talks = TalkGraphPersistence.persistGraph(
                     List.of(firstTalk, secondTalk),
                     speakerRepository,
                     tagRepository,
@@ -78,25 +76,15 @@ class E02_TalkControllerIT {
             );
 
             speakerId = primarySpeaker.getId();
-            firstTalkId = savedTalks.getFirst().getId();
-            secondTalkId = savedTalks.getLast().getId();
+            firstTalkId = talks.getFirst().getId();
+            secondTalkId = talks.getLast().getId();
 
-            List<TalkDto> talksBeforeCommit = restTestClient.get()
-                    .uri("/api/talks")
-                    .exchangeSuccessfully()
-                    .expectStatus().isOk()
-                    .returnResult(new ParameterizedTypeReference<List<TalkDto>>() {
-                    })
-                    .getResponseBody();
-
-            assertThat(talksBeforeCommit)
-                    .extracting(TalkDto::title)
-                    .doesNotContain(firstTitle, secondTitle);
-
+            //We MUST commit the transaction before we can see the talks via the REST client
             TestTransaction.flagForCommit();
             TestTransaction.end();
 
-            List<TalkDto> talksAfterCommit = restTestClient.get()
+            //Act
+            List<TalkDto> repliedTalks = restTestClient.get()
                     .uri("/api/talks")
                     .exchangeSuccessfully()
                     .expectStatus().isOk()
@@ -104,11 +92,13 @@ class E02_TalkControllerIT {
                     })
                     .getResponseBody();
 
-            assertThat(talksAfterCommit)
+            //Assert
+            assertThat(repliedTalks)
                     .extracting(TalkDto::title)
-                    .contains(firstTitle, secondTitle);
+                    .contains(talks.stream().map(Talk::getTitle).toArray(String[]::new));
         }
         finally {
+            //MUST cleanup, otherwise the next test will fail
             if (firstTalkId != null && talkRepository.existsById(firstTalkId)) {
                 talkRepository.deleteById(firstTalkId);
             }

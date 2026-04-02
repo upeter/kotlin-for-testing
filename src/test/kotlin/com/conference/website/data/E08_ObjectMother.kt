@@ -22,16 +22,6 @@ fun createRatingRequest(
 ) = CreateRatingRequest(reviewerName, score, comment)
 
 
-@JvmOverloads
-fun createTalkRequest(
-    primarySpeaker: SpeakerDto,
-    title: String = "Kotlin for Java Developers",
-    abstractText: String = "Learn Kotlin in 20 minutes",
-    level: TalkLevel = TalkLevel.BEGINNER,
-    durationMinutes: Int = 20,
-    coSpeakers: List<SpeakerDto> = emptyList(),
-    tags: List<TagDto> = emptyList()
-) = CreateTalkRequest(title, abstractText, level, durationMinutes, primarySpeaker, coSpeakers, tags)
 
 @JvmOverloads
 fun createSpeakerDto(
@@ -142,4 +132,16 @@ fun createSpeakerRequest(
     company: String? = "Analytical Engines",
     bio: String = "Pioneer in computing"
 ) = CreateSpeakerRequest(name, email, company, bio)
+
+@JvmOverloads
+fun createTalkRequest(
+    primarySpeaker: SpeakerDto,
+    title: String = "Kotlin for Java Developers",
+    abstractText: String = "Learn Kotlin in 20 minutes",
+    level: TalkLevel = TalkLevel.BEGINNER,
+    durationMinutes: Int = 20,
+    coSpeakers: List<SpeakerDto> = emptyList(),
+    tags: List<TagDto> = emptyList()
+) = CreateTalkRequest(title, abstractText, level, durationMinutes, primarySpeaker, coSpeakers, tags)
+
 
