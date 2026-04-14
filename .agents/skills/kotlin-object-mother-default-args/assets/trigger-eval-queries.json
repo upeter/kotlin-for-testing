@@ -1,0 +1,42 @@
+[
+  {
+    "query": "Create Kotlin Object Mother functions for these test data objects using default arguments.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create Kotlin factory methods for test requests and DTOs with named/default args.",
+    "should_trigger": true
+  },
+  {
+    "query": "I want object mother methods where required fields have no default and optional fields are nullable.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create object mother functions for CreateUserRequest and CreateOrderRequest in ObjectMother.kt.",
+    "should_trigger": true
+  },
+  {
+    "query": "Generate Kotlin test data creation helpers and add JvmOverloads for Java callers.",
+    "should_trigger": true
+  },
+  {
+    "query": "Convert assertEquals and assertNotNull assertions in Kotlin tests to Kotest.",
+    "should_trigger": false
+  },
+  {
+    "query": "Replace AssertJ assertion chains with Kotest matchers.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create MockMvc extension functions for default headers and JSON body.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a type-safe receiver DSL to assemble aggregate graphs with talks { talk { ... } }.",
+    "should_trigger": false
+  },
+  {
+    "query": "Run unit tests and fix failing assertions.",
+    "should_trigger": false
+  }
+]
