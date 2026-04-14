@@ -6,7 +6,7 @@ A Java-first Spring Boot conference website domain where every Java test has a K
 
 ## Presentation
 
-<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRsYk0egkPWb2puLUS-vlalwpWgUhml0y7aK5k4wbESbOlFHv8vjphFxPqgEfBoow/pubembed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+[![Presentation](https://img.shields.io/badge/Google%20Slides-Open%20Presentation-FBBC04?style=for-the-badge&logo=googleslides&logoColor=white)](https://docs.google.com/presentation/d/e/2PACX-1vRsYk0egkPWb2puLUS-vlalwpWgUhml0y7aK5k4wbESbOlFHv8vjphFxPqgEfBoow/pub?start=false&loop=false&delayms=3000)
 
 ## Tech baseline
 
