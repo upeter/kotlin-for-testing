@@ -1,10 +1,16 @@
-# kotlin-for-testing
+# Supercharge your Spring Boot Tests with Kotlin DSL Power
 
-Java-first Spring Boot conference website domain used for a talk about Kotlin for testing.
+Companion repository for the talk **"Supercharge your Spring Boot Tests with Kotlin DSL Power"** presented at [Spring I/O 2026](https://springio.net) in Barcelona.
+
+A Java-first Spring Boot conference website domain where every Java test has a Kotlin "after" counterpart — showcasing how Kotlin DSLs, matchers, and language features can dramatically improve test readability and ergonomics.
+
+## Presentation
+
+<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRsYk0egkPWb2puLUS-vlalwpWgUhml0y7aK5k4wbESbOlFHv8vjphFxPqgEfBoow/pubembed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
 ## Tech baseline
 
-- Java 25 (toolchain)
+- Java 21 (toolchain)
 - Spring Boot 4.x
 - Spring MVC + Spring Data JPA + Validation + Actuator
 - H2 in-memory database for local development
@@ -55,6 +61,19 @@ Use this index when navigating:
 | 9 | Test Data Lifecycle DSL | `E02_`           |
 | 10 | Kotlin Notebooks | `E01_`           |
 
+## Claude Code Skills
+
+This repository ships with a set of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills (in `.agents/skills/`) that automate common conversion and refactoring tasks demonstrated in the talk:
+
+| Skill | Description |
+|-------|-------------|
+| **java-test-to-kotlin-supercharged** | Convert a Java test class into an equivalent Kotlin test — reusing existing Kotlin test infrastructure, preserving behavior, and applying idiomatic Kotlin patterns. |
+| **kotest-from-assertj** | Migrate AssertJ assertion chains in Kotlin tests to the Kotest matcher DSL while preserving assertion semantics. |
+| **kotest-from-junit-assertions** | Migrate JUnit assertions (`assertEquals`, `assertNotNull`, `assertThrows`, …) in Kotlin tests to Kotest matchers. |
+| **kotlin-data-class-from-java-records** | Convert Java record DTOs to Kotlin data classes with `@JvmRecord`, correct nullability, and Java interop. |
+| **kotlin-object-mother-default-args** | Create Kotlin Object Mother factory functions with default arguments for test data objects. |
+| **kotlin-test-extensions-boilerplate** | Extract duplicated test setup/helper logic (3+ occurrences) into focused Kotlin extension functions. |
+| **typesafe-test-data-dsl** | Build a type-safe Kotlin DSL for constructing and assembling domain object graphs in tests. |
 
 ## Initial API surface
 
