@@ -16,8 +16,9 @@ Convert AssertJ assertions in Kotlin tests into Kotest matcher DSL while preserv
    - equality vs identity,
    - empty vs null.
 4. Prefer direct, explicit Kotlin assertions on fields/properties instead of long chain conversions.
-5. When validating several related properties, group with `assertSoftly { ... }`.
-6. Remove AssertJ imports and add required Kotest imports.
+5. When validating several attributes of one instance, use `instance.apply { ... }`.
+6. When validating several related properties that should report together, wrap the `apply { ... }` block in `assertSoftly { ... }`.
+7. Remove AssertJ imports and add required Kotest imports.
 
 ## Boundaries
 
@@ -36,6 +37,8 @@ Convert AssertJ assertions in Kotlin tests into Kotest matcher DSL while preserv
   - `items.map { it.name }.shouldContainAllInAnyOrder(...)`
 - `assertThatThrownBy { ... }` maps to `shouldThrow<ExceptionType> { ... }`.
 - Keep nullability semantics exact (`isNull` vs `isNotNull`).
+- For one instance with several attribute checks, prefer:
+  - `result.apply { field1 shouldBe ...; field2.shouldNotBeNull() }`
 
 ## Common Rewrite Example
 

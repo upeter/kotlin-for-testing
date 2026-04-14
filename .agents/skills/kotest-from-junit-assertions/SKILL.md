@@ -12,9 +12,10 @@ Convert JUnit-style assertions in Kotlin tests into Kotest matcher DSL while kee
 1. Identify JUnit assertions in Kotlin test files (`assertEquals`, `assertNotNull`, `assertNull`, `assertTrue`, `assertFalse`, `assertThrows`).
 2. Apply the default rewrite mappings from `references/rewrite-map.md`.
 3. Prefer matcher assertions on the actual value (`actual shouldBe expected`) and collection/string matchers over boolean assertions.
-4. If multiple related checks target one result object, group with `assertSoftly { ... }`.
-5. Replace exception assertions with `shouldThrow<T> { ... }` and then assert on message/details with Kotest string matchers.
-6. Remove unused JUnit assertion imports and add required Kotest imports.
+4. If multiple related checks target one result object, validate them inside `instance.apply { ... }`.
+5. If multiple related checks target one result object and should report together, wrap the `apply { ... }` block in `assertSoftly { ... }`.
+6. Replace exception assertions with `shouldThrow<T> { ... }` and then assert on message/details with Kotest string matchers.
+7. Remove unused JUnit assertion imports and add required Kotest imports.
 
 ## Boundaries
 
@@ -33,6 +34,8 @@ Convert JUnit-style assertions in Kotlin tests into Kotest matcher DSL while kee
 - Null-safe exception message checks:
   - `shouldThrow<...> { ... }.message.shouldContain(...)` is acceptable when message assertions are required.
 - Size checks should use matcher DSL (`shouldHaveSize`) instead of `assertEquals(expected, list.size)`.
+- For one instance with several attribute checks, prefer:
+  - `result.apply { field1 shouldBe ...; field2.shouldNotBeNull() }`
 
 ## Common Rewrite Example
 
