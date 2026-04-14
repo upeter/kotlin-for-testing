@@ -1,13 +1,11 @@
 ---
 name: kotest-from-junit-assertions
-description: Use this skill when converting Kotlin tests from JUnit assertions like assertEquals, assertNotNull, assertNull, assertTrue, assertFalse, and assertThrows to Kotest matcher DSL in this repository, especially E10-style transformations. Apply it for Kotlin AFTER tests. Do not use this skill for AssertJ chain conversions.
+description: Use this skill when converting Kotlin tests from JUnit assertions like assertEquals, assertNotNull, assertNull, assertTrue, assertFalse, and assertThrows to Kotest matcher DSL. Apply it to Kotlin test files and preserve behavior. Do not use this skill for AssertJ chain conversions.
 ---
 
 ## Goal
 
-Convert JUnit-style assertions in Kotlin tests into Kotest matcher DSL so tests read like the E10 supercharged style.
-
-This repository keeps Java tests as intentional BEFORE examples. Never modernize Java tests.
+Convert JUnit-style assertions in Kotlin tests into Kotest matcher DSL while keeping test behavior identical.
 
 ## Default Procedure
 
@@ -23,6 +21,7 @@ This repository keeps Java tests as intentional BEFORE examples. Never modernize
 - Use this skill for JUnit assertion migration only.
 - Do not rewrite AssertJ chains here (handled by the AssertJ-to-Kotest skill).
 - Keep test behavior and intent identical; only modernize assertion style.
+- If Java tests exist in the project, do not rewrite Java assertions with this skill.
 
 ## Gotchas
 
@@ -32,8 +31,32 @@ This repository keeps Java tests as intentional BEFORE examples. Never modernize
 - Prefer specific matchers over boolean wrappers:
   - Replace `assertTrue("x" in msg)` with string/collection matchers.
 - Null-safe exception message checks:
-  - `shouldThrow<...> { ... }.message.shouldContain(...)` is acceptable in this repo style.
+  - `shouldThrow<...> { ... }.message.shouldContain(...)` is acceptable when message assertions are required.
 - Size checks should use matcher DSL (`shouldHaveSize`) instead of `assertEquals(expected, list.size)`.
+
+## Common Rewrite Example
+
+Before:
+
+```kotlin
+assertEquals(1, users.size)
+assertNotNull(users.first().id)
+assertTrue("active" in status)
+assertThrows<IllegalArgumentException> {
+    service.create(invalidInput)
+}
+```
+
+After:
+
+```kotlin
+users shouldHaveSize 1
+users.first().id.shouldNotBeNull()
+status shouldContain "active"
+shouldThrow<IllegalArgumentException> {
+    service.create(invalidInput)
+}
+```
 
 ## Validation Loop
 
@@ -47,7 +70,7 @@ After rewrites:
 Suggested command pattern:
 
 ```bash
-./gradlew test --tests "com.conference.website.service.*E10*"
+./gradlew test --tests "*YourTestClassPattern*"
 ```
 
 ## Output Style

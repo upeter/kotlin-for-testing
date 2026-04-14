@@ -1,4 +1,4 @@
-# JUnit -> Kotest rewrite map (E10 style)
+# JUnit -> Kotest rewrite map
 
 Use these defaults unless a test requires different semantics.
 
@@ -23,13 +23,13 @@ Use these defaults unless a test requires different semantics.
 - message assertions should be performed on the thrown exception:
 
 ```kotlin
-shouldThrow<BadRequestException> {
-    tagService.createTags(CreateTagsRequest(listOf("Kotlin")))
-}.message.shouldContainInOrder("Tag already exists", "kotlin")
+shouldThrow<IllegalArgumentException> {
+    service.create(invalidInput)
+}.message.shouldContain("invalid")
 ```
 
-## Repo-specific guidance
+## General guidance
 
-- Keep Java tests unchanged (BEFORE baseline).
-- Target Kotlin supercharged tests only.
+- Keep Java tests unchanged when this migration is scoped to Kotlin tests.
+- Target Kotlin tests only.
 - Favor readable assertions over dense chains.
