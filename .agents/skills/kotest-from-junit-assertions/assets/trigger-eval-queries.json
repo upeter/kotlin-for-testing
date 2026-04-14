@@ -1,0 +1,42 @@
+[
+  {
+    "query": "Convert assertEquals and assertNotNull in this Kotlin E10 test to Kotest matchers.",
+    "should_trigger": true
+  },
+  {
+    "query": "Rewrite this Kotlin test's assertThrows and message checks into Kotest shouldThrow style.",
+    "should_trigger": true
+  },
+  {
+    "query": "Supercharge this Kotlin test by replacing junit assertions with shouldBe and shouldHaveSize.",
+    "should_trigger": true
+  },
+  {
+    "query": "In src/test/kotlin, migrate assertTrue and assertFalse assertions to Kotest matchers.",
+    "should_trigger": true
+  },
+  {
+    "query": "Use E10 style to convert JUnit assertions in a Kotlin service test.",
+    "should_trigger": true
+  },
+  {
+    "query": "Replace AssertJ extracting and containsExactlyInAnyOrder chains with Kotest in E09.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create object mother factory methods with defaults for E08.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a type-safe test data DSL like E03 talks { talk { ... } }.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add MockMvc extension functions for default headers and json body in E06.",
+    "should_trigger": false
+  },
+  {
+    "query": "Convert assertEquals usage in Java E10 tests to Kotest.",
+    "should_trigger": false
+  }
+]
