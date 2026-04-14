@@ -1,0 +1,42 @@
+[
+  {
+    "query": "Convert these Java record DTOs to Kotlin data classes with Java interoperability.",
+    "should_trigger": true
+  },
+  {
+    "query": "Migrate request/response records to Kotlin and keep bean validation annotations working.",
+    "should_trigger": true
+  },
+  {
+    "query": "Turn this record model set into Kotlin data classes with proper nullability and list defaults.",
+    "should_trigger": true
+  },
+  {
+    "query": "Please rewrite these Java records as Kotlin models and add @JvmRecord.",
+    "should_trigger": true
+  },
+  {
+    "query": "Convert record-based DTOs and group related classes in one Kotlin file per domain.",
+    "should_trigger": true
+  },
+  {
+    "query": "Replace assertEquals/assertNotNull in Kotlin tests with Kotest matchers.",
+    "should_trigger": false
+  },
+  {
+    "query": "Convert AssertJ chains to Kotest for service tests.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create object mother factory methods with default args for tests.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a type-safe Kotlin DSL for assembling test object graphs.",
+    "should_trigger": false
+  },
+  {
+    "query": "Refactor business logic in service classes and optimize repository queries.",
+    "should_trigger": false
+  }
+]
