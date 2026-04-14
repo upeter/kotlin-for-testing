@@ -13,6 +13,8 @@ Default mode: `reuse-existing`.
 
 - Preserve test behavior and assertion semantics exactly.
 - Do not change production code unless required for compatibility and explicitly requested.
+- In Kotlin tests, prefer constructor injection for Spring beans; do not introduce field injection via `lateinit var` unless constructor injection is not viable for that specific test setup.
+- Convert Java camelCase test method names to Kotlin backticked sentence names, preserving intent (example: Java `shouldCreateTalkAndSpeakerCorrectly()` -> Kotlin `` `should create talk and speaker correctly`() ``).
 
 ## Inputs
 
@@ -30,6 +32,7 @@ If target path is not provided, infer it from existing project naming/location c
 - [ ] 4. Convert assertions to Kotest idioms with matching semantics.
 - [ ] 5. Reuse existing infra where available (object mothers, utils, DSL, repository helpers).
 - [ ] 6. Run focused verification command for the converted class.
+- [ ] 7. Rename converted Kotlin test functions to backticked, human-readable sentence form.
 
 ## Reuse-existing rules
 
@@ -42,9 +45,17 @@ Use existing infrastructure first:
 
 When calling object-mother/factory methods that provide defaults:
 
-- prefer default arguments and pass only values required by the test scenario,
-- do not restate default values just because Java builders set them explicitly,
-- override an argument only when it is assertion-relevant, setup-critical, or required for uniqueness/validation.
+- prefer the shortest valid call first (for example, `objectMotherMethod()`, but not `objectMotherMethod(arg1, arg2, arg3)` if all args have defaults),
+  - if an argument is required for the test, provide only the strictly needed one(s). For the rely on defaults arguments.
+- do not restate default values just because Java builders/constructors set them explicitly,
+- override an argument only when it is assertion-relevant, setup-critical, or required for uniqueness/validation,
+- if every provided argument matches function defaults and none are needed for intent, remove all of them.
+
+Default-value shorthand policy:
+
+- If a factory call can be zero-arg without changing the test's asserted behavior, use zero-arg.
+- If only one or two fields matter, pass only those fields.
+- Treat spelling out default-valued named args as a style violation unless there is a documented reason.
 
 If required infra is missing, do not broad-build new shared infrastructure by default. Use the smallest local fallback needed to finish this conversion. If reusable infra is clearly warranted, recommend running one of:
 
@@ -65,7 +76,9 @@ If required infra is missing, do not broad-build new shared infrastructure by de
 ### Service/unit tests
 
 - Prefer concise Kotlin setup and named arguments.
-- Keep object-mother calls minimal: include only non-default arguments needed by the test intent.
+- Keep object-mother calls minimal: include only non-default arguments needed by the test intent; prefer zero-arg calls when defaults are sufficient.
+- For Spring-managed tests, inject collaborators via primary constructor parameters instead of `@Autowired lateinit var` fields.
+- Use backticked test names written as real sentences (space-separated words) rather than camelCase.
 - Keep mocking/stubbing behavior equivalent.
 - Keep assertions explicit and readable (Kotest matchers).
 
@@ -77,6 +90,7 @@ If required infra is missing, do not broad-build new shared infrastructure by de
 ### Integration tests (`@SpringBootTest`)
 
 - Keep profile and transactional behavior aligned with Java test.
+- Prefer constructor injection for Spring beans in the test class.
 - Reuse transactional/cleanup helpers (`testDataScope`, `withNewTransaction`, repository support) when applicable.
 - Preserve visibility/commit-boundary behavior in API-level assertions.
 
@@ -85,6 +99,9 @@ If required infra is missing, do not broad-build new shared infrastructure by de
 - Preserve order sensitivity (`containsExactly` vs any-order checks).
 - Preserve nullability/exception semantics.
 - For collection field checks, map fields explicitly before asserting.
+- Avoid redundant assertions: if full-object equality already proves the same fields, do not add extra field-by-field checks.
+- Keep only assertions that add independent semantic coverage (for example, ordering guarantees, exception details, nullability distinctions, or values not covered by an existing equality assertion).
+- Treat generated "readability" assertions that restate already-proven values as a style violation.
 
 Use existing migration skills only when they directly match the assertion style being migrated:
 
