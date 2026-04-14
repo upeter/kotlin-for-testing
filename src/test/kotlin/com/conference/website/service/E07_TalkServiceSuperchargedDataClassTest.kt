@@ -1,10 +1,10 @@
 package com.conference.website.service
 
-import kom.conference.website.data.createSpeakerRequest
-import com.conference.website.data.createTalkRequest
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
+import kom.conference.website.data.createSpeakerRequest
+import com.conference.website.data.createTalkRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional

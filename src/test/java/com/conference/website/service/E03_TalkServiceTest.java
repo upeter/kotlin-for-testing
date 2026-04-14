@@ -100,13 +100,10 @@ class E03_TalkServiceTest {
         );
 
 
-
-
-
-        
-
         //Act
-        List<TalkDto> createdTalks = talkService.listTalks();
+            List<TalkDto> createdTalks = talkService.listTalks();
+
+
 
         //Assert
         TalkDto createdTalkOne = createdTalks.getFirst();

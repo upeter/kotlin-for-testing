@@ -22,8 +22,6 @@ class E10_TagServiceSuperchargedTest @Autowired constructor(
 ) {
 
 
-
-
     @Test
     fun `should create tag`() {
         //Arrange, Act
@@ -37,6 +35,14 @@ class E10_TagServiceSuperchargedTest @Autowired constructor(
             id.shouldNotBeNull()
         }
     }
+
+
+
+
+
+
+
+
 
 
 

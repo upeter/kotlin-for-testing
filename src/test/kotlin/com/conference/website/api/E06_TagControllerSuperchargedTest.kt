@@ -8,6 +8,7 @@ import com.conference.website.utils.authorizationHeader
 import com.conference.website.utils.defaultHeaders
 import com.conference.website.utils.jsonContent
 import com.conference.website.utils.objectMapper
+import com.conference.website.utils.readBody
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.shouldBe
@@ -48,22 +49,29 @@ class E06_TagControllerSuperchargedTest @Autowired constructor (
         every { tagService.createTags(request) } returns expectedTags
 
         //Act
-        val response = mockMvc.perform(post("/api/tags")
+        val createdTags = mockMvc.perform(post("/api/tags")
             .defaultHeaders(token = "my-token")
-            .jsonContent(request)
-        )
-        .andExpect(status().isCreated)
-        .andReturn()
-        .response
-        .contentAsString
-
-        val createdTags = objectMapper
-            .readValue(response,
-                object : TypeReference<List<TagDto>>() {})
+            .jsonContent(request))
+            .readBody<List<TagDto>>()
 
         //Assert
         createdTags.map { it.name } shouldContainInOrder request.names
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

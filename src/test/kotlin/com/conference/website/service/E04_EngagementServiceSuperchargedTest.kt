@@ -34,10 +34,10 @@ class E04_EngagementServiceSuperchargedTest @Autowired constructor(
             EngagementUpdateRequest(true, true, false),
             EngagementUpdateRequest(false, true, true),)
 
-        //Act
         val recordedEngagements = engagements.map {
             engagementService.recordEngagement(talk.id, it) }
             .awaitAll()
+
         val currentEngagement = engagementService
             .getCurrentEngagement(talk.id).awaitSingle()
 
@@ -45,6 +45,30 @@ class E04_EngagementServiceSuperchargedTest @Autowired constructor(
         recordedEngagements shouldHaveSize 2
         currentEngagement shouldBe
                 EngagementCountDto(talk.id, 1L, 2L, 1L)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 

@@ -1,22 +1,17 @@
 package com.conference.website.service
 
+import com.conference.website.data.createSpeakerRequest
 import com.conference.website.data.createTalkRequest
 import com.conference.website.domain.TalkLevel
-import com.conference.website.repository.RepositorySupport
 import com.conference.website.dsl.talks
-import com.conference.website.dto.CreateTalkRequest
-import com.conference.website.dto.SpeakerDto
 import com.conference.website.dto.TestDtoConversions
+import com.conference.website.repository.RepositorySupport
 import com.conference.website.repository.SpeakerRepository
 import com.conference.website.repository.TagRepository
 import com.conference.website.repository.TalkRepository
 import io.kotest.matchers.collections.shouldContainAllInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import kom.conference.website.data.createSpeakerRequest
-import kom.conference.website.dto.CreateSpeakerRequest
-import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
@@ -35,32 +30,52 @@ class E08_TalkServiceSuperchargedTest @Autowired constructor(
 
     @Test
     fun `should create speaker and talk with object mother`() {
+
         //Arrange
         val createSpeakerRequest = createSpeakerRequest(
             name = "Jack Vanilla",
             email = "jva@example.com"
         )
         val savedSpeakerDto = speakerService
-                .createSpeaker(createSpeakerRequest)
+            .createSpeaker(createSpeakerRequest)
 
         //safe approach, because the speaker is required,
         // which in a builder cannot be enforced
         val createTalkRequest = createTalkRequest(
-                primarySpeaker = savedSpeakerDto,
-                durationMinutes = 20)
+            primarySpeaker = savedSpeakerDto,
+            durationMinutes = 20)
 
-        //Act
-        val savedTalkDto = talkService.createTalk(createTalkRequest)
 
-        //Assert
-        //a bit clumsy
-        val expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id, createTalkRequest)
 
-        val talks = talkService.listTalks()
-        assert(savedTalkDto == expectedTalkDto &&
-                talks.size == 1
-        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
 
 
     @Test

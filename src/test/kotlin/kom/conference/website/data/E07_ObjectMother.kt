@@ -32,15 +32,6 @@ fun createTagDto(id: Long? = null, name: String = "java") =
     TagDto(id, name)
 
 
-fun createTalkRequest(
-    primarySpeaker: SpeakerDto,
-    title: String = "Kotlin for Java Developers",
-    abstractText: String = "Learn Kotlin in 20 minutes",
-    level: TalkLevel = TalkLevel.BEGINNER,
-    durationMinutes: Int = 20,
-    coSpeakers: List<SpeakerDto> = emptyList(),
-    tags: List<TagDto> = emptyList()
-) = CreateTalkRequest(title, abstractText, level, durationMinutes, primarySpeaker, coSpeakers, tags)
 
 
 fun createRatingDto(
@@ -64,6 +55,13 @@ fun createScheduleSlotRequest(
 ) = ScheduleSlotRequest(roomName, startTime, endTime)
 
 
+fun createRatingRequest(
+    reviewerName: String = "Test Reviewer",
+    score: Int = 5,
+    comment: String? = null
+) = CreateRatingRequest(reviewerName, score, comment)
+
+
 fun createSpeakerRequest(
     name: String = "Ada Lovelace",
     email: String = "ada@example.com",
@@ -72,8 +70,12 @@ fun createSpeakerRequest(
 ) = CreateSpeakerRequest(name, email,  bio, company)
 
 
-fun createRatingRequest(
-    reviewerName: String = "Test Reviewer",
-    score: Int = 5,
-    comment: String? = null
-) = CreateRatingRequest(reviewerName, score, comment)
+fun createTalkRequest(
+    primarySpeaker: SpeakerDto,
+    title: String = "Kotlin for Java Developers",
+    abstractText: String = "Learn Kotlin in 20 minutes",
+    level: TalkLevel = TalkLevel.BEGINNER,
+    durationMinutes: Int = 20,
+    coSpeakers: List<SpeakerDto> = emptyList(),
+    tags: List<TagDto> = emptyList()
+) = CreateTalkRequest(title, abstractText, level, durationMinutes, primarySpeaker, coSpeakers, tags)

@@ -57,7 +57,7 @@ class E04_EngagementServiceTest {
          //Assert
          .assertNext(result -> {
             assertThat(result).hasSize(3);
-            EngagementCountDto current = result.get(2);
+            EngagementCountDto current = result.get(2); //what is 2?
             assertThat(current.views()).isEqualTo(1L);
             assertThat(current.likes()).isEqualTo(2L);
             assertThat(current.attends()).isEqualTo(1L);

@@ -82,11 +82,25 @@ class E08_TalkServiceTest {
                 );
     }
 
+
+
+
+
+
+
+
+
+
+
     @Test
     void shouldCreateTalkAndSpeakerCorrectly_UsingTestBuilders() {
         //Arrange
         var createSpeakerRequest = CreateSpeakerRequestBuilder
-           .aCreateSpeakerRequest().build();
+           .aCreateSpeakerRequest()
+           .withName("Jack Vanilla")
+           .withEmail("jva@example.com")
+           .build();
+
         SpeakerDto savedSpeakerDto = speakerService
            .createSpeaker(createSpeakerRequest);
 
@@ -95,11 +109,17 @@ class E08_TalkServiceTest {
         var createTalkRequest = CreateTalkRequestBuilder
                 .aCreateTalkRequest()
                 //.withPrimarySpeaker(savedSpeakerDto)
+                .withDurationMinutes(20)
                 .build();
-        var savedTalkDto = talkService.createTalk(createTalkRequest);
+
+
+
+
 
         //Act
-        var expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id(), createTalkRequest);
+        var savedTalkDto = talkService.createTalk(createTalkRequest);
+        var expectedTalkDto = TestDtoConversions
+           .toDto(savedTalkDto.id(), createTalkRequest);
 
         //Assert
         assertEquals(savedTalkDto, expectedTalkDto);
@@ -107,6 +127,17 @@ class E08_TalkServiceTest {
         assertEquals(1, talks.size());
 
     }
+
+
+
+
+
+
+
+
+
+
+
 
 
     @Test

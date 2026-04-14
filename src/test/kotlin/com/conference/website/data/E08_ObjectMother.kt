@@ -14,6 +14,67 @@ import com.conference.website.dto.TalkDto
 import com.conference.website.dto.ViewCountDto
 import java.time.LocalDateTime
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@JvmOverloads
+fun createSpeakerRequest(
+    name: String = "Ada Lovelace",
+    email: String = "ada@example.com",
+    company: String? = "Analytical Engines",
+    bio: String = "Pioneer in computing"
+) = CreateSpeakerRequest(name, email, company, bio)
+
+@JvmOverloads
+fun createTalkRequest(
+    primarySpeaker: SpeakerDto,
+    title: String = "Kotlin for Java Developers",
+    abstractText: String = "Learn Kotlin in 20 minutes",
+    level: TalkLevel = TalkLevel.BEGINNER,
+    durationMinutes: Int = 20,
+    coSpeakers: List<SpeakerDto> = emptyList(),
+    tags: List<TagDto> = emptyList()
+) = CreateTalkRequest(title, abstractText, level, durationMinutes, primarySpeaker, coSpeakers, tags)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @JvmOverloads
 fun createRatingRequest(
     reviewerName: String = "Test Reviewer",
@@ -124,24 +185,3 @@ fun createScheduleSlotDto(
     startTime: LocalDateTime = LocalDateTime.of(2026, 3, 16, 9, 0),
     endTime: LocalDateTime = LocalDateTime.of(2026, 3, 16, 10, 0)
 ) = ScheduleSlotDto(id, roomName, startTime, endTime)
-
-@JvmOverloads
-fun createSpeakerRequest(
-    name: String = "Ada Lovelace",
-    email: String = "ada@example.com",
-    company: String? = "Analytical Engines",
-    bio: String = "Pioneer in computing"
-) = CreateSpeakerRequest(name, email, company, bio)
-
-@JvmOverloads
-fun createTalkRequest(
-    primarySpeaker: SpeakerDto,
-    title: String = "Kotlin for Java Developers",
-    abstractText: String = "Learn Kotlin in 20 minutes",
-    level: TalkLevel = TalkLevel.BEGINNER,
-    durationMinutes: Int = 20,
-    coSpeakers: List<SpeakerDto> = emptyList(),
-    tags: List<TagDto> = emptyList()
-) = CreateTalkRequest(title, abstractText, level, durationMinutes, primarySpeaker, coSpeakers, tags)
-
-
