@@ -41,7 +41,14 @@ Use existing infrastructure first:
 - object mothers/factories,
 - HTTP/test client helpers,
 - DSL/repository helpers,
-- shared assertion/helpers already used by existing Kotlin tests.
+- shared assertion/helpers already used by existing Kotlin tests,
+- existing Kotlin extension functions/methods (for example, `toDto()` extensions) before calling static conversion helpers directly.
+
+When both an extension and a static helper exist for the same behavior:
+
+- prefer the extension form already used in nearby Kotlin tests,
+- keep conversion semantics identical (nullability, ordering, default values),
+- do not introduce new conversion helpers if an existing extension already matches the test intent.
 
 When calling object-mother/factory methods that provide defaults:
 
