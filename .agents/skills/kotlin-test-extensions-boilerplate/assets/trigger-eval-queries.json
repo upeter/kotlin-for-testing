@@ -1,18 +1,22 @@
 [
   {
-    "query": "My Kotlin MockMvc tests duplicate auth headers and JSON content setup. Extract extension functions.",
+    "query": "This Kotlin test suite repeats the same setup block in five tests. Extract extension/helper functions.",
     "should_trigger": true
   },
   {
-    "query": "Create Kotlin test utilities like defaultHeaders and readBody<T> for API tests.",
+    "query": "I have duplicated fixture creation in Kotlin tests at least 3 times. Refactor into reusable helpers.",
     "should_trigger": true
   },
   {
-    "query": "Refactor repeated RestTestClient request boilerplate into reusable extension methods.",
+    "query": "Refactor repeated service-call sequences in tests into extension functions.",
     "should_trigger": true
   },
   {
-    "query": "Can you remove duplicated test HTTP serialization code using Kotlin extensions?",
+    "query": "Can you remove duplicated assertion projection code across my Kotlin tests?",
+    "should_trigger": true
+  },
+  {
+    "query": "My MockMvc tests duplicate headers and JSON parsing in many places, extract extensions.",
     "should_trigger": true
   },
   {

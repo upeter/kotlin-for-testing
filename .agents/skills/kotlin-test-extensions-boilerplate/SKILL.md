@@ -1,75 +1,76 @@
 ---
 name: kotlin-test-extensions-boilerplate
-description: Use this skill when Kotlin HTTP/API tests contain repeated request setup, headers, JSON serialization, or response parsing code. Create focused Kotlin extension functions to remove duplicated test boilerplate for clients like MockMvc or RestTestClient while preserving test behavior.
+description: Use this skill when Kotlin test code contains duplicated setup or helper logic repeated at least 3 times. Create focused Kotlin extension functions (or small helper functions) to remove repetition while preserving test behavior and readability.
 ---
 
 ## Goal
 
-Extract repeated test plumbing into small Kotlin extension functions so tests stay focused on Arrange/Act/Assert intent.
+Extract repeated Kotlin test plumbing into small extension/helper functions so tests stay focused on intent.
+
+Trigger threshold: apply this skill when the same pattern appears 3+ times.
 
 ## Default Procedure
 
-1. Find duplicated setup in tests (headers, auth token, correlation id, JSON body setup, response decoding).
-2. Create or update a shared Kotlin test utility file with extension functions.
-3. Introduce defaults for frequent values (for example default token/correlation id), but keep overrides available.
-4. Add typed body readers (`readBody<T>()`) for response deserialization.
-5. Replace duplicated call sites with the new extensions.
-6. Remove now-unused imports and keep tests behavior-identical.
+1. Scan Kotlin test files and identify duplicated code blocks repeated 3+ times.
+2. Group duplicates by kind (data creation, assertion setup, fixture wiring, HTTP setup, response parsing, coroutine helpers, transactional helpers).
+3. For each group, extract the smallest reusable unit:
+   - extension function when behavior belongs to a type,
+   - top-level helper when no receiver type is natural.
+4. Keep defaults for common values, but allow explicit overrides.
+5. Replace duplicated call sites with the new utility.
+6. Remove dead imports/helpers and keep behavior-identical.
 
-Use naming and signatures from `references/patterns.md` as defaults.
+Use extraction and naming rules from `references/patterns.md`.
 
 ## Boundaries
 
 - Apply this skill to test code only.
 - Do not change endpoint behavior or assertion meaning.
 - Keep extensions small and composable; avoid large helper methods that hide important assertions.
+- Do not extract code that appears fewer than 3 times unless requested.
 
 ## Gotchas
 
-- Keep extension return types chainable to preserve fluent test calls.
-- Always keep a way to override default headers for test-specific values.
-- Ensure JSON serialization and deserialization use the same configured mapper.
-- Use reified generics for typed response parsing to avoid repetitive type tokens.
-- Do not hide HTTP status assertions inside generic helpers unless the project explicitly uses that pattern.
+- Prefer extension functions only when a receiver type makes the API clearer.
+- Keep helpers narrow: one responsibility per function.
+- Avoid over-abstraction: if extraction harms readability at call sites, keep inline.
+- Preserve assertion semantics exactly (order-sensitive vs order-insensitive, nullability checks, exception checks).
+- Name helpers by intent, not implementation details.
 
 ## Common Refactor Example
 
 Before:
 
 ```kotlin
-val response = mockMvc.perform(
-    post("/api/items")
-        .header("Authorization", "Bearer token")
-        .header("X-Correlation-Id", "corr-123")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(request))
-)
-    .andExpect(status().isCreated)
-    .andReturn()
-    .response
-    .contentAsString
+val speakerA = createSpeakerRequest(name = "Ada")
+val speakerB = createSpeakerRequest(name = "Grace")
+val speakerC = createSpeakerRequest(name = "Linus")
 
-val created = objectMapper.readValue(response, object : TypeReference<ItemDto>() {})
+val savedA = speakerService.createSpeaker(speakerA)
+val savedB = speakerService.createSpeaker(speakerB)
+val savedC = speakerService.createSpeaker(speakerC)
 ```
 
 After:
 
 ```kotlin
-val created = mockMvc.perform(
-    post("/api/items")
-        .defaultHeaders()
-        .jsonContent(request)
+fun SpeakerService.createSpeakers(vararg requests: CreateSpeakerRequest): List<SpeakerDto> =
+    requests.map(::createSpeaker)
+
+val (savedA, savedB, savedC) = speakerService.createSpeakers(
+    createSpeakerRequest(name = "Ada"),
+    createSpeakerRequest(name = "Grace"),
+    createSpeakerRequest(name = "Linus")
 )
-    .andExpect(status().isCreated)
-    .readBody<ItemDto>()
 ```
 
 ## Validation Loop
 
-1. Confirm duplicated setup is actually reduced across call sites.
-2. Run tests that use the new extensions.
-3. If serialization or typing fails, fix utility signatures and rerun.
-4. Keep behavior identical and stop only when tests pass.
+1. Confirm each extracted helper replaces code repeated 3+ times.
+2. Confirm call sites are shorter and still explicit about test intent.
+3. Run tests that use the extracted helpers.
+4. If behavior or semantics changed, revert and re-extract more narrowly.
+5. Stop only when tests pass and readability improves.
 
 ## Output Style
 
