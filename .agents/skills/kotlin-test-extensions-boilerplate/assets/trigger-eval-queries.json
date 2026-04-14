@@ -1,0 +1,42 @@
+[
+  {
+    "query": "My Kotlin MockMvc tests duplicate auth headers and JSON content setup. Extract extension functions.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create Kotlin test utilities like defaultHeaders and readBody<T> for API tests.",
+    "should_trigger": true
+  },
+  {
+    "query": "Refactor repeated RestTestClient request boilerplate into reusable extension methods.",
+    "should_trigger": true
+  },
+  {
+    "query": "Can you remove duplicated test HTTP serialization code using Kotlin extensions?",
+    "should_trigger": true
+  },
+  {
+    "query": "Build object mother factory methods with default parameters.",
+    "should_trigger": false
+  },
+  {
+    "query": "Migrate AssertJ extracting chains to Kotest matchers.",
+    "should_trigger": false
+  },
+  {
+    "query": "Convert assertEquals in Kotlin tests to shouldBe.",
+    "should_trigger": false
+  },
+  {
+    "query": "Design a DSL builder for nested test data graphs.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement new production endpoint for tags.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add coroutine-based service tests with runTest and awaitSingle.",
+    "should_trigger": false
+  }
+]
