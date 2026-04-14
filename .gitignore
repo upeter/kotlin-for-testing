@@ -1,7 +1,35 @@
+## OS metadata
+.DS_Store
+
+## IntelliJ / JetBrains
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+*.mov
+*.mp4
+
+## Eclipse / STS
+.project
+.classpath
+.settings/
+bin/
+
+## Gradle
 .gradle/
 build/
-out/
-*.iml
-.idea/
-.project
-.settings/
+
+## Maven
+target/
+
+## Kotlin/JVM tooling
+.kotlin/
+
+## Logs and crash dumps
+*.log
+hs_err_pid*
+replay_pid*
+
+## Jupyter notebook runtime artifacts
+.ipynb_checkpoints/
