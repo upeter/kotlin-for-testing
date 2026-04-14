@@ -1,0 +1,42 @@
+[
+  {
+    "query": "Convert AssertJ assertions in this Kotlin test to Kotest matchers.",
+    "should_trigger": true
+  },
+  {
+    "query": "Rewrite assertThatThrownBy and hasMessageContaining in this Kotlin test using Kotest.",
+    "should_trigger": true
+  },
+  {
+    "query": "Migrate Kotlin assertThat(...).extracting(...).containsExactlyInAnyOrder(...) to Kotest.",
+    "should_trigger": true
+  },
+  {
+    "query": "Replace AssertJ hasSize/isEqualTo in src/test/kotlin with shouldHaveSize/shouldBe.",
+    "should_trigger": true
+  },
+  {
+    "query": "Refactor Kotlin test assertion chains from AssertJ to Kotest while preserving behavior.",
+    "should_trigger": true
+  },
+  {
+    "query": "Convert assertEquals and assertNotNull in a Kotlin test to Kotest.",
+    "should_trigger": false
+  },
+  {
+    "query": "Generate object mother methods with default arguments for test data.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create custom MockMvc extensions for request headers and JSON body.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a Kotlin DSL for assembling test entity graphs.",
+    "should_trigger": false
+  },
+  {
+    "query": "Migrate AssertJ assertions in Java tests to Kotest.",
+    "should_trigger": false
+  }
+]
