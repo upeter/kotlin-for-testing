@@ -1,0 +1,26 @@
+rules:
+  - id: kotlin.no-get-or-else
+    languages: [kotlin]
+    message: >
+      getOrElse() hides missing values behind a fallback.
+      Access the value explicitly and fail with a clear error when it is absent.
+    severity: ERROR
+    pattern-regex: '\.getOrElse\s*[({]'
+    paths:
+      include:
+        - /src/main/
+      exclude:
+        - /src/test/
+
+  - id: kotlin.no-result-get-or-null
+    languages: [kotlin]
+    message: >
+      Result.getOrNull() swallows the failure and returns null, hiding errors.
+      Handle the failure explicitly (onFailure, or getOrElse { error(...) }) or let it propagate.
+    severity: ERROR
+    pattern-regex: '\.getOrNull\s*\(\s*\)'
+    paths:
+      include:
+        - /src/main/
+      exclude:
+        - /src/test/
