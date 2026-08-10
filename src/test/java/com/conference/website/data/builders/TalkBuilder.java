@@ -1,9 +1,6 @@
 package com.conference.website.data.builders;
 
-import com.conference.website.domain.Speaker;
-import com.conference.website.domain.Tag;
-import com.conference.website.domain.Talk;
-import com.conference.website.domain.TalkLevel;
+import com.conference.website.domain.*;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -18,6 +15,7 @@ public class TalkBuilder {
     private Speaker primarySpeaker;
     private Set<Speaker> coSpeakers = new LinkedHashSet<>();
     private Set<Tag> tags = new LinkedHashSet<>();
+    private EvaluationStatus evaluationStatus = EvaluationStatus.SUBMITTED;
 
     public static TalkBuilder aTalk() {
         return new TalkBuilder();
@@ -73,7 +71,7 @@ public class TalkBuilder {
             throw new IllegalStateException("Primary speaker is required");
         }
 
-        Talk talk = new Talk(title, abstractText, level, durationMinutes, primarySpeaker);
+        Talk talk = new Talk(title, abstractText, level, durationMinutes, primarySpeaker, evaluationStatus);
         talk.setCoSpeakers(coSpeakers);
         talk.setTags(tags);
         return talk;

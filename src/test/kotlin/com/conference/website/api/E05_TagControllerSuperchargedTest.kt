@@ -2,6 +2,7 @@ package com.conference.website.api
 
 import com.conference.website.data.createTagDto
 import com.conference.website.data.createTagsRequest
+import com.conference.website.dto.TagDto
 import com.conference.website.service.TagService
 import com.conference.website.utils.defaultHeaders
 import com.conference.website.utils.jsonContent
@@ -10,7 +11,6 @@ import com.conference.website.utils.readBody
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.mockk.every
-import kom.conference.website.dto.TagDto
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc

@@ -35,11 +35,11 @@ class E04_EngagementServiceSuperchargedTest @Autowired constructor(
             EngagementUpdateRequest(false, true, true),)
 
         val recordedEngagements = engagements.map {
-            engagementService.recordEngagement(talk.id, it) }
+            engagementService.recordEngagement(requireNotNull(talk.id), it) }
             .awaitAll()
 
         val currentEngagement = engagementService
-            .getCurrentEngagement(talk.id).awaitSingle()
+            .getCurrentEngagement(requireNotNull(talk.id)).awaitSingle()
 
         //Assert
         recordedEngagements shouldHaveSize 2

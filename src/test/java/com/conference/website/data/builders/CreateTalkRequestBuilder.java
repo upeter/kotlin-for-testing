@@ -5,6 +5,7 @@ import com.conference.website.dto.SpeakerDto;
 import com.conference.website.dto.TagDto;
 import com.conference.website.domain.TalkLevel;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CreateTalkRequestBuilder {
@@ -75,6 +76,6 @@ public class CreateTalkRequestBuilder {
     }
 
     public CreateTalkRequest build() {
-        return new CreateTalkRequest(title, abstractText, level, durationMinutes, primarySpeaker, coSpeakers, tags);
+        return new CreateTalkRequest(title, abstractText, level, durationMinutes, primarySpeaker, coSpeakers, tags, Collections.emptyList());
     }
 }

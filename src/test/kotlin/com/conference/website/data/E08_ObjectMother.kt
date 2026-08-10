@@ -36,7 +36,7 @@ import java.time.LocalDateTime
 fun createSpeakerRequest(
     name: String = "Ada Lovelace",
     email: String = "ada@example.com",
-    company: String? = "Analytical Engines",
+    company: String = "Analytical Engines",
     bio: String = "Pioneer in computing"
 ) = CreateSpeakerRequest(name, email, company, bio)
 
@@ -89,7 +89,7 @@ fun createSpeakerDto(
     id: Long? = null,
     name: String = "Ada Lovelace",
     email: String = "ada@example.com",
-    company: String? = "Analytical Engines",
+    company: String = "Analytical Engines",
     bio: String = "Pioneer in computing"
 ) = SpeakerDto(
     id, name, email, company, bio,
@@ -130,8 +130,8 @@ fun createTalkDto(
     tags,
     ratings,
     scheduleSlot,
-    averageRating,
-    totalRatings
+    averageRating ?: 0.0,
+    totalRatings ?: 0
 )
 
 @JvmOverloads
@@ -140,17 +140,17 @@ fun createTalkDto(
     id: Long? = 1L,
     ratings: List<RatingDto> = emptyList(),
     scheduleSlot: ScheduleSlotDto? = null,
-    averageRating: Double? = null,
-    totalRatings: Long? = null
+    averageRating: Double = 0.0,
+    totalRatings: Long = 0
 ) = TalkDto(
     id,
-    request.title(),
-    request.abstractText(),
-    request.level(),
-    request.durationMinutes(),
-    request.primarySpeaker(),
-    request.coSpeakers(),
-    request.tags(),
+    request.title,
+    request.abstractText,
+    request.level,
+    request.durationMinutes,
+    request.primarySpeaker,
+    request.coSpeakers,
+    request.tags,
     ratings,
     scheduleSlot,
     averageRating,
@@ -185,3 +185,6 @@ fun createScheduleSlotDto(
     startTime: LocalDateTime = LocalDateTime.of(2026, 3, 16, 9, 0),
     endTime: LocalDateTime = LocalDateTime.of(2026, 3, 16, 10, 0)
 ) = ScheduleSlotDto(id, roomName, startTime, endTime)
+
+
+

@@ -2,7 +2,6 @@ package com.conference.website.service;
 
 import com.conference.website.data.builders.*;
 import com.conference.website.dto.*;
-import kom.conference.website.dto.CreateSpeakerRequest;
 import com.conference.website.repository.SpeakerRepository;
 import com.conference.website.repository.TagRepository;
 import com.conference.website.repository.TalkRepository;

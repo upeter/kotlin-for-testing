@@ -96,8 +96,8 @@ class TalkDsl {
             durationMinutes,
             requiredPrimarySpeaker
         ).apply {
-            setCoSpeakers(LinkedHashSet(this@TalkDsl.coSpeakers))
-            setTags(LinkedHashSet(this@TalkDsl.tags))
+            coSpeakers = LinkedHashSet(this@TalkDsl.coSpeakers)
+            tags = LinkedHashSet(this@TalkDsl.tags)
         }
     }
 }

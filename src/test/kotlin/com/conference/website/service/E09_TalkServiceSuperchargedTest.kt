@@ -4,6 +4,7 @@ import com.conference.website.data.createTalkRequest
 import com.conference.website.domain.TalkLevel
 import com.conference.website.repository.RepositorySupport
 import com.conference.website.dsl.talks
+import com.conference.website.dto.CreateSpeakerRequest
 import com.conference.website.dto.CreateTalkRequest
 import com.conference.website.dto.SpeakerDto
 import com.conference.website.dto.TestDtoConversions
@@ -13,8 +14,7 @@ import com.conference.website.repository.TalkRepository
 import io.kotest.matchers.collections.shouldContainAllInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import kom.conference.website.data.createSpeakerRequest
-import kom.conference.website.dto.CreateSpeakerRequest
+
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired

@@ -14,7 +14,6 @@ import java.util.List;
 
 import static com.conference.website.data.E08_ObjectMotherKt.createSpeakerRequest;
 import static com.conference.website.data.E08_ObjectMotherKt.createTalkRequest;
-import static com.conference.website.dto.DtoConversions.toDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -46,9 +45,7 @@ class E09_TalkServiceTest {
                 "Practical patterns to reduce noisy test code",
                 TalkLevel.ADVANCED,
                 60,
-                savedSpeakerDto,
-                List.of(),
-                List.of()
+                savedSpeakerDto
         );
         var savedTalkDto = talkService.createTalk(createTalkRequest);
         var expectedTalkDto = TestDtoConversions.toDto(savedTalkDto.id(), createTalkRequest);
