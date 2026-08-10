@@ -4,7 +4,6 @@ import com.conference.website.data.createSpeakerRequest
 import com.conference.website.data.createTalkRequest
 import com.conference.website.domain.TalkLevel
 import com.conference.website.dsl.talks
-import com.conference.website.dto.TestDtoConversions
 import com.conference.website.repository.RepositorySupport
 import com.conference.website.repository.SpeakerRepository
 import com.conference.website.repository.TagRepository
