@@ -4,6 +4,11 @@ Companion repository for the talk **"Supercharge your Spring Boot Tests with Kot
 
 A Java-first Spring Boot conference website domain where every Java test has a Kotlin "after" counterpart — showcasing how Kotlin DSLs, matchers, and language features can dramatically improve test readability and ergonomics.
 
+## Talk Recording
+
+[![Talk Recording](https://img.shields.io/badge/YouTube-Recording-FC0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=nhNuxSqXRBU)
+
+
 ## Presentation
 
 [![Presentation](https://img.shields.io/badge/Google%20Slides-Open%20Presentation-FBBC04?style=for-the-badge&logo=googleslides&logoColor=white)](https://docs.google.com/presentation/d/e/2PACX-1vRsYk0egkPWb2puLUS-vlalwpWgUhml0y7aK5k4wbESbOlFHv8vjphFxPqgEfBoow/pub?start=false&loop=false&delayms=3000)
